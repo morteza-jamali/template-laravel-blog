@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Post;
 
 class PostController extends Controller
@@ -22,15 +23,17 @@ class PostController extends Controller
    */
   public function store(Request $request)
   {
-    $request->validate([
-      'title' => 'required|max:255',
-      'body' => 'required',
+    $validated = $request->validate([
+      'title' => 'required|string|unique:posts|min:5|max:100',
+      'content' => 'required|string|min:5|max:2000',
     ]);
 
-    Post::create($request->all());
+    $validated['slug'] = Str::slug($validated['title'], '-');
+
+    Post::create($validated);
 
     return redirect()
-      ->route('posts.index')
+      ->route('index')
       ->with('success', 'Post created successfully.');
   }
 
@@ -41,11 +44,11 @@ class PostController extends Controller
   {
     $post = Post::find($id);
 
-    return view('show', compact('post'));
+    return view('post', compact('post'));
   }
 
-  public function create()
+  public function admin()
   {
-    return view('create');
+    return view('admin');
   }
 }
