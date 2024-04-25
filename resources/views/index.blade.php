@@ -30,21 +30,6 @@ integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6
             <div class="card-body">
               <p class="card-text">{{ $post->body }}</p>
             </div>
-            <div class="card-footer">
-              <div class="row">
-                <div class="col-sm">
-                  <a href="{{ route('posts.edit', $post->id) }}"
-            class="btn btn-primary btn-sm">Edit</a>
-                </div>
-                <div class="col-sm">
-                    <form action="{{ route('posts.destroy', $post->id) }}" method="post">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       @endforeach
