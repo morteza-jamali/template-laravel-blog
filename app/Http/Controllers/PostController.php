@@ -13,7 +13,7 @@ class PostController extends Controller
    */
   public function index()
   {
-    $posts = Post::all();
+    $posts = Post::latest()->get();
 
     return view('index', compact('posts'));
   }
@@ -24,8 +24,8 @@ class PostController extends Controller
   public function store(Request $request)
   {
     $validated = $request->validate([
-      'title' => 'required|string|unique:posts|min:5|max:100',
-      'content' => 'required|string|min:5|max:2000',
+      'title' => 'required|string|unique:posts|min:5|max:200',
+      'content' => 'required|string|min:1',
     ]);
 
     $validated['slug'] = Str::slug($validated['title'], '-');
@@ -40,7 +40,7 @@ class PostController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(string $id)
+  public function show(int $id)
   {
     $post = Post::find($id);
 

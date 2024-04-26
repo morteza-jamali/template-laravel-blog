@@ -1,8 +1,9 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
-    "editorconfig.editorconfig",
     "onecentlin.laravel-blade",
+    "editorconfig.editorconfig",
+    "shufo.vscode-blade-formatter",
     "bmewburn.vscode-intelephense-client"
   ]
 }
