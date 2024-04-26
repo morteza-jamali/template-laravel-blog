@@ -33,8 +33,8 @@ class PostController extends Controller
     Post::create($validated);
 
     return redirect()
-      ->route('index')
-      ->with('success', 'Post created successfully.');
+      ->route('admin')
+      ->with('notification', 'Post created successfully');
   }
 
   /**
