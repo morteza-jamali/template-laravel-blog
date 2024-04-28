@@ -11,6 +11,8 @@
     "@commitlint/config-conventional": "latest",
     "@prettier/plugin-php": "^0.22.2",
     "@shufo/prettier-plugin-blade": "^1.14.1",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "axios": "^1.6.4",
     "husky": "latest",
     "laravel-vite-plugin": "^1.0",
@@ -21,5 +23,8 @@
   "license": "MIT",
   "lint-staged": {
     "**/*": "prettier -w -u"
+  },
+  "dependencies": {
+    "react-dom": "^18.3.1"
   }
 }
