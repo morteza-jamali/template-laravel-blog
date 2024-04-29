@@ -1,22 +1,16 @@
-import { useDisclosure } from '@mantine/hooks';
-import {
-  MantineProvider,
-  AppShell,
-  Burger,
-  Group,
-  Skeleton,
-} from '@mantine/core';
+import { Head } from '@inertiajs/react';
+import { AppShell, Burger, Group, Skeleton } from '@mantine/core';
 import { MantineLogo } from '@mantinex/mantine-logo';
+import { useDisclosure } from '@mantine/hooks';
 
-import '@mantine/core/styles.css';
-
-export default function App() {
+export default function Dashboard() {
   const [opened, { toggle }] = useDisclosure();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   return (
-    <MantineProvider>
+    <>
+      <Head title="Dashboard" />
       <AppShell
         header={{ height: { base: 60, md: 70, lg: 80 } }}
         navbar={{
@@ -53,6 +47,6 @@ export default function App() {
         </AppShell.Navbar>
         <AppShell.Main>Main</AppShell.Main>
       </AppShell>
-    </MantineProvider>
+    </>
   );
 }
