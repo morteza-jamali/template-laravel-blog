@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "postinstall": "npx husky"
   },
   "devDependencies": {
@@ -11,13 +11,18 @@
     "@commitlint/config-conventional": "latest",
     "@prettier/plugin-php": "^0.22.2",
     "@shufo/prettier-plugin-blade": "^1.14.1",
+    "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.2.1",
     "axios": "^1.6.4",
     "husky": "latest",
     "laravel-vite-plugin": "^1.0",
     "lint-staged": "latest",
+    "postcss": "^8.4.38",
+    "postcss-preset-mantine": "^1.15.0",
+    "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.2.5",
+    "typescript": "^5.4.5",
     "vite": "^5.0"
   },
   "license": "MIT",
@@ -25,6 +30,27 @@
     "**/*": "prettier -w -u"
   },
   "dependencies": {
-    "react-dom": "^18.3.1"
+    "@mantine/carousel": "^7.8.1",
+    "@mantine/charts": "^7.8.1",
+    "@mantine/code-highlight": "^7.8.1",
+    "@mantine/core": "^7.8.1",
+    "@mantine/dates": "^7.8.1",
+    "@mantine/dropzone": "^7.8.1",
+    "@mantine/form": "^7.8.1",
+    "@mantine/hooks": "^7.8.1",
+    "@mantine/modals": "^7.8.1",
+    "@mantine/notifications": "^7.8.1",
+    "@mantine/nprogress": "^7.8.1",
+    "@mantine/spotlight": "^7.8.1",
+    "@mantine/tiptap": "^7.8.1",
+    "@mantinex/mantine-logo": "^1.0.1",
+    "@tabler/icons-react": "^3.2.0",
+    "@tiptap/extension-link": "^2.3.0",
+    "@tiptap/react": "^2.3.0",
+    "@tiptap/starter-kit": "^2.3.0",
+    "dayjs": "^1.11.11",
+    "embla-carousel-react": "^8.0.2",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.6"
   }
 }
