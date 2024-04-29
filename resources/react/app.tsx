@@ -1,11 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import Main from './Main';
+import { createInertiaApp } from '@inertiajs/react';
+import { createRoot } from 'react-dom/client';
 
-import '../css/app.css';
+createInertiaApp({
+  resolve: (name) => {
+    const pages = import.meta.glob('./Pages/**/*.tsx', { eager: true });
 
-ReactDOM.createRoot(document.getElementById('root') as any).render(
-  <React.StrictMode>
-    <Main />
-  </React.StrictMode>,
-);
+    return pages[`./Pages/${name}.tsx`];
+  },
+  setup({ el, App, props }) {
+    createRoot(el).render(<App {...props} />);
+  },
+});
