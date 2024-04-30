@@ -33,8 +33,17 @@ import Surface from './Surface';
 import TextEditor from './TextEditor';
 import UserButton from './UserButton';
 import ErrorAlert from './ErrorAlert';
+import AppShell from './AppShell';
+import HeaderNav from './HeaderNav';
+import AppMain from './AppMain';
+import Navigation from './Navigation';
+import FooterNav from './FooterNav';
 
 export {
+  FooterNav,
+  Navigation,
+  AppMain,
+  HeaderNav,
   Logo,
   ToggleTheme,
   LanguagePicker,
@@ -70,4 +79,5 @@ export {
   TextEditor,
   UserButton,
   ErrorAlert,
+  AppShell,
 };
