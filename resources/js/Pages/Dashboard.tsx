@@ -1,10 +1,11 @@
 import { Head } from '@inertiajs/react';
-import { AppShell, Burger, Group, Skeleton } from '@mantine/core';
+import { AppShell, Burger, Group, NavLink } from '@mantine/core';
 import { MantineLogo } from '@mantinex/mantine-logo';
+import { IconLicense, IconPencilPlus, IconList } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
+import { NavBar } from '@/Components/Dashboard/NavBar';
 
 export default function Dashboard() {
-  const [opened, { toggle }] = useDisclosure();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
@@ -14,7 +15,7 @@ export default function Dashboard() {
       <AppShell
         header={{ height: { base: 60, md: 70, lg: 80 } }}
         navbar={{
-          width: { base: 300, md: 300, lg: 400 },
+          width: { base: 300, md: 300, lg: 300 },
           breakpoint: 'sm',
           collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
         }}
@@ -37,13 +38,8 @@ export default function Dashboard() {
             <MantineLogo size={30} />
           </Group>
         </AppShell.Header>
-        <AppShell.Navbar p="md">
-          Navbar
-          {Array(15)
-            .fill(0)
-            .map((_, index) => (
-              <Skeleton key={index} h={28} mt="sm" animate={false} />
-            ))}
+        <AppShell.Navbar>
+          <NavBar />
         </AppShell.Navbar>
         <AppShell.Main>Main</AppShell.Main>
       </AppShell>
