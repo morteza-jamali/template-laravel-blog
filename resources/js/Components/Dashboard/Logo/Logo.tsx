@@ -5,6 +5,7 @@ import {
   UnstyledButton,
   UnstyledButtonProps,
 } from '@mantine/core';
+import { Link } from '@inertiajs/react';
 
 type LogoProps = {
   href?: string;

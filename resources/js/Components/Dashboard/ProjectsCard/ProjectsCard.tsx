@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Avatar,
   Badge,
@@ -17,7 +15,7 @@ import {
   Tooltip,
   useMantineColorScheme,
 } from '@mantine/core';
-import { Surface } from '@/components';
+import { Surface } from '@/Components/Dashboard';
 import { IconNotebook, IconShare } from '@tabler/icons-react';
 import classes from './ProjectsCard.module.css';
 

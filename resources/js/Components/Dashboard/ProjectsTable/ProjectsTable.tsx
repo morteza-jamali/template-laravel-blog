@@ -1,7 +1,7 @@
 import { DataTable } from 'mantine-datatable';
 import { Badge, MantineColor } from '@mantine/core';
 import { ReactNode } from 'react';
-import { ErrorAlert } from '@/components';
+import { ErrorAlert } from '@/Components/Dashboard';
 
 type Status = 'In Progress' | 'Cancelled' | 'Completed' | 'Pending' | string;
 

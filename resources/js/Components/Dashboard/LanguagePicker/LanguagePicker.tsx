@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { Group, Image, Menu, UnstyledButton } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';

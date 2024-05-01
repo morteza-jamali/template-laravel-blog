@@ -1,11 +1,9 @@
-'use client';
-
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
-import { Id, KanbanColumn as IColumn, KanbanTask as ITask } from '../../types';
+import { Id, KanbanColumn as IColumn, KanbanTask as ITask } from '@/types';
 import { CSS } from '@dnd-kit/utilities';
 import { useMemo, useState } from 'react';
 import { IconDots, IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
-import { KanbanCard } from '@/components';
+import { KanbanCard } from '@/Components/Dashboard';
 import {
   ActionIcon,
   Badge,

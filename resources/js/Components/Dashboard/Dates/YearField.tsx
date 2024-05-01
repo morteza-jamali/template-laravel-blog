@@ -1,5 +1,3 @@
-'use client';
-
 import { YearPickerInput, YearPickerInputProps } from '@mantine/dates';
 import { useState } from 'react';
 

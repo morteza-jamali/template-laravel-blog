@@ -1,5 +1,3 @@
-'use client';
-
 import { useMemo, useState } from 'react';
 import {
   DndContext,
@@ -12,7 +10,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
-import { KanbanCard, KanbanColumn } from '@/components';
+import { KanbanCard, KanbanColumn } from '@/Components/Dashboard';
 import { Id, KanbanColumn as IColumn, KanbanTask as ITask } from '@/types';
 import { IconNewSection, IconPlus } from '@tabler/icons-react';
 import { Box, Button, Portal, ScrollArea } from '@mantine/core';

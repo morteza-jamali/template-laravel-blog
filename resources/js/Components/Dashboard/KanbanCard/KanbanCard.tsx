@@ -1,7 +1,5 @@
-'use client';
-
 import { useState } from 'react';
-import { Id, KanbanTask as ITask } from '../../types';
+import { Id, KanbanTask as ITask } from '@/types';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {

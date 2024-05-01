@@ -1,6 +1,3 @@
-'use client';
-
-import dynamic from 'next/dynamic';
 import {
   ActionIcon,
   Group,
@@ -11,9 +8,9 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { IconDotsVertical } from '@tabler/icons-react';
-import { Surface } from '@/components';
+import { Surface } from '@/Components/Dashboard';
 
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+// const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type MobileDesktopChartProps = PaperProps;
 const MobileDesktopChart = ({ ...others }: MobileDesktopChartProps) => {

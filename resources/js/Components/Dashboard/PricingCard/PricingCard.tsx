@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import { IconArrowRight, IconCheck } from '@tabler/icons-react';
 import CountUp from 'react-countup';
-import { Surface } from '@/components';
+import { Surface } from '@/Components/Dashboard';
 
 type PricingCardProps = {
   tier: string;

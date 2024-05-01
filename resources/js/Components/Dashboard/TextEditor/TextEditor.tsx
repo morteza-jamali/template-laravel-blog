@@ -1,5 +1,3 @@
-'use client';
-
 import { Link, RichTextEditor, RichTextEditorProps } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import Highlight from '@tiptap/extension-highlight';

@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ComposableMap,
@@ -19,8 +17,8 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { IconDotsVertical } from '@tabler/icons-react';
-import WorldCountriesMap from '@/public/mocks/WorldAtlasCountries.json';
-import { Surface } from '@/components';
+import WorldCountriesMap from '@/mocks/WorldAtlasCountries.json';
+import { Surface } from '@/Components/Dashboard';
 
 const geoUrl = WorldCountriesMap;
 

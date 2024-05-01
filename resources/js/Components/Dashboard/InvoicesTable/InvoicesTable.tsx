@@ -1,5 +1,3 @@
-'use client';
-
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
   DataTable,
@@ -26,9 +24,7 @@ import sortBy from 'lodash/sortBy';
 import { Invoices, InvoiceStatus } from '@/types';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCloudDownload, IconEye, IconSearch } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
-import { PATH_INVOICES } from '@/routes';
-import { ErrorAlert } from '@/components';
+import { ErrorAlert } from '@/Components/Dashboard';
 
 const PAGE_SIZES = [5, 10, 20];
 
@@ -87,7 +83,6 @@ const InvoicesTable = ({ data, error, loading }: InvoicesTableProps) => {
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebouncedValue(query, 200);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const router = useRouter();
   const statuses = useMemo(() => {
     const statuses = new Set(data.map((e) => e.status));
     // @ts-ignore
@@ -188,7 +183,9 @@ const InvoicesTable = ({ data, error, loading }: InvoicesTableProps) => {
           <Tooltip label="View invoice details">
             <ActionIcon
               onClick={() =>
-                router.push(PATH_INVOICES.invoices.invoice_details(item.id))
+                console.log(
+                  'router.push(PATH_INVOICES.invoices.invoice_details(item.id))',
+                )
               }
             >
               <IconEye size={ICON_SIZE} />

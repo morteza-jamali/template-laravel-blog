@@ -1,5 +1,3 @@
-'use client';
-
 import {
   ActionIcon,
   Avatar,
@@ -28,7 +26,7 @@ import {
   IconSearch,
   IconSunHigh,
 } from '@tabler/icons-react';
-import { LanguagePicker } from '@/components';
+import { LanguagePicker } from '@/Components/Dashboard';
 import { upperFirst, useMediaQuery } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
 

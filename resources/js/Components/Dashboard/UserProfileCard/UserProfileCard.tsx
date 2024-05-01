@@ -1,5 +1,5 @@
 import { Avatar, Button, Paper, PaperProps, Stack, Text } from '@mantine/core';
-import { Surface } from '@/components';
+import { Surface } from '@/Components/Dashboard';
 import { IconSend } from '@tabler/icons-react';
 
 type UserInfoActionProps = {

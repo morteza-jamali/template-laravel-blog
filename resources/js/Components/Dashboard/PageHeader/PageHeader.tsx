@@ -1,5 +1,3 @@
-'use client';
-
 import {
   ActionIcon,
   Breadcrumbs,
@@ -16,7 +14,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { IconPlus, IconRefresh } from '@tabler/icons-react';
-import { FilterDateMenu, Surface } from '@/components';
+import { FilterDateMenu, Surface } from '@/Components/Dashboard';
 import { useColorScheme } from '@mantine/hooks';
 
 type PageHeaderProps = {

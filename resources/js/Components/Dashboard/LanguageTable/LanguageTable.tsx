@@ -1,7 +1,7 @@
 import { ActionIcon, Group, Paper, PaperProps, Text } from '@mantine/core';
 import { DataTable } from 'mantine-datatable';
 import { IconDotsVertical } from '@tabler/icons-react';
-import { ErrorAlert, Surface } from '@/components';
+import { ErrorAlert, Surface } from '@/Components/Dashboard';
 import React, { ReactNode } from 'react';
 
 type LanguageTableProps = {

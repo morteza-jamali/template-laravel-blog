@@ -1,5 +1,3 @@
-'use client';
-
 import {
   ActionIcon,
   Group,
@@ -9,13 +7,13 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
 import { DataTable } from 'mantine-datatable';
 import { IconDotsVertical } from '@tabler/icons-react';
-import { ErrorAlert, Surface } from '@/components';
+import { ErrorAlert, Surface } from '@/Components/Dashboard';
 import { useFetchData } from '@/hooks';
 
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+// const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 type SalesChartProps = PaperProps;
 

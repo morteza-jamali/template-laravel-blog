@@ -1,5 +1,3 @@
-'use client';
-
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
   DataTable,
@@ -17,7 +15,7 @@ import sortBy from 'lodash/sortBy';
 import { Orders, OrderStatus } from '@/types';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
-import { ErrorAlert } from '@/components';
+import { ErrorAlert } from '@/Components/Dashboard';
 
 type StatusBadgeProps = {
   status: OrderStatus;

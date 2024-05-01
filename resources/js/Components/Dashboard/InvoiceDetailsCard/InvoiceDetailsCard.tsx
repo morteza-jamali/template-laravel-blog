@@ -1,5 +1,3 @@
-'use client';
-
 import { Invoices } from '@/types';
 import {
   Button,
@@ -22,7 +20,7 @@ import {
   IconShare,
 } from '@tabler/icons-react';
 import { useColorScheme, useMediaQuery } from '@mantine/hooks';
-import { Surface } from '@/components';
+import { Surface } from '@/Components/Dashboard';
 
 const ICON_SIZE = 16;
 
