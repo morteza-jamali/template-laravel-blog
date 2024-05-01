@@ -5,9 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Post;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
+  public function render(Request $request)
+  {
+    $pathname = Str::replace('/', '_%_', $request->path());
+    $view = Str::replace('%', '/', Str::studly($pathname));
+    $pathname = Str::replace('_%_', '.', $pathname);
+
+    return Inertia::render($view, [
+      'pathname' => $pathname,
+    ]);
+  }
+
   /**
    * Display a listing of the resource.
    */

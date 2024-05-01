@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Box, Collapse, Group, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import { router } from '@inertiajs/react';
 // import { usePathname, useRouter } from 'next/navigation';
 import * as _ from 'lodash';
+import UrlPathContext from '@/contexts/UrlPathContext';
 import classes from './Links.module.css';
 
 interface LinksGroupProps {
@@ -28,11 +29,13 @@ export function LinksGroup(props: LinksGroupProps) {
     closeSidebar,
   } = props;
   // const router = useRouter();
-  const pathname = 'usePathname();';
+  const pathname = useContext(UrlPathContext);
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
   const [currentPath, setCurrentPath] = useState<string | undefined>();
   const ChevronIcon = IconChevronRight;
+
+  console.log(pathname);
 
   const items = (hasLinks ? links : []).map((link) => (
     <Text

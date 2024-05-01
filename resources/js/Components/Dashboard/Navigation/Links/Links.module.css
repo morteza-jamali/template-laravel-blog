@@ -44,7 +44,12 @@
 }
 
 .link {
+  background-color: transparent;
+  padding-block: 0;
+  padding-inline: 0;
+  border: unset;
   font-weight: 500;
+  cursor: pointer;
   display: block;
   text-decoration: none;
   padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);

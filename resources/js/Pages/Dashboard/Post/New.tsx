@@ -22,6 +22,7 @@ import {
   TextEditor,
   AppShell,
 } from '@/Components/Dashboard';
+import UrlPathProvider from '@/Components/UrlPathProvider';
 
 const items = [
   { title: 'Dashboard', href: '#' },
@@ -47,7 +48,11 @@ const BIO =
   '\n' +
   'Enthusiastic pioneer, constantly seeking the next big thing in tech. Eager to apply my passion and skills at Alternate Limited to bring ideas to life.';
 
-export const NewPost = () => {
+type NewPostProps = {
+  pathname: string;
+};
+
+export const NewPost = ({ pathname }: NewPostProps) => {
   const [file, setFile] = useState<File | null>(null);
 
   const accountForm = useForm({
@@ -74,124 +79,126 @@ export const NewPost = () => {
   });
 
   return (
-    <Container fluid>
-      <Stack gap="lg">
-        <PageHeader title="Settings" breadcrumbItems={items} />
-        <Grid>
-          <Grid.Col span={{ base: 12, md: 8 }}>
-            <Surface component={Paper} {...PAPER_PROPS}>
-              <Text size="lg" fw={600} mb="md">
-                User information
-              </Text>
-              <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
-                <Grid.Col span={{ base: 12, md: 6, lg: 9, xl: 9 }}>
-                  <Stack>
-                    <TextInput
-                      label="User Name"
-                      placeholder="user name"
-                      {...accountForm.getInputProps('username')}
-                    />
-                    <TextEditor content={BIO} label="Biography" />
-                    <Button
-                      style={{ width: 'fit-content' }}
-                      leftSection={<IconDeviceFloppy size={ICON_SIZE} />}
-                    >
-                      Save Changes
-                    </Button>
-                  </Stack>
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6, lg: 3, xl: 3 }}>
-                  <Stack align="center">
-                    <Image
-                      src="https://res.cloudinary.com/ddh7hfzso/image/upload/v1700303804/me/ovqjhhs79u3g2fwbl2dd.jpg"
-                      h={128}
-                      w={128}
-                      radius="50%"
-                    />
-                    <FileButton
-                      onChange={setFile}
-                      accept="image/png,image/jpeg"
-                    >
-                      {(props) => (
-                        <Button
-                          {...props}
-                          variant="subtle"
-                          leftSection={<IconCloudUpload size={ICON_SIZE} />}
-                        >
-                          Upload image
-                        </Button>
-                      )}
-                    </FileButton>
-                    <Text ta="center" size="xs" c="dimmed">
-                      For best results, use an image at least 128px by 128px in
-                      .jpg format
-                    </Text>
-                  </Stack>
-                </Grid.Col>
-              </Grid>
-            </Surface>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, md: 4 }}>
-            <Surface component={Paper} {...PAPER_PROPS}>
-              <Stack>
-                <Text size="lg" fw={600}>
-                  Account information
+    <UrlPathProvider pathname={pathname}>
+      <Container fluid>
+        <Stack gap="lg">
+          <PageHeader title="Add New Post" breadcrumbItems={items} />
+          <Grid>
+            <Grid.Col span={{ base: 12, md: 8 }}>
+              <Surface component={Paper} {...PAPER_PROPS}>
+                <Text size="lg" fw={600} mb="md">
+                  User information
                 </Text>
-                <Group grow>
+                <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
+                  <Grid.Col span={{ base: 12, md: 6, lg: 9, xl: 9 }}>
+                    <Stack>
+                      <TextInput
+                        label="User Name"
+                        placeholder="user name"
+                        {...accountForm.getInputProps('username')}
+                      />
+                      <TextEditor content={BIO} label="Biography" />
+                      <Button
+                        style={{ width: 'fit-content' }}
+                        leftSection={<IconDeviceFloppy size={ICON_SIZE} />}
+                      >
+                        Save Changes
+                      </Button>
+                    </Stack>
+                  </Grid.Col>
+                  <Grid.Col span={{ base: 12, md: 6, lg: 3, xl: 3 }}>
+                    <Stack align="center">
+                      <Image
+                        src="https://res.cloudinary.com/ddh7hfzso/image/upload/v1700303804/me/ovqjhhs79u3g2fwbl2dd.jpg"
+                        h={128}
+                        w={128}
+                        radius="50%"
+                      />
+                      <FileButton
+                        onChange={setFile}
+                        accept="image/png,image/jpeg"
+                      >
+                        {(props) => (
+                          <Button
+                            {...props}
+                            variant="subtle"
+                            leftSection={<IconCloudUpload size={ICON_SIZE} />}
+                          >
+                            Upload image
+                          </Button>
+                        )}
+                      </FileButton>
+                      <Text ta="center" size="xs" c="dimmed">
+                        For best results, use an image at least 128px by 128px
+                        in .jpg format
+                      </Text>
+                    </Stack>
+                  </Grid.Col>
+                </Grid>
+              </Surface>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <Surface component={Paper} {...PAPER_PROPS}>
+                <Stack>
+                  <Text size="lg" fw={600}>
+                    Account information
+                  </Text>
+                  <Group grow>
+                    <TextInput
+                      label="First name"
+                      placeholder="first name"
+                      {...accountInfoForm.getInputProps('firstname')}
+                    />
+                    <TextInput
+                      label="Last name"
+                      placeholder="last name"
+                      {...accountInfoForm.getInputProps('lastname')}
+                    />
+                  </Group>
                   <TextInput
-                    label="First name"
-                    placeholder="first name"
-                    {...accountInfoForm.getInputProps('firstname')}
+                    label="Email"
+                    placeholder="email"
+                    {...accountInfoForm.getInputProps('email')}
                   />
                   <TextInput
-                    label="Last name"
-                    placeholder="last name"
-                    {...accountInfoForm.getInputProps('lastname')}
-                  />
-                </Group>
-                <TextInput
-                  label="Email"
-                  placeholder="email"
-                  {...accountInfoForm.getInputProps('email')}
-                />
-                <TextInput
-                  label="Address"
-                  placeholder="address"
-                  {...accountInfoForm.getInputProps('address')}
-                />
-                <TextInput
-                  label="Apartment/Studio/Floor"
-                  placeholder="apartment, studio, or floor"
-                  {...accountInfoForm.getInputProps('apartment')}
-                />
-                <Group grow>
-                  <TextInput
-                    label="City"
-                    placeholder="city"
-                    {...accountInfoForm.getInputProps('city')}
+                    label="Address"
+                    placeholder="address"
+                    {...accountInfoForm.getInputProps('address')}
                   />
                   <TextInput
-                    label="State"
-                    placeholder="state"
-                    {...accountInfoForm.getInputProps('state')}
+                    label="Apartment/Studio/Floor"
+                    placeholder="apartment, studio, or floor"
+                    {...accountInfoForm.getInputProps('apartment')}
                   />
-                  <TextInput
-                    label="Zip"
-                    placeholder="zip"
-                    {...accountInfoForm.getInputProps('zip')}
-                  />
-                </Group>
-                <Box style={{ width: 'auto' }}>
-                  <Button leftSection={<IconDeviceFloppy size={16} />}>
-                    Save changes
-                  </Button>
-                </Box>
-              </Stack>
-            </Surface>
-          </Grid.Col>
-        </Grid>
-      </Stack>
-    </Container>
+                  <Group grow>
+                    <TextInput
+                      label="City"
+                      placeholder="city"
+                      {...accountInfoForm.getInputProps('city')}
+                    />
+                    <TextInput
+                      label="State"
+                      placeholder="state"
+                      {...accountInfoForm.getInputProps('state')}
+                    />
+                    <TextInput
+                      label="Zip"
+                      placeholder="zip"
+                      {...accountInfoForm.getInputProps('zip')}
+                    />
+                  </Group>
+                  <Box style={{ width: 'auto' }}>
+                    <Button leftSection={<IconDeviceFloppy size={16} />}>
+                      Save changes
+                    </Button>
+                  </Box>
+                </Stack>
+              </Surface>
+            </Grid.Col>
+          </Grid>
+        </Stack>
+      </Container>
+    </UrlPathProvider>
   );
 };
 
