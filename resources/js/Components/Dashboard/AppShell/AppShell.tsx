@@ -13,11 +13,17 @@ import {
   FooterNav,
 } from '@/Components/Dashboard';
 
+import '@mantine/dates/styles.css';
+import '@mantine/tiptap/styles.css';
+import '@mantine/carousel/styles.css';
+import '@mantine/notifications/styles.css';
+import 'mantine-datatable/styles.layer.css';
+
 type Props = {
   children: ReactNode;
 };
 
-function AppShell({ children }: Props) {
+export function AppShell({ children }: Props) {
   const theme = useMantineTheme();
   const tablet_match = useMediaQuery('(max-width: 768px)');
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();

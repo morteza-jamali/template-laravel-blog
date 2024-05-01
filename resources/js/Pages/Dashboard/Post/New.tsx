@@ -195,6 +195,6 @@ export const NewPost = () => {
   );
 };
 
-NewPost.Layout = (page: any) => <AppShell children={page} />;
+NewPost.layout = (page: any) => <AppShell children={page} />;
 
 export default NewPost;
