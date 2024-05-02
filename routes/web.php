@@ -7,7 +7,9 @@ use App\Http\Controllers\PostController;
 Route::get('/dashboard/post/new', [PostController::class, 'render'])->name(
   'dashboard.post.new',
 );
-// Route::inertia('/dashboard', [PostController::class, 'render']);
+Route::get('/dashboard', [PostController::class, 'render'])->name(
+  'dashboard.home',
+);
 
 // Route::get('/posts/{p}', PostController::class . '@show')->name('show');
 

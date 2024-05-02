@@ -9,8 +9,7 @@ import {
 } from '@mantine/core';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { Surface } from '@/Components/Dashboard';
-
-// const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+import Chart from 'react-apexcharts';
 
 type MobileDesktopChartProps = PaperProps;
 const MobileDesktopChart = ({ ...others }: MobileDesktopChartProps) => {

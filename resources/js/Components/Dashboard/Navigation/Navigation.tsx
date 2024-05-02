@@ -1,6 +1,5 @@
 import { ActionIcon, Box, Flex, Group, ScrollArea, Text } from '@mantine/core';
 import { IconX, IconPin, IconLayoutBoard } from '@tabler/icons-react';
-import { Head } from '@inertiajs/react';
 import { Logo, UserProfileButton } from '@/Components/Dashboard';
 import UserProfileData from '@/mocks/UserProfile.json';
 import { useMediaQuery } from '@mantine/hooks';
@@ -76,38 +75,35 @@ const Navigation = ({ onClose }: NavigationProps) => {
   ));
 
   return (
-    <>
-      <Head title="Posts" />
-      <nav className={classes.navbar}>
-        <div className={classes.header}>
-          <Flex justify="space-between" align="center" gap="sm">
-            <Group
-              justify="space-between"
-              style={{ flex: tablet_match ? 'auto' : 1 }}
-            >
-              <Logo className={classes.logo} />
-            </Group>
-            {tablet_match && (
-              <ActionIcon onClick={onClose} variant="transparent">
-                <IconX color="white" />
-              </ActionIcon>
-            )}
-          </Flex>
-        </div>
+    <nav className={classes.navbar}>
+      <div className={classes.header}>
+        <Flex justify="space-between" align="center" gap="sm">
+          <Group
+            justify="space-between"
+            style={{ flex: tablet_match ? 'auto' : 1 }}
+          >
+            <Logo className={classes.logo} />
+          </Group>
+          {tablet_match && (
+            <ActionIcon onClick={onClose} variant="transparent">
+              <IconX color="white" />
+            </ActionIcon>
+          )}
+        </Flex>
+      </div>
 
-        <ScrollArea className={classes.links}>
-          <div className={classes.linksInner}>{links}</div>
-        </ScrollArea>
+      <ScrollArea className={classes.links}>
+        <div className={classes.linksInner}>{links}</div>
+      </ScrollArea>
 
-        <div className={classes.footer}>
-          <UserProfileButton
-            email={UserProfileData.email}
-            image={UserProfileData.avatar}
-            name={UserProfileData.name}
-          />
-        </div>
-      </nav>
-    </>
+      <div className={classes.footer}>
+        <UserProfileButton
+          email={UserProfileData.email}
+          image={UserProfileData.avatar}
+          name={UserProfileData.name}
+        />
+      </div>
+    </nav>
   );
 };
 

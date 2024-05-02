@@ -12,8 +12,7 @@ import { DataTable } from 'mantine-datatable';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { ErrorAlert, Surface } from '@/Components/Dashboard';
 import { useFetchData } from '@/hooks';
-
-// const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+import Chart from 'react-apexcharts';
 
 type SalesChartProps = PaperProps;
 
