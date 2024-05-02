@@ -11,6 +11,9 @@ import {
   Group,
   Button,
   Radio,
+  Tabs,
+  Checkbox,
+  FileInput,
   rem,
 } from '@mantine/core';
 import {
@@ -20,7 +23,13 @@ import {
   AppShell,
 } from '@/Components/Dashboard';
 import { Head, Link } from '@inertiajs/react';
-import { IconCategory, IconTags, IconStackPush } from '@tabler/icons-react';
+import {
+  IconCategory,
+  IconTags,
+  IconStackPush,
+  IconPhone,
+  IconPhoto,
+} from '@tabler/icons-react';
 import UrlPathProvider from '@/Components/UrlPathProvider';
 import ROUTES from '@/routes';
 
@@ -40,14 +49,183 @@ const PAPER_PROPS: PaperProps = {
   radius: 'md',
 };
 
+const allcategoriesmock = [
+  'cat 1',
+  'programming',
+  'development',
+  'computer',
+  'physics',
+  'chemistry',
+  'website',
+  'smart phone',
+];
+
 type NewPostProps = {
   pathname: string;
 };
 
-export const NewPost = ({ pathname }: NewPostProps) => {
+function Publish() {
   const [statusvalue, setStatusValue] = useState('draft');
   const [visibilityvalue, setVisibilityValue] = useState('public');
 
+  return (
+    <Stack gap={0}>
+      <Accordion.Item value="publish">
+        <Accordion.Control
+          icon={
+            <IconStackPush
+              style={{
+                width: rem(20),
+                height: rem(20),
+              }}
+            />
+          }
+        >
+          Publish
+        </Accordion.Control>
+        <Accordion.Panel>
+          <Stack>
+            <Group justify="space-between">
+              <Button variant="default">Save Draft</Button>
+              <Button variant="default">Preview</Button>
+            </Group>
+            <Radio.Group
+              name="documentStatus"
+              label="Status"
+              value={statusvalue}
+              onChange={setStatusValue}
+            >
+              <Group mt="xs">
+                <Radio value="draft" label="Draft" />
+                <Radio value="published" label="Published" />
+              </Group>
+            </Radio.Group>
+            <Radio.Group
+              name="documentVisibility"
+              label="Visibility"
+              value={visibilityvalue}
+              onChange={setVisibilityValue}
+            >
+              <Group mt="xs">
+                <Radio value="public" label="Public" />
+                <Radio value="private" label="Private" />
+              </Group>
+            </Radio.Group>
+          </Stack>
+        </Accordion.Panel>
+      </Accordion.Item>
+      <Group justify="space-between" py="xs" px="md">
+        <Anchor component="button" c="red.9" underline="never">
+          Move to Trash
+        </Anchor>
+        <Button variant="filled">Publish</Button>
+      </Group>
+    </Stack>
+  );
+}
+
+function Categories() {
+  return (
+    <Accordion.Item value="categories">
+      <Accordion.Control
+        icon={
+          <IconCategory
+            style={{
+              width: rem(20),
+              height: rem(20),
+            }}
+          />
+        }
+      >
+        Categories
+      </Accordion.Control>
+      <Accordion.Panel>
+        <Stack gap={0}>
+          <Tabs defaultValue="allcategories">
+            <Tabs.List>
+              <Tabs.Tab value="allcategories">All Categories</Tabs.Tab>
+              <Tabs.Tab value="mostused">Most Used</Tabs.Tab>
+            </Tabs.List>
+
+            <Tabs.Panel value="allcategories">
+              {allcategoriesmock.map((catitem, key) => (
+                <Checkbox label={catitem} key={key} my={2} />
+              ))}
+            </Tabs.Panel>
+            <Tabs.Panel value="mostused">
+              {allcategoriesmock.map((catitem, key) => (
+                <Checkbox label={catitem} key={key} my={2} />
+              ))}
+            </Tabs.Panel>
+          </Tabs>
+          <Group justify="flex-start">
+            <Anchor component="button" underline="never">
+              + Add New Category
+            </Anchor>
+          </Group>
+        </Stack>
+      </Accordion.Panel>
+    </Accordion.Item>
+  );
+}
+
+function Tags() {
+  return (
+    <Accordion.Item value="tags">
+      <Accordion.Control
+        icon={
+          <IconTags
+            style={{
+              width: rem(20),
+              height: rem(20),
+            }}
+          />
+        }
+      >
+        Tags
+      </Accordion.Control>
+      <Accordion.Panel>Content</Accordion.Panel>
+    </Accordion.Item>
+  );
+}
+
+function Cover() {
+  return (
+    <Accordion.Item value="cover">
+      <Accordion.Control
+        icon={
+          <IconPhoto
+            style={{
+              width: rem(20),
+              height: rem(20),
+            }}
+          />
+        }
+      >
+        Cover
+      </Accordion.Control>
+      <Accordion.Panel>
+        <Tabs defaultValue="url">
+          <Tabs.List>
+            <Tabs.Tab value="url">URL</Tabs.Tab>
+            <Tabs.Tab value="file">File</Tabs.Tab>
+          </Tabs.List>
+
+          <Tabs.Panel value="url">
+            <TextInput placeholder="Place link here" type="url" />
+          </Tabs.Panel>
+          <Tabs.Panel value="file">
+            <FileInput placeholder="Select file" />
+          </Tabs.Panel>
+        </Tabs>
+      </Accordion.Panel>
+    </Accordion.Item>
+  );
+}
+
+const SIDE_SECTIONS = [<Publish />, <Categories />, <Tags />, <Cover />];
+
+export const NewPost = ({ pathname }: NewPostProps) => {
   return (
     <>
       <Head title={pageTitle} />
@@ -74,100 +252,11 @@ export const NewPost = ({ pathname }: NewPostProps) => {
               <Grid.Col span={{ base: 12, md: 4 }}>
                 <Accordion multiple defaultValue={['publish']}>
                   <Stack>
-                    <Surface component={Paper} {...PAPER_PROPS}>
-                      <Stack gap={0}>
-                        <Accordion.Item value="publish">
-                          <Accordion.Control
-                            icon={
-                              <IconStackPush
-                                style={{
-                                  width: rem(20),
-                                  height: rem(20),
-                                }}
-                              />
-                            }
-                          >
-                            Publish
-                          </Accordion.Control>
-                          <Accordion.Panel>
-                            <Stack>
-                              <Group justify="space-between">
-                                <Button variant="default">Save Draft</Button>
-                                <Button variant="default">Preview</Button>
-                              </Group>
-                              <Radio.Group
-                                name="documentStatus"
-                                label="Status"
-                                value={statusvalue}
-                                onChange={setStatusValue}
-                              >
-                                <Group mt="xs">
-                                  <Radio value="draft" label="Draft" />
-                                  <Radio value="published" label="Published" />
-                                </Group>
-                              </Radio.Group>
-                              <Radio.Group
-                                name="documentVisibility"
-                                label="Visibility"
-                                value={visibilityvalue}
-                                onChange={setVisibilityValue}
-                              >
-                                <Group mt="xs">
-                                  <Radio value="public" label="Public" />
-                                  <Radio value="private" label="Private" />
-                                </Group>
-                              </Radio.Group>
-                            </Stack>
-                          </Accordion.Panel>
-                        </Accordion.Item>
-                        <Group justify="space-between" py="xs" px="md">
-                          <Anchor
-                            component="button"
-                            c="red.9"
-                            underline="never"
-                          >
-                            Move to Trash
-                          </Anchor>
-                          <Button variant="filled">Publish</Button>
-                        </Group>
-                      </Stack>
-                    </Surface>
-
-                    <Surface component={Paper} {...PAPER_PROPS}>
-                      <Accordion.Item value="categories">
-                        <Accordion.Control
-                          icon={
-                            <IconCategory
-                              style={{
-                                width: rem(20),
-                                height: rem(20),
-                              }}
-                            />
-                          }
-                        >
-                          Categories
-                        </Accordion.Control>
-                        <Accordion.Panel>Content</Accordion.Panel>
-                      </Accordion.Item>
-                    </Surface>
-
-                    <Surface component={Paper} {...PAPER_PROPS}>
-                      <Accordion.Item value="tags">
-                        <Accordion.Control
-                          icon={
-                            <IconTags
-                              style={{
-                                width: rem(20),
-                                height: rem(20),
-                              }}
-                            />
-                          }
-                        >
-                          Tags
-                        </Accordion.Control>
-                        <Accordion.Panel>Content</Accordion.Panel>
-                      </Accordion.Item>
-                    </Surface>
+                    {SIDE_SECTIONS.map((section, key) => (
+                      <Surface component={Paper} {...PAPER_PROPS} key={key}>
+                        {section}
+                      </Surface>
+                    ))}
                   </Stack>
                 </Accordion>
               </Grid.Col>
