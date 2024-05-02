@@ -7,6 +7,9 @@ use App\Http\Controllers\PostController;
 Route::get('/dashboard/post/new', [PostController::class, 'render'])->name(
   'dashboard.post.new',
 );
+Route::get('/dashboard/post/allposts', [PostController::class, 'render'])->name(
+  'dashboard.post.allposts',
+);
 Route::get('/dashboard', [PostController::class, 'render'])->name(
   'dashboard.home',
 );

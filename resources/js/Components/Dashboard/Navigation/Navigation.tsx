@@ -4,6 +4,7 @@ import { Logo, UserProfileButton } from '@/Components/Dashboard';
 import UserProfileData from '@/mocks/UserProfile.json';
 import { useMediaQuery } from '@mantine/hooks';
 import { LinksGroup } from '@/Components/Dashboard/Navigation/Links/Links';
+import { ROUTES } from '@/routes';
 import classes from './Navigation.module.css';
 
 const mockdata = [
@@ -13,7 +14,7 @@ const mockdata = [
       {
         label: 'Home',
         icon: IconLayoutBoard,
-        link: '/dashboard',
+        link: ROUTES.DASHBOARD.HOME,
       },
       {
         label: 'Posts',
@@ -21,11 +22,11 @@ const mockdata = [
         links: [
           {
             label: 'All Posts',
-            link: '/dashboard/post/all',
+            link: ROUTES.DASHBOARD.POST.ALL_POSTS,
           },
           {
             label: 'Add New',
-            link: '/dashboard/post/new',
+            link: ROUTES.DASHBOARD.POST.NEW_POST,
           },
           {
             label: 'Categories',
