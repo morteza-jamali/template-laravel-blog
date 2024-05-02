@@ -1,6 +1,7 @@
 import { ActionIcon, createTheme, Loader } from '@mantine/core';
 
 export const myTheme = createTheme({
+  cursorType: 'pointer',
   primaryColor: 'indigo',
   defaultRadius: 'md',
   focusRing: 'always',

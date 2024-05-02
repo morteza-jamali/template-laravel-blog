@@ -11,7 +11,7 @@ import { CSSProperties } from 'react';
 
 type TextEditorProps = {
   label: string;
-  content: string;
+  content?: string;
   width?: CSSProperties['width'];
 } & Omit<RichTextEditorProps, 'children' | 'editor'> &
   StackProps;

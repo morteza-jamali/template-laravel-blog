@@ -22,6 +22,7 @@ import { Head, Link } from '@inertiajs/react';
 // import Link from 'next/link';
 import { useFetchData } from '@/hooks';
 
+const pageTitle: string = 'Dashboard Home';
 const PAPER_PROPS: PaperProps = {
   p: 'md',
   shadow: 'md',
@@ -43,10 +44,10 @@ export const Home = () => {
 
   return (
     <>
-      <Head title="Home" />
+      <Head title={pageTitle} />
       <Container fluid>
         <Stack gap="lg">
-          <PageHeader title="Default dashboard" withActions={true} />
+          <PageHeader title={pageTitle} withActions={true} />
           <StatsGrid
             data={statsData.data}
             loading={statsLoading}

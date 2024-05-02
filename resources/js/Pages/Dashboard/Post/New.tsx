@@ -1,84 +1,52 @@
 import { useState } from 'react';
 import {
   Anchor,
-  Box,
-  Button,
   Container,
-  FileButton,
   Grid,
-  Group,
-  Image,
   Paper,
   PaperProps,
   Stack,
-  Text,
   TextInput,
+  Accordion,
+  Group,
+  Button,
+  Radio,
+  rem,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { IconCloudUpload, IconDeviceFloppy } from '@tabler/icons-react';
 import {
   PageHeader,
   Surface,
   TextEditor,
   AppShell,
 } from '@/Components/Dashboard';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { IconCategory, IconTags, IconStackPush } from '@tabler/icons-react';
 import UrlPathProvider from '@/Components/UrlPathProvider';
+import ROUTES from '@/routes';
 
 const pageTitle: string = 'Add New Post';
 const items = [
-  { title: 'Dashboard', href: '#' },
-  { title: 'Apps', href: '#' },
-  { title: 'Settings', href: '#' },
+  { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
+  { title: 'Posts', href: '#' },
+  { title: 'Add New', href: ROUTES.DASHBOARD.POST.NEW },
 ].map((item, index) => (
-  <Anchor href={item.href} key={index}>
+  <Anchor href={item.href} key={index} component={Link}>
     {item.title}
   </Anchor>
 ));
 
-const ICON_SIZE = 16;
-
 const PAPER_PROPS: PaperProps = {
-  p: 'md',
   shadow: 'md',
   radius: 'md',
-  style: { height: '100%' },
 };
-
-const BIO =
-  'A dynamic software engineering graduate from Nairobi, Kenya with 5+ years of experience. Passionate about turning creative sparks into seamless applications through technological experimentation. Experienced in crafting intuitive solutions and translating innovative concepts into user-friendly applications. Thrives on transforming the way we experience technology, one line of code at a time.\n' +
-  '\n' +
-  'Enthusiastic pioneer, constantly seeking the next big thing in tech. Eager to apply my passion and skills at Alternate Limited to bring ideas to life.';
 
 type NewPostProps = {
   pathname: string;
 };
 
 export const NewPost = ({ pathname }: NewPostProps) => {
-  const [file, setFile] = useState<File | null>(null);
-
-  const accountForm = useForm({
-    initialValues: {
-      username: 'kelvinkiprop',
-      biograghy:
-        'A dynamic software engineering graduate from Nairobi, Kenya with 5+ years of experience. Passionate about turning creative sparks into seamless applications through technological experimentation. Experienced in crafting intuitive solutions and translating innovative concepts into user-friendly applications. Thrives on transforming the way we experience technology, one line of code at a time.\n' +
-        '\n' +
-        'Enthusiastic pioneer, constantly seeking the next big thing in tech. Eager to apply my passion and skills at Alternate Limited to bring ideas to life.',
-    },
-  });
-
-  const accountInfoForm = useForm({
-    initialValues: {
-      firstname: 'kelvin',
-      lastname: 'kiprop',
-      email: 'kelvin.kiprop96@gmail.com',
-      address: '',
-      apartment: '',
-      city: '',
-      state: '',
-      zip: '',
-    },
-  });
+  const [statusvalue, setStatusValue] = useState('draft');
+  const [visibilityvalue, setVisibilityValue] = useState('public');
 
   return (
     <>
@@ -89,115 +57,119 @@ export const NewPost = ({ pathname }: NewPostProps) => {
             <PageHeader title={pageTitle} breadcrumbItems={items} />
             <Grid>
               <Grid.Col span={{ base: 12, md: 8 }}>
-                <Surface component={Paper} {...PAPER_PROPS}>
-                  <Text size="lg" fw={600} mb="md">
-                    User information
-                  </Text>
+                <Surface component={Paper} {...PAPER_PROPS} p="md">
                   <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
-                    <Grid.Col span={{ base: 12, md: 6, lg: 9, xl: 9 }}>
+                    <Grid.Col span={12}>
                       <Stack>
                         <TextInput
-                          label="User Name"
-                          placeholder="user name"
-                          {...accountForm.getInputProps('username')}
+                          label="Title"
+                          placeholder="Enter title here"
                         />
-                        <TextEditor content={BIO} label="Biography" />
-                        <Button
-                          style={{ width: 'fit-content' }}
-                          leftSection={<IconDeviceFloppy size={ICON_SIZE} />}
-                        >
-                          Save Changes
-                        </Button>
-                      </Stack>
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 6, lg: 3, xl: 3 }}>
-                      <Stack align="center">
-                        <Image
-                          src="https://res.cloudinary.com/ddh7hfzso/image/upload/v1700303804/me/ovqjhhs79u3g2fwbl2dd.jpg"
-                          h={128}
-                          w={128}
-                          radius="50%"
-                        />
-                        <FileButton
-                          onChange={setFile}
-                          accept="image/png,image/jpeg"
-                        >
-                          {(props) => (
-                            <Button
-                              {...props}
-                              variant="subtle"
-                              leftSection={<IconCloudUpload size={ICON_SIZE} />}
-                            >
-                              Upload image
-                            </Button>
-                          )}
-                        </FileButton>
-                        <Text ta="center" size="xs" c="dimmed">
-                          For best results, use an image at least 128px by 128px
-                          in .jpg format
-                        </Text>
+                        <TextEditor label="Content" />
                       </Stack>
                     </Grid.Col>
                   </Grid>
                 </Surface>
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
-                <Surface component={Paper} {...PAPER_PROPS}>
+                <Accordion multiple defaultValue={['publish']}>
                   <Stack>
-                    <Text size="lg" fw={600}>
-                      Account information
-                    </Text>
-                    <Group grow>
-                      <TextInput
-                        label="First name"
-                        placeholder="first name"
-                        {...accountInfoForm.getInputProps('firstname')}
-                      />
-                      <TextInput
-                        label="Last name"
-                        placeholder="last name"
-                        {...accountInfoForm.getInputProps('lastname')}
-                      />
-                    </Group>
-                    <TextInput
-                      label="Email"
-                      placeholder="email"
-                      {...accountInfoForm.getInputProps('email')}
-                    />
-                    <TextInput
-                      label="Address"
-                      placeholder="address"
-                      {...accountInfoForm.getInputProps('address')}
-                    />
-                    <TextInput
-                      label="Apartment/Studio/Floor"
-                      placeholder="apartment, studio, or floor"
-                      {...accountInfoForm.getInputProps('apartment')}
-                    />
-                    <Group grow>
-                      <TextInput
-                        label="City"
-                        placeholder="city"
-                        {...accountInfoForm.getInputProps('city')}
-                      />
-                      <TextInput
-                        label="State"
-                        placeholder="state"
-                        {...accountInfoForm.getInputProps('state')}
-                      />
-                      <TextInput
-                        label="Zip"
-                        placeholder="zip"
-                        {...accountInfoForm.getInputProps('zip')}
-                      />
-                    </Group>
-                    <Box style={{ width: 'auto' }}>
-                      <Button leftSection={<IconDeviceFloppy size={16} />}>
-                        Save changes
-                      </Button>
-                    </Box>
+                    <Surface component={Paper} {...PAPER_PROPS}>
+                      <Stack gap={0}>
+                        <Accordion.Item value="publish">
+                          <Accordion.Control
+                            icon={
+                              <IconStackPush
+                                style={{
+                                  width: rem(20),
+                                  height: rem(20),
+                                }}
+                              />
+                            }
+                          >
+                            Publish
+                          </Accordion.Control>
+                          <Accordion.Panel>
+                            <Stack>
+                              <Group justify="space-between">
+                                <Button variant="default">Save Draft</Button>
+                                <Button variant="default">Preview</Button>
+                              </Group>
+                              <Radio.Group
+                                name="documentStatus"
+                                label="Status"
+                                value={statusvalue}
+                                onChange={setStatusValue}
+                              >
+                                <Group mt="xs">
+                                  <Radio value="draft" label="Draft" />
+                                  <Radio value="published" label="Published" />
+                                </Group>
+                              </Radio.Group>
+                              <Radio.Group
+                                name="documentVisibility"
+                                label="Visibility"
+                                value={visibilityvalue}
+                                onChange={setVisibilityValue}
+                              >
+                                <Group mt="xs">
+                                  <Radio value="public" label="Public" />
+                                  <Radio value="private" label="Private" />
+                                </Group>
+                              </Radio.Group>
+                            </Stack>
+                          </Accordion.Panel>
+                        </Accordion.Item>
+                        <Group justify="space-between" py="xs" px="md">
+                          <Anchor
+                            component="button"
+                            c="red.9"
+                            underline="never"
+                          >
+                            Move to Trash
+                          </Anchor>
+                          <Button variant="filled">Publish</Button>
+                        </Group>
+                      </Stack>
+                    </Surface>
+
+                    <Surface component={Paper} {...PAPER_PROPS}>
+                      <Accordion.Item value="categories">
+                        <Accordion.Control
+                          icon={
+                            <IconCategory
+                              style={{
+                                width: rem(20),
+                                height: rem(20),
+                              }}
+                            />
+                          }
+                        >
+                          Categories
+                        </Accordion.Control>
+                        <Accordion.Panel>Content</Accordion.Panel>
+                      </Accordion.Item>
+                    </Surface>
+
+                    <Surface component={Paper} {...PAPER_PROPS}>
+                      <Accordion.Item value="tags">
+                        <Accordion.Control
+                          icon={
+                            <IconTags
+                              style={{
+                                width: rem(20),
+                                height: rem(20),
+                              }}
+                            />
+                          }
+                        >
+                          Tags
+                        </Accordion.Control>
+                        <Accordion.Panel>Content</Accordion.Panel>
+                      </Accordion.Item>
+                    </Surface>
                   </Stack>
-                </Surface>
+                </Accordion>
               </Grid.Col>
             </Grid>
           </Stack>
