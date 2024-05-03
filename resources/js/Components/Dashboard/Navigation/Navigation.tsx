@@ -1,5 +1,10 @@
 import { ActionIcon, Box, Flex, Group, ScrollArea, Text } from '@mantine/core';
-import { IconX, IconPin, IconLayoutBoard } from '@tabler/icons-react';
+import {
+  IconX,
+  IconPin,
+  IconLayoutBoard,
+  IconCategory,
+} from '@tabler/icons-react';
 import { Logo, UserProfileButton } from '@/Components/Dashboard';
 import UserProfileData from '@/mocks/UserProfile.json';
 import { useMediaQuery } from '@mantine/hooks';
@@ -21,20 +26,26 @@ const mockdata = [
         icon: IconPin,
         links: [
           {
-            label: 'All Posts',
-            link: ROUTES.DASHBOARD.POST.ALL_POSTS,
+            label: 'Show All',
+            link: ROUTES.DASHBOARD.POST.ALL,
           },
           {
             label: 'Add New',
-            link: ROUTES.DASHBOARD.POST.NEW_POST,
+            link: ROUTES.DASHBOARD.POST.NEW,
+          },
+        ],
+      },
+      {
+        label: 'Categories',
+        icon: IconCategory,
+        links: [
+          {
+            label: 'Show All',
+            link: ROUTES.DASHBOARD.CATEGORY.ALL,
           },
           {
-            label: 'Categories',
-            link: '/dashboard/post/category',
-          },
-          {
-            label: 'Tags',
-            link: '/dashboard/post/tag',
+            label: 'Add New',
+            link: ROUTES.DASHBOARD.CATEGORY.NEW,
           },
         ],
       },

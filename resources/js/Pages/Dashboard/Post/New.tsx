@@ -38,7 +38,7 @@ const pageTitle: string = 'Add New Post';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
   { title: 'Posts', href: '#' },
-  { title: 'Add New', href: ROUTES.DASHBOARD.POST.NEW_POST },
+  { title: 'Add New', href: ROUTES.DASHBOARD.POST.NEW },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
@@ -190,6 +190,7 @@ function Tags() {
           description="Add up to 20 tags"
           placeholder="Enter tag"
           maxTags={20}
+          clearable
         />
       </Accordion.Panel>
     </Accordion.Item>

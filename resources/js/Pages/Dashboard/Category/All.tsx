@@ -21,7 +21,7 @@ const PAGE_TITLE = 'All Posts';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
   { title: 'Posts', href: '#' },
-  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.POST.ALL_POSTS },
+  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.POST.ALL },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
@@ -52,7 +52,7 @@ export const AllPosts = () => {
             rightSection={
               <Button
                 component={Link}
-                href={ROUTES.DASHBOARD.POST.NEW_POST}
+                href={ROUTES.DASHBOARD.POST.NEW}
                 leftSection={<IconPlus size={18} />}
               >
                 Add New
