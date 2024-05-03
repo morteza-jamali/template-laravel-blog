@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Anchor,
+  Button,
   Container,
   Group,
   Paper,
@@ -8,18 +9,21 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
+import { Head, Link } from '@inertiajs/react';
 import { InvoicesTable, PageHeader, AppShell } from '@/Components/Dashboard';
 import InvoicesData from '@/mocks/Invoices.json';
-import { IconDotsVertical } from '@tabler/icons-react';
+import { IconDotsVertical, IconPlus } from '@tabler/icons-react';
 // import { Metadata } from 'next';
+import ROUTES from '@/routes';
 import { useFetchData } from '@/hooks';
 
+const PAGE_TITLE = 'All Posts';
 const items = [
-  { title: 'Dashboard', href: 'PATH_DASHBOARD.default ' },
-  { title: 'Apps', href: '#' },
-  { title: 'Invoices', href: '#' },
+  { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
+  { title: 'Posts', href: '#' },
+  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.POST.ALL_POSTS },
 ].map((item, index) => (
-  <Anchor href={item.href} key={index}>
+  <Anchor href={item.href} key={index} component={Link}>
     {item.title}
   </Anchor>
 ));
@@ -39,24 +43,26 @@ export const AllPosts = () => {
 
   return (
     <>
-      <>
-        <title>Invoices | DesignSparx</title>
-        <meta
-          name="description"
-          content="Explore our versatile dashboard website template featuring a stunning array of themes and meticulously crafted components. Elevate your web project with seamless integration, customizable themes, and a rich variety of components for a dynamic user experience. Effortlessly bring your data to life with our intuitive dashboard template, designed to streamline development and captivate users. Discover endless possibilities in design and functionality today!"
-        />
-      </>
+      <Head title={PAGE_TITLE} />
       <Container fluid>
         <Stack gap="lg">
           <PageHeader
-            title="Invoices"
+            title={PAGE_TITLE}
             breadcrumbItems={items}
-            invoiceAction={true}
+            rightSection={
+              <Button
+                component={Link}
+                href={ROUTES.DASHBOARD.POST.NEW_POST}
+                leftSection={<IconPlus size={18} />}
+              >
+                Add New
+              </Button>
+            }
           />
           <Paper {...PAPER_PROPS}>
             <Group justify="space-between" mb="md">
               <Text fz="lg" fw={600}>
-                Invoices
+                {PAGE_TITLE}
               </Text>
               <ActionIcon>
                 <IconDotsVertical size={18} />

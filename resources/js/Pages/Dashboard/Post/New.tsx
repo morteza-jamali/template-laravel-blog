@@ -14,6 +14,8 @@ import {
   Tabs,
   Checkbox,
   FileInput,
+  ScrollArea,
+  TagsInput,
   rem,
 } from '@mantine/core';
 import {
@@ -27,7 +29,6 @@ import {
   IconCategory,
   IconTags,
   IconStackPush,
-  IconPhone,
   IconPhoto,
 } from '@tabler/icons-react';
 import UrlPathProvider from '@/Components/UrlPathProvider';
@@ -37,7 +38,7 @@ const pageTitle: string = 'Add New Post';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
   { title: 'Posts', href: '#' },
-  { title: 'Add New', href: ROUTES.DASHBOARD.POST.NEW },
+  { title: 'Add New', href: ROUTES.DASHBOARD.POST.NEW_POST },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
@@ -70,6 +71,12 @@ function Publish() {
 
   return (
     <Stack gap={0}>
+      <Group justify="space-between" py="xs" px="md">
+        <Anchor component="button" c="red.9" underline="never">
+          Move to Trash
+        </Anchor>
+        <Button variant="filled">Publish</Button>
+      </Group>
       <Accordion.Item value="publish">
         <Accordion.Control
           icon={
@@ -114,12 +121,6 @@ function Publish() {
           </Stack>
         </Accordion.Panel>
       </Accordion.Item>
-      <Group justify="space-between" py="xs" px="md">
-        <Anchor component="button" c="red.9" underline="never">
-          Move to Trash
-        </Anchor>
-        <Button variant="filled">Publish</Button>
-      </Group>
     </Stack>
   );
 }
@@ -184,7 +185,13 @@ function Tags() {
       >
         Tags
       </Accordion.Control>
-      <Accordion.Panel>Content</Accordion.Panel>
+      <Accordion.Panel>
+        <TagsInput
+          description="Add up to 20 tags"
+          placeholder="Enter tag"
+          maxTags={20}
+        />
+      </Accordion.Panel>
     </Accordion.Item>
   );
 }
@@ -223,8 +230,6 @@ function Cover() {
   );
 }
 
-const SIDE_SECTIONS = [<Publish />, <Categories />, <Tags />, <Cover />];
-
 export const NewPost = ({ pathname }: NewPostProps) => {
   return (
     <>
@@ -250,15 +255,16 @@ export const NewPost = ({ pathname }: NewPostProps) => {
                 </Surface>
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
-                <Accordion multiple defaultValue={['publish']}>
-                  <Stack>
-                    {SIDE_SECTIONS.map((section, key) => (
-                      <Surface component={Paper} {...PAPER_PROPS} key={key}>
-                        {section}
-                      </Surface>
-                    ))}
-                  </Stack>
-                </Accordion>
+                <ScrollArea type="always" scrollbars="y" offsetScrollbars>
+                  <Accordion multiple defaultValue={['publish']}>
+                    <Surface component={Paper} {...PAPER_PROPS}>
+                      <Publish />
+                      <Categories />
+                      <Tags />
+                      <Cover />
+                    </Surface>
+                  </Accordion>
+                </ScrollArea>
               </Grid.Col>
             </Grid>
           </Stack>

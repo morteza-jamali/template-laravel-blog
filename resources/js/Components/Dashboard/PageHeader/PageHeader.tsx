@@ -1,32 +1,27 @@
 import {
-  ActionIcon,
   Breadcrumbs,
   BreadcrumbsProps,
-  Button,
   Divider,
   Flex,
   Paper,
   PaperProps,
   rem,
   Stack,
-  Text,
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { IconPlus, IconRefresh } from '@tabler/icons-react';
-import { FilterDateMenu, Surface } from '@/Components/Dashboard';
+import { Surface } from '@/Components/Dashboard';
 import { useColorScheme } from '@mantine/hooks';
+import type { ReactNode } from 'react';
 
 type PageHeaderProps = {
   title: string;
-  withActions?: boolean;
   breadcrumbItems?: any;
-  invoiceAction?: boolean;
+  rightSection?: ReactNode;
 } & PaperProps;
 
 const PageHeader = (props: PageHeaderProps) => {
-  const { withActions, breadcrumbItems, title, invoiceAction, ...others } =
-    props;
+  const { rightSection, breadcrumbItems, title, ...others } = props;
   const theme = useMantineTheme();
   const colorScheme = useColorScheme();
 
@@ -57,44 +52,18 @@ const PageHeader = (props: PageHeaderProps) => {
         style={{ backgroundColor: 'transparent' }}
         {...others}
       >
-        {withActions ? (
-          <Flex
-            justify="space-between"
-            direction={{ base: 'column', sm: 'row' }}
-            gap={{ base: 'sm', sm: 4 }}
-          >
-            <Stack gap={4}>
-              <Title order={3}>{title}</Title>
-              <Text>Welcome back, Kelvin!</Text>
-            </Stack>
-            <Flex align="center" gap="sm">
-              <ActionIcon variant="subtle">
-                <IconRefresh size={16} />
-              </ActionIcon>
-              <FilterDateMenu />
-            </Flex>
-          </Flex>
-        ) : invoiceAction ? (
-          <Flex
-            align="center"
-            justify="space-between"
-            direction={{ base: 'row', sm: 'row' }}
-            gap={{ base: 'sm', sm: 4 }}
-          >
-            <Stack>
-              <Title order={3}>{title}</Title>
-              <Breadcrumbs {...BREADCRUMBS_PROPS}>
-                {breadcrumbItems}
-              </Breadcrumbs>
-            </Stack>
-            <Button leftSection={<IconPlus size={18} />}>New Invoice</Button>
-          </Flex>
-        ) : (
-          <Stack gap="sm">
+        <Flex
+          align="center"
+          justify="space-between"
+          direction={{ base: 'row', sm: 'row' }}
+          gap={{ base: 'sm', sm: 4 }}
+        >
+          <Stack>
             <Title order={3}>{title}</Title>
             <Breadcrumbs {...BREADCRUMBS_PROPS}>{breadcrumbItems}</Breadcrumbs>
           </Stack>
-        )}
+          {rightSection}
+        </Flex>
       </Surface>
       <Divider />
     </>
