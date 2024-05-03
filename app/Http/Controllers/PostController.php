@@ -20,6 +20,13 @@ class PostController extends Controller
     ]);
   }
 
+  public function renderPostEditView(string $id)
+  {
+    return Inertia::render('Dashboard/Post/Edit', [
+      'id' => $id,
+    ]);
+  }
+
   /**
    * Display a listing of the resource.
    */

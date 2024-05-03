@@ -6,11 +6,9 @@ import {
 } from 'mantine-datatable';
 import {
   ActionIcon,
-  Avatar,
   Badge,
   Flex,
   Group,
-  HoverCard,
   MantineColor,
   MultiSelect,
   Stack,
@@ -23,7 +21,7 @@ import {
 import sortBy from 'lodash/sortBy';
 import { Invoices, InvoiceStatus } from '@/types';
 import { useDebouncedValue } from '@mantine/hooks';
-import { IconCloudDownload, IconEye, IconSearch } from '@tabler/icons-react';
+import { IconEdit, IconSearch, IconTrashX } from '@tabler/icons-react';
 import { ErrorAlert } from '@/Components/Dashboard';
 
 const PAGE_SIZES = [5, 10, 20];
@@ -94,37 +92,12 @@ const InvoicesTable = ({ data, error, loading }: InvoicesTableProps) => {
       accessor: 'full_name',
       title: 'Customer',
       render: ({ full_name, email }: any) => {
-        const firstName = full_name.split(' ')[0],
-          lastName = full_name.split(' ')[1];
-
         return (
-          <HoverCard shadow="md" openDelay={500} closeDelay={500}>
-            <HoverCard.Target>
-              <Flex component={UnstyledButton} gap="xs" align="center">
-                <Avatar
-                  src={null}
-                  alt={`${firstName} ${lastName}`}
-                  variant="filled"
-                  radius="xl"
-                  color={theme.colors[theme.primaryColor][7]}
-                >
-                  {`${Array.from(firstName)[0]}`}
-                  {`${Array.from(lastName)[0]}`}
-                </Avatar>
-                <Stack gap={1}>
-                  <Text fw={600}>{full_name}</Text>
-                  <Text fz="sm">{email}</Text>
-                </Stack>
-              </Flex>
-            </HoverCard.Target>
-            <HoverCard.Dropdown>
-              <Stack gap="xs">
-                <Text fz="sm">First name: {firstName}</Text>
-                <Text fz="sm">Last name: {lastName}</Text>
-                <Text fz="sm">Email: {email}</Text>
-              </Stack>
-            </HoverCard.Dropdown>
-          </HoverCard>
+          <Flex component={UnstyledButton} gap="xs" align="center">
+            <Stack gap={1}>
+              <Text fw={600}>{full_name}</Text>
+            </Stack>
+          </Flex>
         );
       },
       sortable: true,
@@ -139,6 +112,54 @@ const InvoicesTable = ({ data, error, loading }: InvoicesTableProps) => {
         />
       ),
       filtering: query !== '',
+    },
+    {
+      accessor: 'author',
+      render: () => {
+        return (
+          <Flex component={UnstyledButton} gap="xs" align="center">
+            <Stack gap={1}>
+              <Text>Vagrant</Text>
+            </Stack>
+          </Flex>
+        );
+      },
+    },
+    {
+      accessor: 'categories',
+      render: (item: any) => <StatusBadge status={item.status} />,
+      filter: (
+        <MultiSelect
+          label="Status"
+          description="Show all products with status"
+          data={statuses}
+          value={selectedStatuses}
+          placeholder="Search statuses…"
+          onChange={setSelectedStatuses}
+          leftSection={<IconSearch size={16} />}
+          clearable
+          searchable
+        />
+      ),
+      filtering: selectedStatuses.length > 0,
+    },
+    {
+      accessor: 'tags',
+      render: (item: any) => <StatusBadge status={item.status} />,
+      filter: (
+        <MultiSelect
+          label="Status"
+          description="Show all products with status"
+          data={statuses}
+          value={selectedStatuses}
+          placeholder="Search statuses…"
+          onChange={setSelectedStatuses}
+          leftSection={<IconSearch size={16} />}
+          clearable
+          searchable
+        />
+      ),
+      filtering: selectedStatuses.length > 0,
     },
     {
       accessor: 'status',
@@ -159,36 +180,22 @@ const InvoicesTable = ({ data, error, loading }: InvoicesTableProps) => {
       filtering: selectedStatuses.length > 0,
     },
     {
-      accessor: 'id',
-      render: (item: any) => <Text>#{item.id.slice(0, 7)}</Text>,
-    },
-    {
-      accessor: 'amount',
-      sortable: true,
-      render: (item: any) => <Text>${item.amount}</Text>,
-    },
-    {
-      accessor: 'issue_date',
+      accessor: 'publish_date',
+      title: 'Publish Date',
     },
     {
       accessor: '',
       title: 'Actions',
       render: (item: any) => (
         <Group gap="sm">
-          <Tooltip label="Download invoice">
-            <ActionIcon>
-              <IconCloudDownload size={ICON_SIZE} />
+          <Tooltip label="Delete">
+            <ActionIcon color="red">
+              <IconTrashX size={ICON_SIZE} />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label="View invoice details">
-            <ActionIcon
-              onClick={() =>
-                console.log(
-                  'router.push(PATH_INVOICES.invoices.invoice_details(item.id))',
-                )
-              }
-            >
-              <IconEye size={ICON_SIZE} />
+          <Tooltip label="Edit">
+            <ActionIcon>
+              <IconEdit size={ICON_SIZE} />
             </ActionIcon>
           </Tooltip>
         </Group>
