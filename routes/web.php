@@ -1,35 +1,53 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\DashboardController;
 
-// Route::get('/', PostController::class . '@index')->name('index');
+// Route::get('/', DashboardController::class . '@index')->name('index');
 
 // Dashboard routes
-Route::get('/dashboard', [PostController::class, 'render'])->name(
+Route::get('/dashboard', [DashboardController::class, 'render'])->name(
   'dashboard.home',
 );
-Route::get('/dashboard/post/new', [PostController::class, 'render'])->name(
+
+// Dashboard/Post routes
+Route::get('/dashboard/post/new', [DashboardController::class, 'render'])->name(
   'dashboard.post.new',
 );
 Route::get('/dashboard/post/edit/{id}', [
-  PostController::class,
-  'renderPostEditView',
+  DashboardController::class,
+  'render',
 ])->name('dashboard.post.edit');
-Route::get('/dashboard/post/all', [PostController::class, 'render'])->name(
+Route::get('/dashboard/post/all', [DashboardController::class, 'render'])->name(
   'dashboard.post.all',
 );
-Route::get('/dashboard/category/new', [PostController::class, 'render'])->name(
-  'dashboard.category.new',
-);
+
+// Dashboard/Category routes
+Route::get('/dashboard/category/new', [
+  DashboardController::class,
+  'render',
+])->name('dashboard.category.new');
 Route::get('/dashboard/category/edit/{id}', [
-  PostController::class,
-  'renderPostEditView',
+  DashboardController::class,
+  'render',
 ])->name('dashboard.category.edit');
-Route::get('/dashboard/category/all', [PostController::class, 'render'])->name(
-  'dashboard.category.all',
+Route::get('/dashboard/category/all', [
+  DashboardController::class,
+  'render',
+])->name('dashboard.category.all');
+
+// Dashboard/Tags routes
+Route::get('/dashboard/tag/new', [DashboardController::class, 'render'])->name(
+  'dashboard.tag.new',
+);
+Route::get('/dashboard/tag/edit/{id}', [
+  DashboardController::class,
+  'render',
+])->name('dashboard.tag.edit');
+Route::get('/dashboard/tag/all', [DashboardController::class, 'render'])->name(
+  'dashboard.tag.all',
 );
 
-// Route::get('/posts/{p}', PostController::class . '@show')->name('show');
+// Route::get('/posts/{p}', DashboardController::class . '@show')->name('show');
 
-// Route::post('/admin', PostController::class . '@store')->name('admin.store');
+// Route::post('/admin', DashboardController::class . '@store')->name('admin.store');
