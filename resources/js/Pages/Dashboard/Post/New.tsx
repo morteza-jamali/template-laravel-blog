@@ -31,7 +31,7 @@ import {
   IconStackPush,
   IconPhoto,
 } from '@tabler/icons-react';
-import UrlPathProvider from '@/Components/UrlPathProvider';
+import { UrlPathProvider } from '@/Components/Global';
 import ROUTES from '@/routes';
 
 const pageTitle: string = 'Add New Post';

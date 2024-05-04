@@ -12,17 +12,13 @@ import {
   Button,
   ScrollArea,
   Select,
+  Textarea,
   rem,
 } from '@mantine/core';
-import {
-  PageHeader,
-  Surface,
-  TextEditor,
-  AppShell,
-} from '@/Components/Dashboard';
+import { PageHeader, Surface, AppShell } from '@/Components/Dashboard';
 import { Head, Link } from '@inertiajs/react';
 import { IconCategory2 } from '@tabler/icons-react';
-import UrlPathProvider from '@/Components/UrlPathProvider';
+import { UrlPathProvider, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
 import { gParentCategories } from '@/faker/ParentCategories';
 
@@ -116,10 +112,28 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
                     <Grid.Col span={12}>
                       <Stack>
                         <TextInput
-                          label="Title"
+                          label={
+                            <InputLabelWithHelp
+                              help="The name is how it appears on your site"
+                              label="Name"
+                            />
+                          }
                           placeholder="Enter title here"
+                          withAsterisk
                         />
-                        <TextEditor label="Content" />
+                        <TextInput
+                          label={
+                            <InputLabelWithHelp
+                              help="The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens"
+                              label="Slug"
+                            />
+                          }
+                          placeholder="Enter slug here"
+                        />
+                        <Textarea
+                          label="Description"
+                          placeholder="Enter description here"
+                        />
                       </Stack>
                     </Grid.Col>
                   </Grid>
@@ -127,7 +141,7 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
                 <ScrollArea type="always" scrollbars="y" offsetScrollbars>
-                  <Accordion multiple defaultValue={['publish']}>
+                  <Accordion multiple defaultValue={['parent']}>
                     <Surface component={Paper} {...PAPER_PROPS}>
                       <Publish />
                       <ParentCategory data={gParentCategories(50)} />

@@ -5,3 +5,8 @@
   font-style: normal;
   font-variation-settings: 'wdth' 100;
 }
+
+.mantine-InputWrapper-label {
+  display: flex;
+  align-items: center;
+}

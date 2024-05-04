@@ -1,0 +1,6 @@
+.dropdown {
+  @mixin light {
+    background-color: var(--mantine-color-gray-3);
+    --popover-border-color: var(--mantine-color-gray-6);
+  }
+}

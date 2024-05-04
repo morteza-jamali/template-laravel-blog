@@ -47,7 +47,7 @@ export const Home = () => {
       <Head title={pageTitle} />
       <Container fluid>
         <Stack gap="lg">
-          <PageHeader title={pageTitle} withActions={true} />
+          <PageHeader title={pageTitle} />
           <StatsGrid
             data={statsData.data}
             loading={statsLoading}
