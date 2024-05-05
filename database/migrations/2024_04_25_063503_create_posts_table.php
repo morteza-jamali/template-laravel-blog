@@ -11,11 +11,15 @@ return new class extends Migration {
   public function up(): void
   {
     Schema::create('posts', function (Blueprint $table) {
-      $table->id();
-      $table->string('title', 200)->unique();
-      $table->text('content');
-      $table->string('slug', 200)->unique();
-      $table->timestamps();
+      $table->id('ID');
+      $table->integer('post_author')->unsigned()->default(0);
+      $table->text('post_title');
+      $table->string('post_slug', 200)->unique();
+      $table->longText('post_content');
+      $table->text('post_cover');
+      $table->string('post_status', 20)->default('publish');
+      $table->dateTime('post_date');
+      $table->dateTime('post_modified');
     });
   }
 
