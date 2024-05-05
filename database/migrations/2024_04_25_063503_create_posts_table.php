@@ -12,7 +12,7 @@ return new class extends Migration {
   {
     Schema::create('posts', function (Blueprint $table) {
       $table->id('ID');
-      $table->integer('post_author')->unsigned()->default(0);
+      $table->bigInteger('post_author')->unsigned()->default(0);
       $table->text('post_title');
       $table->string('post_slug', 200)->unique();
       $table->longText('post_content');
