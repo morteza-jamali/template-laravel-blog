@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import {
   Anchor,
   Container,
@@ -13,13 +13,23 @@ import {
   ScrollArea,
   Select,
   Textarea,
+  UnstyledButton,
   rem,
 } from '@mantine/core';
+import {
+  useForm,
+  UseFormReturnType,
+  isNotEmpty as _isNotEmpty,
+  hasLength,
+  isInRange,
+  matches,
+} from '@mantine/form';
 import { PageHeader, Surface, AppShell } from '@/Components/Dashboard';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import { IconCategory2 } from '@tabler/icons-react';
 import { UrlPathProvider, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
+import { STRINGS } from '@/i18n';
 import { gParentCategories } from '@/faker/ParentCategories';
 
 import type { ComboboxItem } from '@mantine/core';
@@ -35,36 +45,59 @@ const items = [
   </Anchor>
 ));
 
+const FIELDS_CONDITIONS = {
+  NAME: {
+    MIN: 5,
+  },
+  SLUG: {
+    MIN: 5,
+  },
+  PARENT: {
+    MIN: -1,
+  },
+};
 const PAPER_PROPS: PaperProps = {
   shadow: 'md',
   radius: 'md',
 };
 
-type NewPostProps = {
+interface NewPostProps {
   pathname: string;
-};
+}
 
-function Publish() {
+interface FormValuesTypes {
+  name: string;
+  slug?: string;
+  description?: string;
+  parent?: string;
+}
+
+interface PublishProps {
+  form: UseFormReturnType<FormValuesTypes>;
+}
+
+function Publish({ form }: PublishProps) {
   return (
     <Group justify="space-between" py="xs" px="md">
-      <Anchor component="button" c="red.9" underline="never">
-        Move to Trash
-      </Anchor>
-      <Button variant="filled">Add</Button>
+      <UnstyledButton c="red.9" onClick={() => form.reset()}>
+        Clear
+      </UnstyledButton>
+      <Button variant="filled" type="submit">
+        Add
+      </Button>
     </Group>
   );
 }
 
-type ParentCategoryProps = {
+interface ParentCategoryProps {
+  form: UseFormReturnType<FormValuesTypes>;
   data?: ComboboxItem[];
-};
+}
 
-function ParentCategory({ data }: ParentCategoryProps) {
+function ParentCategory({ data, form }: ParentCategoryProps) {
   data = data ?? [];
 
-  data.unshift({ value: 'none', label: 'None' });
-
-  const [value, setValue] = useState<string>('none');
+  data.unshift({ value: '-1', label: 'None' });
 
   return (
     <Accordion.Item value="parent">
@@ -88,9 +121,9 @@ function ParentCategory({ data }: ParentCategoryProps) {
           searchable
           nothingFoundMessage="Nothing found..."
           allowDeselect={false}
-          onChange={(new_value) => setValue(new_value as string)}
-          value={value}
           mt="md"
+          key={form.key('parent')}
+          {...form.getInputProps('parent')}
         />
       </Accordion.Panel>
     </Accordion.Item>
@@ -98,6 +131,59 @@ function ParentCategory({ data }: ParentCategoryProps) {
 }
 
 export const NewCategory = ({ pathname }: NewPostProps) => {
+  const isNotEmpty = _isNotEmpty();
+  const { errors } = usePage().props;
+  const form = useForm<FormValuesTypes>({
+    mode: 'uncontrolled',
+    initialValues: {
+      name: '',
+      parent: '-1',
+    },
+    validate: {
+      name: (value) => {
+        if (isNotEmpty(value) !== null) {
+          return STRINGS.REQUIRED_FIELD('name');
+        }
+
+        if (hasLength({ min: FIELDS_CONDITIONS.NAME.MIN })(value) !== null) {
+          return STRINGS.MIN_CHAR('name', FIELDS_CONDITIONS.NAME.MIN);
+        }
+
+        return null;
+      },
+      slug: (value) => {
+        if (isNotEmpty(value) !== null) {
+          return STRINGS.REQUIRED_FIELD('slug');
+        }
+
+        if (matches(/^(\w|\d)+[\w\d\-]*(\w|\d)$/)(value) !== null) {
+          return STRINGS.FORMAT('slug');
+        }
+
+        if (hasLength({ min: FIELDS_CONDITIONS.SLUG.MIN })(value) !== null) {
+          return STRINGS.MIN_CHAR('slug', FIELDS_CONDITIONS.SLUG.MIN);
+        }
+
+        return null;
+      },
+      parent: (value) =>
+        isInRange(
+          { min: FIELDS_CONDITIONS.PARENT.MIN },
+          STRINGS.MIN_NUM('parent', FIELDS_CONDITIONS.PARENT.MIN),
+        )(parseInt(value ?? '')),
+    },
+  });
+
+  const handleSubmit = (values: typeof form.values) => {
+    router.post('/dashboard/category/new', values as unknown as FormData);
+  };
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      form.setErrors(errors);
+    }
+  }, [errors]);
+
   return (
     <>
       <Head title={pageTitle} />
@@ -105,51 +191,62 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
         <Container fluid>
           <Stack gap="lg">
             <PageHeader title={pageTitle} breadcrumbItems={items} />
-            <Grid>
-              <Grid.Col span={{ base: 12, md: 8 }}>
-                <Surface component={Paper} {...PAPER_PROPS} p="md">
-                  <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
-                    <Grid.Col span={12}>
-                      <Stack>
-                        <TextInput
-                          label={
-                            <InputLabelWithHelp
-                              help="The name is how it appears on your site"
-                              label="Name"
-                            />
-                          }
-                          placeholder="Enter title here"
-                          withAsterisk
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+              <Grid>
+                <Grid.Col span={{ base: 12, md: 8 }}>
+                  <Surface component={Paper} {...PAPER_PROPS} p="md">
+                    <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
+                      <Grid.Col span={12}>
+                        <Stack>
+                          <TextInput
+                            label={
+                              <InputLabelWithHelp
+                                help="The name is how it appears on your site"
+                                label="Name"
+                              />
+                            }
+                            placeholder="Enter title here"
+                            withAsterisk
+                            key={form.key('name')}
+                            {...form.getInputProps('name')}
+                          />
+                          <TextInput
+                            label={
+                              <InputLabelWithHelp
+                                help="The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens"
+                                label="Slug"
+                              />
+                            }
+                            placeholder="Enter slug here"
+                            key={form.key('slug')}
+                            {...form.getInputProps('slug')}
+                          />
+                          <Textarea
+                            label="Description"
+                            placeholder="Enter description here"
+                            key={form.key('description')}
+                            {...form.getInputProps('description')}
+                          />
+                        </Stack>
+                      </Grid.Col>
+                    </Grid>
+                  </Surface>
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 4 }}>
+                  <ScrollArea type="always" scrollbars="y" offsetScrollbars>
+                    <Accordion multiple defaultValue={['parent']}>
+                      <Surface component={Paper} {...PAPER_PROPS}>
+                        <Publish form={form} />
+                        <ParentCategory
+                          form={form}
+                          data={gParentCategories(50)}
                         />
-                        <TextInput
-                          label={
-                            <InputLabelWithHelp
-                              help="The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens"
-                              label="Slug"
-                            />
-                          }
-                          placeholder="Enter slug here"
-                        />
-                        <Textarea
-                          label="Description"
-                          placeholder="Enter description here"
-                        />
-                      </Stack>
-                    </Grid.Col>
-                  </Grid>
-                </Surface>
-              </Grid.Col>
-              <Grid.Col span={{ base: 12, md: 4 }}>
-                <ScrollArea type="always" scrollbars="y" offsetScrollbars>
-                  <Accordion multiple defaultValue={['parent']}>
-                    <Surface component={Paper} {...PAPER_PROPS}>
-                      <Publish />
-                      <ParentCategory data={gParentCategories(50)} />
-                    </Surface>
-                  </Accordion>
-                </ScrollArea>
-              </Grid.Col>
-            </Grid>
+                      </Surface>
+                    </Accordion>
+                  </ScrollArea>
+                </Grid.Col>
+              </Grid>
+            </form>
           </Stack>
         </Container>
       </UrlPathProvider>

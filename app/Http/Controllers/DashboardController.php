@@ -28,6 +28,17 @@ class DashboardController extends Controller
     ]);
   }
 
+  public function addCategory(Request $request)
+  {
+    $validated = $request->validate([
+      'name' => 'required|string|min:5',
+      'slug' => ['required', 'min:5', 'regex:/^(\w|\d)+[\w\d\-]*(\w|\d)$/i'],
+      'description' => 'string',
+      'parent' => 'required|integer',
+    ]);
+
+    return to_route('dashboard.category.new');
+  }
   /**
    * Display a listing of the resource.
    */

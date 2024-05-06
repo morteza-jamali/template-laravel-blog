@@ -27,6 +27,10 @@ Route::get('/dashboard/category/new', [
   DashboardController::class,
   'render',
 ])->name('dashboard.category.new');
+Route::post('/dashboard/category/new', [
+  DashboardController::class,
+  'addCategory',
+])->name('dashboard.category.new.add');
 Route::get('/dashboard/category/edit/{id}', [
   DashboardController::class,
   'render',
