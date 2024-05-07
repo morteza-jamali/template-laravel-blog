@@ -38,7 +38,7 @@ class DashboardController extends Controller
         'min:5',
         'max:200',
         'unique:categories',
-        'regex:/^(\w|\d)+[\w\d\-]*(\w|\d)$/i',
+        'regex:/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/i',
       ],
       'description' => 'string',
       'parent' => 'required|integer|min:0',

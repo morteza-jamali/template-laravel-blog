@@ -166,7 +166,7 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
           return STRINGS.REQUIRED_FIELD('slug');
         }
 
-        if (matches(/^(\w|\d)+[\w\d\-]*(\w|\d)$/)(value) !== null) {
+        if (matches(/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/)(value) !== null) {
           return STRINGS.FORMAT('slug');
         }
 
