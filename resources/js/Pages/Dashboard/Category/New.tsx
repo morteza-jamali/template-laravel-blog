@@ -51,9 +51,10 @@ const FIELDS_CONDITIONS = {
   },
   SLUG: {
     MIN: 5,
+    MAX: 200,
   },
   PARENT: {
-    MIN: -1,
+    MIN: 0,
   },
 };
 const PAPER_PROPS: PaperProps = {
@@ -97,7 +98,7 @@ interface ParentCategoryProps {
 function ParentCategory({ data, form }: ParentCategoryProps) {
   data = data ?? [];
 
-  data.unshift({ value: '-1', label: 'None' });
+  data.unshift({ value: '0', label: 'None' });
 
   return (
     <Accordion.Item value="parent">
@@ -137,7 +138,7 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
     mode: 'uncontrolled',
     initialValues: {
       name: '',
-      parent: '-1',
+      parent: '0',
     },
     validate: {
       name: (value) => {
@@ -162,6 +163,10 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
 
         if (hasLength({ min: FIELDS_CONDITIONS.SLUG.MIN })(value) !== null) {
           return STRINGS.MIN_CHAR('slug', FIELDS_CONDITIONS.SLUG.MIN);
+        }
+
+        if (hasLength({ max: FIELDS_CONDITIONS.SLUG.MAX })(value) !== null) {
+          return STRINGS.MAX_CHAR('slug', FIELDS_CONDITIONS.SLUG.MAX);
         }
 
         return null;

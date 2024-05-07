@@ -32,10 +32,18 @@ class DashboardController extends Controller
   {
     $validated = $request->validate([
       'name' => 'required|string|min:5',
-      'slug' => ['required', 'min:5', 'regex:/^(\w|\d)+[\w\d\-]*(\w|\d)$/i'],
+      'slug' => [
+        'required',
+        'min:5',
+        'max:200',
+        'unique:categories,category_slug',
+        'regex:/^(\w|\d)+[\w\d\-]*(\w|\d)$/i',
+      ],
       'description' => 'string',
-      'parent' => 'required|integer',
+      'parent' => 'required|integer|min:0',
     ]);
+
+    sleep(3);
 
     return to_route('dashboard.category.new');
   }
