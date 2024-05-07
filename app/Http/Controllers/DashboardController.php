@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 // use App\Models\Post;
+use App\Models\Category;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -36,14 +37,14 @@ class DashboardController extends Controller
         'required',
         'min:5',
         'max:200',
-        'unique:categories,category_slug',
+        'unique:categories',
         'regex:/^(\w|\d)+[\w\d\-]*(\w|\d)$/i',
       ],
       'description' => 'string',
       'parent' => 'required|integer|min:0',
     ]);
 
-    sleep(3);
+    Category::create($validated);
 
     return to_route('dashboard.category.new');
   }

@@ -10,14 +10,11 @@ class Post extends Model
   use HasFactory;
 
   protected $fillable = [
-    'post_author',
-    'post_title',
-    'post_slug',
-    'post_content',
-    'post_cover',
-    'post_status',
-    'post_date',
-    'post_modified',
+    'author',
+    'title',
+    'slug',
+    'content',
+    'cover',
+    'status',
   ];
-  public $timestamps = false;
 }

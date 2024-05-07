@@ -191,7 +191,11 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
   const handleSubmit = (values: typeof form.values) => {
     router.post('/dashboard/category/new', values as unknown as FormData, {
       onStart: () => setLoading(true),
-      onError: () => setLoading(false),
+      onError: (errs) => {
+        console.log(`[DEBUG]: `, errs);
+
+        setLoading(false);
+      },
       onSuccess: () => {
         form.reset();
         setLoading(false);

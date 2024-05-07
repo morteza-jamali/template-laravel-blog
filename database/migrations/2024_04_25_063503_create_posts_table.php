@@ -12,14 +12,13 @@ return new class extends Migration {
   {
     Schema::create('posts', function (Blueprint $table) {
       $table->id('ID');
-      $table->bigInteger('post_author')->unsigned()->default(0);
-      $table->text('post_title');
-      $table->string('post_slug', 200)->unique();
-      $table->longText('post_content');
-      $table->text('post_cover');
-      $table->string('post_status', 20)->default('publish');
-      $table->dateTime('post_date');
-      $table->dateTime('post_modified');
+      $table->bigInteger('author')->unsigned()->default(0);
+      $table->text('title');
+      $table->string('slug', 200)->unique();
+      $table->longText('content');
+      $table->text('cover');
+      $table->string('status', 20)->default('publish');
+      $table->timestamps();
     });
   }
 
