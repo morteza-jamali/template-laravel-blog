@@ -4,14 +4,17 @@ import {
   rem,
   useMantineTheme,
 } from '@mantine/core';
-import type { ReactNode } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
 import {
   HeaderNav,
   AppMain,
   Navigation,
   FooterNav,
 } from '@/Components/Dashboard';
+
+import type { ReactNode } from 'react';
 
 import '@mantine/dates/styles.css';
 import '@mantine/tiptap/styles.css';
@@ -30,45 +33,48 @@ export function AppShell({ children }: Props) {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   return (
-    <MAppShell
-      layout="alt"
-      header={{ height: 60 }}
-      footer={{ height: 60 }}
-      navbar={{
-        width: 300,
-        breakpoint: 'md',
-        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
-      }}
-      padding={0}
-    >
-      <MAppShell.Header
-        style={{
-          height: rem(60),
-          border: 'none',
-          boxShadow: tablet_match ? theme.shadows.md : theme.shadows.sm,
+    <ModalsProvider>
+      <Notifications />
+      <MAppShell
+        layout="alt"
+        header={{ height: 60 }}
+        footer={{ height: 60 }}
+        navbar={{
+          width: 300,
+          breakpoint: 'md',
+          collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
         }}
+        padding={0}
       >
-        <Container fluid py="sm" px="lg">
-          <HeaderNav
-            desktopOpened={desktopOpened}
-            mobileOpened={mobileOpened}
-            toggleDesktop={toggleDesktop}
-            toggleMobile={toggleMobile}
-          />
-        </Container>
-      </MAppShell.Header>
-      <MAppShell.Navbar>
-        <Navigation onClose={toggleMobile} />
-      </MAppShell.Navbar>
-      <MAppShell.Main>
-        <AppMain>{children}</AppMain>
-      </MAppShell.Main>
-      <MAppShell.Footer p="md">
-        <Container fluid px="lg">
-          <FooterNav />
-        </Container>
-      </MAppShell.Footer>
-    </MAppShell>
+        <MAppShell.Header
+          style={{
+            height: rem(60),
+            border: 'none',
+            boxShadow: tablet_match ? theme.shadows.md : theme.shadows.sm,
+          }}
+        >
+          <Container fluid py="sm" px="lg">
+            <HeaderNav
+              desktopOpened={desktopOpened}
+              mobileOpened={mobileOpened}
+              toggleDesktop={toggleDesktop}
+              toggleMobile={toggleMobile}
+            />
+          </Container>
+        </MAppShell.Header>
+        <MAppShell.Navbar>
+          <Navigation onClose={toggleMobile} />
+        </MAppShell.Navbar>
+        <MAppShell.Main>
+          <AppMain>{children}</AppMain>
+        </MAppShell.Main>
+        <MAppShell.Footer p="md">
+          <Container fluid px="lg">
+            <FooterNav />
+          </Container>
+        </MAppShell.Footer>
+      </MAppShell>
+    </ModalsProvider>
   );
 }
 

@@ -1,4 +1,5 @@
 import UrlPathContext from '@/contexts/UrlPathContext';
+
 import type { ReactNode } from 'react';
 
 type UrlPathProviderProps = {

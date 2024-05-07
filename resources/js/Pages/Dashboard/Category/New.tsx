@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Anchor,
   Container,
@@ -13,7 +13,6 @@ import {
   ScrollArea,
   Select,
   Textarea,
-  UnstyledButton,
   rem,
 } from '@mantine/core';
 import {
@@ -24,9 +23,10 @@ import {
   isInRange,
   matches,
 } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { PageHeader, Surface, AppShell } from '@/Components/Dashboard';
 import { Head, Link, usePage, router } from '@inertiajs/react';
-import { IconCategory2 } from '@tabler/icons-react';
+import { IconCategory2, IconCheck } from '@tabler/icons-react';
 import { UrlPathProvider, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
 import { STRINGS } from '@/i18n';
@@ -75,15 +75,21 @@ interface FormValuesTypes {
 
 interface PublishProps {
   form: UseFormReturnType<FormValuesTypes>;
+  loading?: boolean;
 }
 
-function Publish({ form }: PublishProps) {
+function Publish({ form, loading }: PublishProps) {
   return (
     <Group justify="space-between" py="xs" px="md">
-      <UnstyledButton c="red.9" onClick={() => form.reset()}>
+      <Button
+        color="red"
+        variant="subtle"
+        onClick={() => form.reset()}
+        disabled={loading}
+      >
         Clear
-      </UnstyledButton>
-      <Button variant="filled" type="submit">
+      </Button>
+      <Button variant="filled" type="submit" loading={loading}>
         Add
       </Button>
     </Group>
@@ -93,9 +99,10 @@ function Publish({ form }: PublishProps) {
 interface ParentCategoryProps {
   form: UseFormReturnType<FormValuesTypes>;
   data?: ComboboxItem[];
+  disabled?: boolean;
 }
 
-function ParentCategory({ data, form }: ParentCategoryProps) {
+function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
   data = data ?? [];
 
   data.unshift({ value: '0', label: 'None' });
@@ -122,6 +129,7 @@ function ParentCategory({ data, form }: ParentCategoryProps) {
           searchable
           nothingFoundMessage="Nothing found..."
           allowDeselect={false}
+          disabled={disabled}
           mt="md"
           key={form.key('parent')}
           {...form.getInputProps('parent')}
@@ -133,6 +141,7 @@ function ParentCategory({ data, form }: ParentCategoryProps) {
 
 export const NewCategory = ({ pathname }: NewPostProps) => {
   const isNotEmpty = _isNotEmpty();
+  const [loading, setLoading] = useState<boolean>(false);
   const { errors } = usePage().props;
   const form = useForm<FormValuesTypes>({
     mode: 'uncontrolled',
@@ -180,7 +189,23 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    router.post('/dashboard/category/new', values as unknown as FormData);
+    router.post('/dashboard/category/new', values as unknown as FormData, {
+      onStart: () => setLoading(true),
+      onError: () => setLoading(false),
+      onSuccess: () => {
+        form.reset();
+        setLoading(false);
+        notifications.show({
+          withCloseButton: true,
+          autoClose: 5000,
+          title: 'Success',
+          message: 'Category added',
+          color: 'green',
+          icon: <IconCheck />,
+          withBorder: true,
+        });
+      },
+    });
   };
 
   useEffect(() => {
@@ -212,6 +237,7 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
                             }
                             placeholder="Enter title here"
                             withAsterisk
+                            disabled={loading}
                             key={form.key('name')}
                             {...form.getInputProps('name')}
                           />
@@ -223,12 +249,14 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
                               />
                             }
                             placeholder="Enter slug here"
+                            disabled={loading}
                             key={form.key('slug')}
                             {...form.getInputProps('slug')}
                           />
                           <Textarea
                             label="Description"
                             placeholder="Enter description here"
+                            disabled={loading}
                             key={form.key('description')}
                             {...form.getInputProps('description')}
                           />
@@ -241,10 +269,11 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
                   <ScrollArea type="always" scrollbars="y" offsetScrollbars>
                     <Accordion multiple defaultValue={['parent']}>
                       <Surface component={Paper} {...PAPER_PROPS}>
-                        <Publish form={form} />
+                        <Publish form={form} loading={loading} />
                         <ParentCategory
                           form={form}
                           data={gParentCategories(50)}
+                          disabled={loading}
                         />
                       </Surface>
                     </Accordion>
