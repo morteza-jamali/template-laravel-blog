@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-  public function render(Request $request, ?string $id = null)
+  public function render(Request $request, ?string $id = null, ...$props)
   {
     $pathname = $request->path();
 
@@ -26,6 +26,14 @@ class DashboardController extends Controller
 
     return Inertia::render($view, [
       'pathname' => $pathname,
+      ...$props[0],
+    ]);
+  }
+
+  public function renderCategory(Request $request)
+  {
+    return $this->render($request, null, [
+      'categories' => Category::select('ID', 'name')->get()->toArray(),
     ]);
   }
 

@@ -25,7 +25,7 @@ Route::get('/dashboard/post/all', [DashboardController::class, 'render'])->name(
 // Dashboard/Category routes
 Route::get('/dashboard/category/new', [
   DashboardController::class,
-  'render',
+  'renderCategory',
 ])->name('dashboard.category.new');
 Route::post('/dashboard/category/new', [
   DashboardController::class,

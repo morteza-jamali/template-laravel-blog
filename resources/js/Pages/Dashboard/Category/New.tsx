@@ -30,7 +30,6 @@ import { IconCategory2, IconCheck } from '@tabler/icons-react';
 import { UrlPathProvider, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
 import { STRINGS } from '@/i18n';
-import { gParentCategories } from '@/faker/ParentCategories';
 
 import type { ComboboxItem } from '@mantine/core';
 
@@ -44,6 +43,11 @@ const items = [
     {item.title}
   </Anchor>
 ));
+
+interface CategoryItem {
+  ID: number;
+  name: string;
+}
 
 const FIELDS_CONDITIONS = {
   NAME: {
@@ -64,6 +68,7 @@ const PAPER_PROPS: PaperProps = {
 
 interface NewPostProps {
   pathname: string;
+  categories: CategoryItem[];
 }
 
 interface FormValuesTypes {
@@ -126,6 +131,7 @@ function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
           data={data}
           withScrollArea={false}
           styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
+          comboboxProps={{ shadow: 'md' }}
           searchable
           nothingFoundMessage="Nothing found..."
           allowDeselect={false}
@@ -139,7 +145,11 @@ function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
   );
 }
 
-export const NewCategory = ({ pathname }: NewPostProps) => {
+export const NewCategory = ({ pathname, categories }: NewPostProps) => {
+  const categories_data = categories.map(({ ID, name }) => ({
+    value: `${ID}`,
+    label: name,
+  }));
   const isNotEmpty = _isNotEmpty();
   const [loading, setLoading] = useState<boolean>(false);
   const { errors } = usePage().props;
@@ -276,7 +286,7 @@ export const NewCategory = ({ pathname }: NewPostProps) => {
                         <Publish form={form} loading={loading} />
                         <ParentCategory
                           form={form}
-                          data={gParentCategories(50)}
+                          data={categories_data}
                           disabled={loading}
                         />
                       </Surface>
