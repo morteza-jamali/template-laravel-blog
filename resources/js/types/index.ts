@@ -50,3 +50,14 @@ export type Invoices = {
   client_name: string;
   client_company: string;
 };
+
+export type Category = {
+  ID: number;
+  name: string;
+  slug: string;
+  description: string;
+  parent: number;
+  count: number;
+  created_at: string;
+  updated_at: string;
+};

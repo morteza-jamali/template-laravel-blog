@@ -18,7 +18,7 @@ return new class extends Migration {
       $table->longText('content');
       $table->text('cover');
       $table->string('status', 20)->default('publish');
-      $table->timestamps();
+      $table->timestampsTz();
     });
   }
 

@@ -34,10 +34,17 @@ class DashboardController extends Controller
     return Inertia::render($view, $data);
   }
 
-  public function renderCategory(Request $request)
+  public function renderNewCategory(Request $request)
   {
     return $this->render($request, null, [
       'categories' => Category::select('ID', 'name')->get()->toArray(),
+    ]);
+  }
+
+  public function renderAllCategory(Request $request)
+  {
+    return $this->render($request, null, [
+      'categories' => Category::all()->toArray(),
     ]);
   }
 

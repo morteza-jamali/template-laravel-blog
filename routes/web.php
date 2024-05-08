@@ -25,7 +25,7 @@ Route::get('/dashboard/post/all', [DashboardController::class, 'render'])->name(
 // Dashboard/Category routes
 Route::get('/dashboard/category/new', [
   DashboardController::class,
-  'renderCategory',
+  'renderNewCategory',
 ])->name('dashboard.category.new');
 Route::post('/dashboard/category/new', [
   DashboardController::class,
@@ -37,7 +37,7 @@ Route::get('/dashboard/category/edit/{id}', [
 ])->name('dashboard.category.edit');
 Route::get('/dashboard/category/all', [
   DashboardController::class,
-  'render',
+  'renderAllCategory',
 ])->name('dashboard.category.all');
 
 // Dashboard/Tags routes

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   ActionIcon,
   Anchor,
@@ -8,14 +9,24 @@ import {
   PaperProps,
   Stack,
   Text,
+  Flex,
+  UnstyledButton,
+  TextInput,
+  Tooltip,
 } from '@mantine/core';
 import { Head, Link } from '@inertiajs/react';
-import { InvoicesTable, PageHeader, AppShell } from '@/Components/Dashboard';
-import InvoicesData from '@/mocks/Invoices.json';
-import { IconDotsVertical, IconPlus } from '@tabler/icons-react';
-// import { Metadata } from 'next';
+import { PageHeader, AppShell } from '@/Components/Dashboard';
+import { DataTable, DataTableProps } from '@/Components/Global';
+import {
+  IconDotsVertical,
+  IconPlus,
+  IconSearch,
+  IconTrashX,
+  IconEdit,
+} from '@tabler/icons-react';
 import ROUTES from '@/routes';
-import { useFetchData } from '@/hooks';
+
+import type { Category } from '@/types';
 
 const PAGE_TITLE = 'All Posts';
 const items = [
@@ -34,12 +45,65 @@ const PAPER_PROPS: PaperProps = {
   radius: 'md',
 };
 
-export const AllPosts = () => {
-  const {
-    data: invoicesData,
-    loading: invoicesLoading,
-    error: invoicesError,
-  } = useFetchData('/mocks/Invoices.json');
+interface AllCategoriesProps {
+  pathname: string;
+  categories: Category[];
+}
+
+export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
+  console.log(categories);
+  console.log(pathname);
+
+  const ICON_SIZE = 18;
+  const [query, setQuery] = useState('');
+  const columns: DataTableProps<Category>['columns'] = [
+    {
+      accessor: 'name',
+      render: ({ name }) => {
+        return (
+          <Flex component={UnstyledButton} gap="xs" align="center">
+            <Stack gap={1}>
+              <Text fw={600}>{name}</Text>
+            </Stack>
+          </Flex>
+        );
+      },
+      sortable: true,
+      filter: (
+        <TextInput
+          label="Name"
+          description="Show category whose names include the specified text"
+          placeholder="Search category..."
+          leftSection={<IconSearch size={16} />}
+          value={query}
+          onChange={(e) => setQuery(e.currentTarget.value)}
+        />
+      ),
+      filtering: query !== '',
+    },
+    {
+      accessor: 'publish_date',
+      title: 'Publish Date',
+    },
+    {
+      accessor: '',
+      title: 'Actions',
+      render: (item: any) => (
+        <Group gap="sm">
+          <Tooltip label="Delete">
+            <ActionIcon color="red">
+              <IconTrashX size={ICON_SIZE} />
+            </ActionIcon>
+          </Tooltip>
+          <Tooltip label="Edit">
+            <ActionIcon>
+              <IconEdit size={ICON_SIZE} />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -68,11 +132,15 @@ export const AllPosts = () => {
                 <IconDotsVertical size={18} />
               </ActionIcon>
             </Group>
-            <InvoicesTable
-              data={invoicesData}
-              error={invoicesError}
-              loading={invoicesLoading}
-            />
+            {/* <DataTable
+              data={categories}
+              columns={columns}
+              query={query}
+              sort_status={{
+                columnAccessor: 'name',
+                direction: 'asc',
+              }}
+            /> */}
           </Paper>
         </Stack>
       </Container>
@@ -80,6 +148,6 @@ export const AllPosts = () => {
   );
 };
 
-AllPosts.layout = (page: any) => <AppShell children={page} />;
+AllCategories.layout = (page: any) => <AppShell children={page} />;
 
-export default AllPosts;
+export default AllCategories;

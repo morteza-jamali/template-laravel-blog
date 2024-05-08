@@ -31,6 +31,7 @@ import { UrlPathProvider, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
 import { STRINGS } from '@/i18n';
 
+import type { Category } from '@/types';
 import type { ComboboxItem } from '@mantine/core';
 
 const pageTitle: string = 'Add New Category';
@@ -43,11 +44,6 @@ const items = [
     {item.title}
   </Anchor>
 ));
-
-interface CategoryItem {
-  ID: number;
-  name: string;
-}
 
 const FIELDS_CONDITIONS = {
   NAME: {
@@ -68,7 +64,7 @@ const PAPER_PROPS: PaperProps = {
 
 interface NewPostProps {
   pathname: string;
-  categories: CategoryItem[];
+  categories: Pick<Category, 'ID' | 'name'>[];
 }
 
 interface FormValuesTypes {

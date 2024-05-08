@@ -17,7 +17,7 @@ return new class extends Migration {
       $table->longText('description')->nullable();
       $table->bigInteger('parent')->unsigned()->default(0);
       $table->bigInteger('count')->unsigned()->default(0);
-      $table->timestamps();
+      $table->timestampsTz();
     });
   }
 
