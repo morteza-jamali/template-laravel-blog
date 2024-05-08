@@ -23,11 +23,15 @@ class DashboardController extends Controller
     $pathname = Str::replace('/', '_%_', $pathname);
     $view = Str::replace('%', '/', Str::studly($pathname));
     $pathname = Str::replace('_%_', '.', $pathname);
-
-    return Inertia::render($view, [
+    $data = [
       'pathname' => $pathname,
-      ...$props[0],
-    ]);
+    ];
+
+    foreach ($props as $p) {
+      $data = [...$data, ...$p];
+    }
+
+    return Inertia::render($view, $data);
   }
 
   public function renderCategory(Request $request)
