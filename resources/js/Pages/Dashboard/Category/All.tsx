@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { Head, Link } from '@inertiajs/react';
 import { PageHeader, AppShell } from '@/Components/Dashboard';
-import { DataTable, DataTableProps } from '@/Components/Global';
+import { DataTable, DataTableProps } from '@/Components/Global/DataTable';
 import {
   IconDotsVertical,
   IconPlus,
