@@ -37,7 +37,7 @@ class DashboardController extends Controller
   public function renderNewCategory(Request $request)
   {
     return $this->render($request, null, [
-      'categories' => Category::select('ID', 'name')->get()->toArray(),
+      'categories' => Category::select('id', 'name')->get()->toArray(),
     ]);
   }
 

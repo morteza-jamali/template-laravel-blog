@@ -52,11 +52,13 @@ interface AllCategoriesProps {
 
 export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
   console.log(categories);
-  console.log(pathname);
 
   const ICON_SIZE = 18;
   const [query, setQuery] = useState('');
   const columns: DataTableProps<Category>['columns'] = [
+    {
+      accessor: 'id',
+    },
     {
       accessor: 'name',
       render: ({ name }) => {
@@ -82,8 +84,22 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
       filtering: query !== '',
     },
     {
-      accessor: 'publish_date',
-      title: 'Publish Date',
+      accessor: 'slug',
+    },
+    {
+      accessor: 'description',
+    },
+    {
+      accessor: 'parent',
+    },
+    {
+      accessor: 'count',
+    },
+    {
+      accessor: 'created_at',
+    },
+    {
+      accessor: 'updated_at',
     },
     {
       accessor: '',
@@ -132,7 +148,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
                 <IconDotsVertical size={18} />
               </ActionIcon>
             </Group>
-            {/* <DataTable
+            <DataTable
               data={categories}
               columns={columns}
               query={query}
@@ -140,7 +156,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
                 columnAccessor: 'name',
                 direction: 'asc',
               }}
-            /> */}
+            />
           </Paper>
         </Stack>
       </Container>

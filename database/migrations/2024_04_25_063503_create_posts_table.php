@@ -11,7 +11,7 @@ return new class extends Migration {
   public function up(): void
   {
     Schema::create('posts', function (Blueprint $table) {
-      $table->id('ID');
+      $table->id();
       $table->bigInteger('author')->unsigned()->default(0);
       $table->text('title');
       $table->string('slug', 200)->unique();

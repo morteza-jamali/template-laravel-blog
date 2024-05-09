@@ -26,7 +26,8 @@ export function DataTable<T>({
   sort_status,
   columns,
   query,
-}: DataTableProps<T>) {
+  ...props
+}: DataTableProps<T> & DTProps<T>) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
   const [selectedRecords, setSelectedRecords] = useState<
@@ -86,9 +87,11 @@ export function DataTable<T>({
       verticalSpacing="xs"
       striped
       highlightOnHover
+      // @ts-ignore
       columns={columns as any}
       records={records}
       selectedRecords={selectedRecords}
+      // @ts-ignore
       onSelectedRecordsChange={setSelectedRecords}
       totalRecords={
         debouncedQuery || selectedStatuses.length > 0
@@ -103,6 +106,7 @@ export function DataTable<T>({
       sortStatus={sortStatus as any}
       onSortStatusChange={setSortStatus as any}
       fetching={loading}
+      {...props}
     />
   );
 }

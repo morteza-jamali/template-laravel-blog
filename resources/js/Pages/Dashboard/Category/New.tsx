@@ -64,7 +64,7 @@ const PAPER_PROPS: PaperProps = {
 
 interface NewPostProps {
   pathname: string;
-  categories: Pick<Category, 'ID' | 'name'>[];
+  categories: Pick<Category, 'id' | 'name'>[];
 }
 
 interface FormValuesTypes {
@@ -142,8 +142,8 @@ function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
 }
 
 export const NewCategory = ({ pathname, categories }: NewPostProps) => {
-  const categories_data = categories.map(({ ID, name }) => ({
-    value: `${ID}`,
+  const categories_data = categories.map(({ id, name }) => ({
+    value: `${id}`,
     label: name,
   }));
   const isNotEmpty = _isNotEmpty();

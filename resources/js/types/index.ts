@@ -52,7 +52,7 @@ export type Invoices = {
 };
 
 export type Category = {
-  ID: number;
+  id: number;
   name: string;
   slug: string;
   description: string;
