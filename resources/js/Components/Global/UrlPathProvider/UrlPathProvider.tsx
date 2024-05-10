@@ -2,10 +2,10 @@ import UrlPathContext from '@/contexts/UrlPathContext';
 
 import type { ReactNode } from 'react';
 
-type UrlPathProviderProps = {
+export interface UrlPathProviderProps {
   pathname: string;
   children: ReactNode;
-};
+}
 
 export function UrlPathProvider({ pathname, children }: UrlPathProviderProps) {
   return (
