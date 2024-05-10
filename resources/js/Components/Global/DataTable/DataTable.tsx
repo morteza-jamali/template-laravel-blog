@@ -87,11 +87,9 @@ export function DataTable<T>({
       verticalSpacing="xs"
       striped
       highlightOnHover
-      // @ts-ignore
       columns={columns as any}
       records={records}
       selectedRecords={selectedRecords}
-      // @ts-ignore
       onSelectedRecordsChange={setSelectedRecords}
       totalRecords={
         debouncedQuery || selectedStatuses.length > 0

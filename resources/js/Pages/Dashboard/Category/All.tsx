@@ -9,13 +9,12 @@ import {
   PaperProps,
   Stack,
   Text,
-  Flex,
-  UnstyledButton,
   TextInput,
   Tooltip,
 } from '@mantine/core';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { PageHeader, AppShell } from '@/Components/Dashboard';
+import { PageLayout } from '@/Components/Global';
 import { DataTable, DataTableProps } from '@/Components/Global/DataTable';
 import {
   IconDotsVertical,
@@ -24,15 +23,16 @@ import {
   IconTrashX,
   IconEdit,
 } from '@tabler/icons-react';
+import { useContextMenu } from 'mantine-contextmenu';
 import ROUTES from '@/routes';
 
 import type { Category } from '@/types';
 
-const PAGE_TITLE = 'All Posts';
+const PAGE_TITLE = 'All Categories';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
-  { title: 'Posts', href: '#' },
-  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.POST.ALL },
+  { title: 'Categories', href: '#' },
+  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.CATEGORY.ALL },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
@@ -51,25 +51,16 @@ interface AllCategoriesProps {
 }
 
 export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
-  console.log(categories);
-
   const ICON_SIZE = 18;
+  const { showContextMenu } = useContextMenu();
   const [query, setQuery] = useState('');
   const columns: DataTableProps<Category>['columns'] = [
     {
       accessor: 'id',
+      sortable: true,
     },
     {
       accessor: 'name',
-      render: ({ name }) => {
-        return (
-          <Flex component={UnstyledButton} gap="xs" align="center">
-            <Stack gap={1}>
-              <Text fw={600}>{name}</Text>
-            </Stack>
-          </Flex>
-        );
-      },
       sortable: true,
       filter: (
         <TextInput
@@ -88,22 +79,28 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
     },
     {
       accessor: 'description',
+      ellipsis: true,
+      width: 200,
     },
     {
       accessor: 'parent',
     },
     {
       accessor: 'count',
+      sortable: true,
     },
     {
       accessor: 'created_at',
+      sortable: true,
     },
     {
       accessor: 'updated_at',
+      sortable: true,
     },
     {
       accessor: '',
       title: 'Actions',
+      width: 100,
       render: (item: any) => (
         <Group gap="sm">
           <Tooltip label="Delete">
@@ -122,8 +119,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
   ];
 
   return (
-    <>
-      <Head title={PAGE_TITLE} />
+    <PageLayout pathname={pathname} title={PAGE_TITLE}>
       <Container fluid>
         <Stack gap="lg">
           <PageHeader
@@ -151,16 +147,40 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
             <DataTable
               data={categories}
               columns={columns}
+              withTableBorder={true}
+              withColumnBorders={true}
               query={query}
               sort_status={{
                 columnAccessor: 'name',
                 direction: 'asc',
               }}
+              pinLastColumn
+              onRowContextMenu={({ record, event }) =>
+                showContextMenu([
+                  {
+                    key: 'view-company-details',
+                    icon: <IconEdit size={16} />,
+                    onClick: () => console.log('view-company-details'),
+                  },
+                  {
+                    key: 'edit-company-information',
+                    icon: <IconEdit size={16} />,
+                    onClick: () => console.log('edit-company-information'),
+                  },
+                  { key: 'divider' },
+                  {
+                    key: 'delete-company',
+                    icon: <IconEdit size={16} />,
+                    color: 'red',
+                    onClick: () => console.log('delete-company'),
+                  },
+                ])(event)
+              }
             />
           </Paper>
         </Stack>
       </Container>
-    </>
+    </PageLayout>
   );
 };
 
