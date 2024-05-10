@@ -24,6 +24,7 @@ import {
   IconEdit,
 } from '@tabler/icons-react';
 import { useContextMenu } from 'mantine-contextmenu';
+import { useDataTableColumns } from 'mantine-datatable';
 import ROUTES from '@/routes';
 
 import type { Category } from '@/types';
@@ -54,6 +55,11 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
   const ICON_SIZE = 18;
   const { showContextMenu } = useContextMenu();
   const [query, setQuery] = useState('');
+  const TABLE_KEY = 'all-categories-table';
+  const columnsSharedProps = {
+    resizable: true,
+    draggable: true,
+  };
   const columns: DataTableProps<Category>['columns'] = [
     {
       accessor: 'id',
@@ -73,14 +79,17 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
         />
       ),
       filtering: query !== '',
+      ...columnsSharedProps,
     },
     {
       accessor: 'slug',
+      ...columnsSharedProps,
     },
     {
       accessor: 'description',
       ellipsis: true,
       width: 200,
+      ...columnsSharedProps,
     },
     {
       accessor: 'parent',
@@ -92,10 +101,12 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
     {
       accessor: 'created_at',
       sortable: true,
+      ...columnsSharedProps,
     },
     {
       accessor: 'updated_at',
       sortable: true,
+      ...columnsSharedProps,
     },
     {
       accessor: '',
@@ -117,6 +128,10 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
       ),
     },
   ];
+  const { effectiveColumns } = useDataTableColumns<Category>({
+    key: TABLE_KEY,
+    columns,
+  });
 
   return (
     <PageLayout pathname={pathname} title={PAGE_TITLE}>
@@ -128,7 +143,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
             rightSection={
               <Button
                 component={Link}
-                href={ROUTES.DASHBOARD.POST.NEW}
+                href={ROUTES.DASHBOARD.CATEGORY.NEW}
                 leftSection={<IconPlus size={18} />}
               >
                 Add New
@@ -146,9 +161,10 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
             </Group>
             <DataTable
               data={categories}
-              columns={columns}
+              columns={effectiveColumns}
               withTableBorder={true}
               withColumnBorders={true}
+              storeColumnsKey={TABLE_KEY}
               query={query}
               sort_status={{
                 columnAccessor: 'name',
@@ -158,19 +174,17 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
               onRowContextMenu={({ record, event }) =>
                 showContextMenu([
                   {
-                    key: 'view-company-details',
+                    key: 'edit-category',
+                    title: 'Edit',
                     icon: <IconEdit size={16} />,
-                    onClick: () => console.log('view-company-details'),
-                  },
-                  {
-                    key: 'edit-company-information',
-                    icon: <IconEdit size={16} />,
+                    color: 'indigo',
                     onClick: () => console.log('edit-company-information'),
                   },
                   { key: 'divider' },
                   {
-                    key: 'delete-company',
-                    icon: <IconEdit size={16} />,
+                    key: 'delete-category',
+                    title: 'Delete',
+                    icon: <IconTrashX size={16} />,
                     color: 'red',
                     onClick: () => console.log('delete-company'),
                   },

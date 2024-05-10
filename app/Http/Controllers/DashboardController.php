@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 // use App\Models\Post;
 use App\Models\Category;
 use Inertia\Inertia;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Arr;
 
 class DashboardController extends Controller
 {
@@ -43,8 +45,22 @@ class DashboardController extends Controller
 
   public function renderAllCategory(Request $request)
   {
+    $categories = Arr::map(Category::all()->toArray(), function ($value) {
+      $new_value = $value;
+
+      foreach (['created_at', 'updated_at'] as $key) {
+        $new_value = Arr::set(
+          $new_value,
+          $key,
+          Carbon::parse($new_value[$key])->format('Y/m/d H:i:s'),
+        );
+      }
+
+      return $new_value;
+    });
+
     return $this->render($request, null, [
-      'categories' => Category::all()->toArray(),
+      'categories' => $categories,
     ]);
   }
 
