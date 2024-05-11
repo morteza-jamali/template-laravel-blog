@@ -10,6 +10,10 @@ import { ErrorAlert } from '@/Components/Dashboard';
 
 const PAGE_SIZES = [5, 10, 20];
 
+export interface FilterFnCallback<T> {
+  (param: Partial<T>): any;
+}
+
 export interface DataTableProps<T> {
   data: T[];
   sort_status: DTSortStatus;
@@ -17,6 +21,7 @@ export interface DataTableProps<T> {
   query: string;
   error?: ReactNode;
   loading?: boolean;
+  filterFn: (dq: string) => FilterFnCallback<T>;
 }
 
 export function DataTable<T>({
@@ -26,6 +31,7 @@ export function DataTable<T>({
   sort_status,
   columns,
   query,
+  filterFn,
   ...props
 }: DataTableProps<T> & DTProps<T>) {
   const [page, setPage] = useState(1);
@@ -38,7 +44,6 @@ export function DataTable<T>({
   );
   const [sortStatus, setSortStatus] = useState<DTSortStatus>(sort_status);
   const [debouncedQuery] = useDebouncedValue(query, 200);
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
   useEffect(() => {
     setPage(1);
@@ -51,33 +56,12 @@ export function DataTable<T>({
     const dd = sortStatus.direction === 'desc' ? d.reverse() : d;
     let filtered = dd.slice(from, to) as T[];
 
-    if (debouncedQuery || selectedStatuses.length) {
-      filtered = data
-        .filter((/*{ full_name, status }*/) => {
-          // if (
-          //   debouncedQuery !== '' &&
-          //   !full_name
-          //     .toLowerCase()
-          //     .includes(debouncedQuery.trim().toLowerCase())
-          // ) {
-          //   return false;
-          // }
-
-          // // @ts-ignore
-          // if (
-          //   selectedStatuses.length &&
-          //   !selectedStatuses.some((s) => s === status)
-          // ) {
-          //   return false;
-          // }
-
-          return true;
-        })
-        .slice(from, to);
+    if (debouncedQuery) {
+      filtered = data.filter(filterFn(debouncedQuery)).slice(from, to);
     }
 
     setRecords(filtered);
-  }, [sortStatus, data, page, pageSize, debouncedQuery, selectedStatuses]);
+  }, [sortStatus, data, page, pageSize, debouncedQuery]);
 
   return error ? (
     <ErrorAlert title="Error loading invoices" message={error.toString()} />
@@ -91,11 +75,7 @@ export function DataTable<T>({
       records={records}
       selectedRecords={selectedRecords}
       onSelectedRecordsChange={setSelectedRecords}
-      totalRecords={
-        debouncedQuery || selectedStatuses.length > 0
-          ? records.length
-          : data.length
-      }
+      totalRecords={debouncedQuery ? records.length : data.length}
       recordsPerPage={pageSize}
       page={page}
       onPageChange={(p) => setPage(p)}

@@ -11,6 +11,7 @@ import {
   Text,
   TextInput,
   Tooltip,
+  Center,
 } from '@mantine/core';
 import { Link } from '@inertiajs/react';
 import { PageHeader, AppShell } from '@/Components/Dashboard';
@@ -22,6 +23,7 @@ import {
   IconSearch,
   IconTrashX,
   IconEdit,
+  IconClick,
 } from '@tabler/icons-react';
 import { useContextMenu } from 'mantine-contextmenu';
 import { useDataTableColumns } from 'mantine-datatable';
@@ -53,7 +55,7 @@ interface AllCategoriesProps {
 
 export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
   const ICON_SIZE = 18;
-  const { showContextMenu } = useContextMenu();
+  const { showContextMenu, hideContextMenu } = useContextMenu();
   const [query, setQuery] = useState('');
   const TABLE_KEY = 'all-categories-table';
   const columnsSharedProps = {
@@ -110,10 +112,14 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
     },
     {
       accessor: '',
-      title: 'Actions',
-      width: 100,
+      title: (
+        <Center>
+          <IconClick size={16} />
+        </Center>
+      ),
+      width: '0%',
       render: (item: any) => (
-        <Group gap="sm">
+        <Group gap="sm" justify="center" wrap="nowrap">
           <Tooltip label="Delete">
             <ActionIcon color="red">
               <IconTrashX size={ICON_SIZE} />
@@ -171,6 +177,20 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
                 direction: 'asc',
               }}
               pinLastColumn
+              filterFn={(debouncedQuery) =>
+                ({ name }) => {
+                  if (
+                    debouncedQuery !== '' &&
+                    !(name as string)
+                      .toLowerCase()
+                      .includes(debouncedQuery.trim().toLowerCase())
+                  ) {
+                    return false;
+                  }
+
+                  return true;
+                }}
+              onScroll={hideContextMenu}
               onRowContextMenu={({ record, event }) =>
                 showContextMenu([
                   {
