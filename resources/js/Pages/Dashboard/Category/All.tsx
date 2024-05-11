@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 import {
   ActionIcon,
   Anchor,
@@ -12,8 +12,14 @@ import {
   TextInput,
   Tooltip,
   Center,
+  Modal,
+  Mark,
+  type ModalBaseProps,
 } from '@mantine/core';
-import { Link } from '@inertiajs/react';
+import { notifications } from '@mantine/notifications';
+import { useDisclosure } from '@mantine/hooks';
+import { Link, router } from '@inertiajs/react';
+import { type VisitOptions } from '@inertiajs/core';
 import { PageHeader, AppShell } from '@/Components/Dashboard';
 import { PageLayout } from '@/Components/Global';
 import { DataTable, DataTableProps } from '@/Components/Global/DataTable';
@@ -24,12 +30,13 @@ import {
   IconTrashX,
   IconEdit,
   IconClick,
+  IconCheck,
+  IconExclamationCircle,
 } from '@tabler/icons-react';
 import { useContextMenu } from 'mantine-contextmenu';
 import { useDataTableColumns } from 'mantine-datatable';
+import { type Category } from '@/types';
 import ROUTES from '@/routes';
-
-import type { Category } from '@/types';
 
 const PAGE_TITLE = 'All Categories';
 const items = [
@@ -53,15 +60,76 @@ interface AllCategoriesProps {
   categories: Category[];
 }
 
+interface DeleteCategoryProps {
+  id: number;
+  onSuccess: VisitOptions['onSuccess'];
+  onError: VisitOptions['onError'];
+}
+
+const deleteCategory =
+  ({ id, ...options }: DeleteCategoryProps) =>
+  () =>
+    router.delete(`${ROUTES.DASHBOARD.CATEGORY.ALL}/${id}`, options);
+
+interface DeleteModalProps {
+  id: number;
+  opened: ModalBaseProps['opened'];
+  onClose: ModalBaseProps['onClose'];
+  onYesCallback: MouseEventHandler<HTMLElement>;
+}
+
+const DeleteModal = ({ id, onYesCallback, ...rest }: DeleteModalProps) => {
+  return (
+    <Modal.Root centered closeOnClickOutside={false} {...rest}>
+      <Modal.Overlay blur={3} backgroundOpacity={0.55} />
+      <Modal.Content>
+        <Modal.Header>
+          <Modal.Title>
+            <Group gap={6}>
+              <IconTrashX color="red" />
+              <Text fw={700}>Delete category</Text>
+            </Group>
+          </Modal.Title>
+          <Modal.CloseButton />
+        </Modal.Header>
+        <Modal.Body>
+          <Stack gap={20}>
+            <Text>
+              Are you sure you want to delete category with ID <Mark>{id}</Mark>{' '}
+              ?
+            </Text>
+            <Group gap={4} justify="flex-end">
+              <Button variant="subtle" onClick={rest.onClose}>
+                No, I'm not sure
+              </Button>
+              <Button variant="filled" color="red" onClick={onYesCallback}>
+                Yes
+              </Button>
+            </Group>
+          </Stack>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
+  );
+};
+
 export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
   const ICON_SIZE = 18;
+  const [delete_id, setDeleteID] = useState<Category['id'] | null>(null);
   const { showContextMenu, hideContextMenu } = useContextMenu();
+  const [modal_opened, { open, close }] = useDisclosure(false);
   const [query, setQuery] = useState('');
   const TABLE_KEY = 'all-categories-table';
   const columnsSharedProps = {
     resizable: true,
     draggable: true,
   };
+
+  const openModal = (id: Category['id']) => {
+    setDeleteID(id);
+    open();
+  };
+
   const columns: DataTableProps<Category>['columns'] = [
     {
       accessor: 'id',
@@ -118,20 +186,22 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
         </Center>
       ),
       width: '0%',
-      render: (item: any) => (
-        <Group gap="sm" justify="center" wrap="nowrap">
-          <Tooltip label="Delete">
-            <ActionIcon color="red">
-              <IconTrashX size={ICON_SIZE} />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label="Edit">
-            <ActionIcon>
-              <IconEdit size={ICON_SIZE} />
-            </ActionIcon>
-          </Tooltip>
-        </Group>
-      ),
+      render: ({ id }: Category) => {
+        return (
+          <Group gap="sm" justify="center" wrap="nowrap">
+            <Tooltip label="Delete">
+              <ActionIcon color="red" onClick={() => openModal(id)}>
+                <IconTrashX size={ICON_SIZE} />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Edit">
+              <ActionIcon>
+                <IconEdit size={ICON_SIZE} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        );
+      },
     },
   ];
   const { effectiveColumns } = useDataTableColumns<Category>({
@@ -141,6 +211,37 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
 
   return (
     <PageLayout pathname={pathname} title={PAGE_TITLE}>
+      <DeleteModal
+        id={delete_id as Category['id']}
+        onClose={close}
+        opened={modal_opened}
+        onYesCallback={deleteCategory({
+          id: delete_id as Category['id'],
+          onError: (error) => {
+            notifications.show({
+              withCloseButton: true,
+              autoClose: 5000,
+              title: 'Error',
+              message: JSON.stringify(error),
+              color: 'red',
+              icon: <IconExclamationCircle />,
+              withBorder: true,
+            });
+          },
+          onSuccess: () => {
+            close();
+            notifications.show({
+              withCloseButton: true,
+              autoClose: 5000,
+              title: 'Success',
+              message: `Category with ID ${delete_id as Category['id']} deleted`,
+              color: 'green',
+              icon: <IconCheck />,
+              withBorder: true,
+            });
+          },
+        })}
+      />
       <Container fluid>
         <Stack gap="lg">
           <PageHeader
@@ -206,7 +307,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
                     title: 'Delete',
                     icon: <IconTrashX size={16} />,
                     color: 'red',
-                    onClick: () => console.log('delete-company'),
+                    onClick: () => openModal(record.id),
                   },
                 ])(event)
               }

@@ -83,6 +83,14 @@ class DashboardController extends Controller
 
     return to_route('dashboard.category.new');
   }
+
+  public function deleteCategory(Request $request, string $id)
+  {
+    // dd($id);
+
+    return to_route('dashboard.category.all');
+  }
+
   /**
    * Display a listing of the resource.
    */
