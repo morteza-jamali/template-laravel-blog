@@ -17,6 +17,8 @@ export interface FilterFnCallback<T> {
 export interface DataTableProps<T> {
   data: T[];
   sort_status: DTSortStatus;
+  selectedRecords: DTProps<T>['selectedRecords'];
+  onSelectedRecordsChange: DTProps<T>['onSelectedRecordsChange'];
   columns: DTProps<T>['columns'];
   query: string;
   error?: ReactNode;
@@ -36,9 +38,6 @@ export function DataTable<T>({
 }: DataTableProps<T> & DTProps<T>) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
-  const [selectedRecords, setSelectedRecords] = useState<
-    DataTableProps<T>['data']
-  >([]);
   const [records, setRecords] = useState<DataTableProps<T>['data']>(
     data.slice(0, pageSize),
   );
@@ -73,8 +72,6 @@ export function DataTable<T>({
       highlightOnHover
       columns={columns as any}
       records={records}
-      selectedRecords={selectedRecords}
-      onSelectedRecordsChange={setSelectedRecords}
       totalRecords={debouncedQuery ? records.length : data.length}
       recordsPerPage={pageSize}
       page={page}

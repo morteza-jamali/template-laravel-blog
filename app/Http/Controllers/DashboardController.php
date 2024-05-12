@@ -84,9 +84,9 @@ class DashboardController extends Controller
     return to_route('dashboard.category.new');
   }
 
-  public function deleteCategory(Request $request, string $id)
+  public function deleteCategory(Request $request)
   {
-    // dd($id);
+    Category::whereIn('id', $request->input('id'))->delete();
 
     return to_route('dashboard.category.all');
   }

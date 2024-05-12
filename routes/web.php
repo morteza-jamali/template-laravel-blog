@@ -35,7 +35,7 @@ Route::get('/dashboard/category/edit/{id}', [
   DashboardController::class,
   'render',
 ])->name('dashboard.category.edit');
-Route::delete('/dashboard/category/all/{id}', [
+Route::delete('/dashboard/category/all', [
   DashboardController::class,
   'deleteCategory',
 ])->name('dashboard.category.all.delete');
