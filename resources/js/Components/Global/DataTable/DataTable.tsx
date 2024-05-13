@@ -1,4 +1,10 @@
-import { ReactNode, useEffect, useState } from 'react';
+import {
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import {
   uniqBy,
   differenceBy,
@@ -21,6 +27,7 @@ export interface DataTableProps<T> {
   sort_status: DTSortStatus;
   selectedRecords: DTProps<T>['selectedRecords'];
   onSelectedRecordsChange: DTProps<T>['onSelectedRecordsChange'];
+  setAllSelectedRecords: Dispatch<SetStateAction<Array<T>>>;
   selectedAll: boolean;
   columns: DTProps<T>['columns'];
   query: string;
@@ -39,6 +46,7 @@ export function DataTable<T>({
   filterFn,
   selectedRecords,
   onSelectedRecordsChange,
+  setAllSelectedRecords,
   selectedAll,
 }: DataTableProps<T> & DTProps<T>) {
   const [page, setPage] = useState(1);
@@ -115,6 +123,16 @@ export function DataTable<T>({
     allRecordsSelected,
     unselectedRecords,
   ]);
+
+  useEffect(() => {
+    if (allRecordsSelected) {
+      setAllSelectedRecords(
+        differenceBy(data, unselectedRecords, (r) => (r as any).id),
+      );
+    } else {
+      setAllSelectedRecords(selectedRecords as T[]);
+    }
+  }, [selectedRecords]);
 
   return error ? (
     <ErrorAlert title="Error loading invoices" message={error.toString()} />

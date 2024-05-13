@@ -1,4 +1,4 @@
-import { MouseEventHandler, useState } from 'react';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import {
   ActionIcon,
   Anchor,
@@ -131,7 +131,10 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
     Category['id'] | Array<Category['id']>
   >([]);
   const { showContextMenu, hideContextMenu } = useContextMenu();
-  const [selectedRecords, setSelectedRecords] = useState<
+  const [currentSelectedRecords, setCurrentSelectedRecords] = useState<
+    DataTableProps<Category>['data']
+  >([]);
+  const [allSelectedRecords, setAllSelectedRecords] = useState<
     DataTableProps<Category>['data']
   >([]);
   const [selected_all, setSelectedAll] = useState<boolean>(false);
@@ -149,6 +152,22 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
     setDeleteID(new_id);
     open();
   };
+
+  const toggleAllRecords = () => setSelectedAll(!selected_all);
+
+  useEffect(() => {
+    if (allSelectedRecords.length === 0) {
+      setSelectedAll(false);
+
+      return;
+    }
+
+    if (allSelectedRecords.length === categories.length) {
+      setSelectedAll(true);
+
+      return;
+    }
+  }, [allSelectedRecords]);
 
   const columns: DataTableProps<Category>['columns'] = [
     {
@@ -233,8 +252,6 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
     columns,
   });
 
-  const toggleAllRecords = () => setSelectedAll(!selected_all);
-
   return (
     <PageLayout pathname={pathname} title={PAGE_TITLE}>
       <DeleteModal
@@ -255,7 +272,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
             });
           },
           onSuccess: () => {
-            setSelectedRecords([]);
+            setCurrentSelectedRecords([]);
             close();
             notifications.show({
               withCloseButton: true,
@@ -298,8 +315,10 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
                   variant="light"
                   color="red"
                   leftSection={<IconTrashX size={16} />}
-                  disabled={selectedRecords.length === 0}
-                  onClick={() => openModal(selectedRecords.map(({ id }) => id))}
+                  disabled={allSelectedRecords.length === 0}
+                  onClick={() =>
+                    openModal(allSelectedRecords.map(({ id }) => id))
+                  }
                 >
                   Delete All
                 </Button>
@@ -315,6 +334,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
                     )
                   }
                   onClick={toggleAllRecords}
+                  disabled={categories.length === 0}
                   ml={5}
                   tt="capitalize"
                 >
@@ -328,8 +348,9 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
               withTableBorder={true}
               withColumnBorders={true}
               storeColumnsKey={TABLE_KEY}
-              selectedRecords={selectedRecords}
-              onSelectedRecordsChange={setSelectedRecords}
+              selectedRecords={currentSelectedRecords}
+              onSelectedRecordsChange={setCurrentSelectedRecords}
+              setAllSelectedRecords={setAllSelectedRecords}
               selectedAll={selected_all}
               selectionTrigger="cell"
               query={query}
