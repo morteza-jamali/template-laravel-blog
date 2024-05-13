@@ -1,4 +1,4 @@
-import { MouseEventHandler, useState, useEffect } from 'react';
+import { MouseEventHandler, useState } from 'react';
 import {
   ActionIcon,
   Anchor,
@@ -31,6 +31,7 @@ import {
   IconClick,
   IconCheck,
   IconSelectAll,
+  IconDeselect,
   IconExclamationCircle,
 } from '@tabler/icons-react';
 import { useContextMenu } from 'mantine-contextmenu';
@@ -133,6 +134,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
   const [selectedRecords, setSelectedRecords] = useState<
     DataTableProps<Category>['data']
   >([]);
+  const [selected_all, setSelectedAll] = useState<boolean>(false);
   const [modal_opened, { open, close }] = useDisclosure(false);
   const [query, setQuery] = useState('');
   const TABLE_KEY = 'all-categories-table';
@@ -231,6 +233,8 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
     columns,
   });
 
+  const toggleAllRecords = () => setSelectedAll(!selected_all);
+
   return (
     <PageLayout pathname={pathname} title={PAGE_TITLE}>
       <DeleteModal
@@ -303,10 +307,18 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
                   size="compact-md"
                   variant="light"
                   color="blue"
-                  leftSection={<IconSelectAll size={16} />}
+                  leftSection={
+                    selected_all ? (
+                      <IconDeselect size={16} />
+                    ) : (
+                      <IconSelectAll size={16} />
+                    )
+                  }
+                  onClick={toggleAllRecords}
                   ml={5}
+                  tt="capitalize"
                 >
-                  Select All
+                  {(selected_all ? 'de' : '') + 'select All'}
                 </Button>
               </Button.Group>
             </Group>
@@ -318,6 +330,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
               storeColumnsKey={TABLE_KEY}
               selectedRecords={selectedRecords}
               onSelectedRecordsChange={setSelectedRecords}
+              selectedAll={selected_all}
               selectionTrigger="cell"
               query={query}
               sort_status={{

@@ -1,5 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import {
+  uniqBy,
+  differenceBy,
   DataTable as DT,
   DataTableProps as DTProps,
   DataTableSortStatus as DTSortStatus,
@@ -19,6 +21,7 @@ export interface DataTableProps<T> {
   sort_status: DTSortStatus;
   selectedRecords: DTProps<T>['selectedRecords'];
   onSelectedRecordsChange: DTProps<T>['onSelectedRecordsChange'];
+  selectedAll: boolean;
   columns: DTProps<T>['columns'];
   query: string;
   error?: ReactNode;
@@ -34,15 +37,52 @@ export function DataTable<T>({
   columns,
   query,
   filterFn,
-  ...props
+  selectedRecords,
+  onSelectedRecordsChange,
+  selectedAll,
 }: DataTableProps<T> & DTProps<T>) {
   const [page, setPage] = useState(1);
+  const [delete_initial_select, deleteInitialSelect] = useState<boolean>(true);
+  const [allRecordsSelected, setAllRecordsSelected] = useState(selectedAll);
+  const [unselectedRecords, setUnselectedRecords] = useState<Array<T>>([]);
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
   const [records, setRecords] = useState<DataTableProps<T>['data']>(
     data.slice(0, pageSize),
   );
   const [sortStatus, setSortStatus] = useState<DTSortStatus>(sort_status);
   const [debouncedQuery] = useDebouncedValue(query, 200);
+
+  const handleSelectedRecordsChange = (newSelectedRecords: Array<T>) => {
+    if (allRecordsSelected) {
+      const recordsToUnselect = records.filter(
+        (record) => !newSelectedRecords.includes(record),
+      );
+      setUnselectedRecords(
+        uniqBy(
+          [...unselectedRecords, ...recordsToUnselect],
+          (r) => (r as any).id,
+        ).filter((r) => !newSelectedRecords.includes(r)),
+      );
+    } else {
+      (onSelectedRecordsChange as any)(newSelectedRecords);
+    }
+  };
+
+  useEffect(() => {
+    if (delete_initial_select) {
+      deleteInitialSelect(false);
+
+      return;
+    }
+
+    if (allRecordsSelected) {
+      setAllRecordsSelected(false);
+      (onSelectedRecordsChange as any)([]);
+      setUnselectedRecords([]);
+    } else {
+      setAllRecordsSelected(true);
+    }
+  }, [selectedAll]);
 
   useEffect(() => {
     setPage(1);
@@ -60,7 +100,21 @@ export function DataTable<T>({
     }
 
     setRecords(filtered);
-  }, [sortStatus, data, page, pageSize, debouncedQuery]);
+
+    if (allRecordsSelected) {
+      (onSelectedRecordsChange as any)(
+        differenceBy(filtered, unselectedRecords, (r) => (r as any).id),
+      );
+    }
+  }, [
+    sortStatus,
+    data,
+    page,
+    pageSize,
+    debouncedQuery,
+    allRecordsSelected,
+    unselectedRecords,
+  ]);
 
   return error ? (
     <ErrorAlert title="Error loading invoices" message={error.toString()} />
@@ -81,7 +135,8 @@ export function DataTable<T>({
       sortStatus={sortStatus as any}
       onSortStatusChange={setSortStatus as any}
       fetching={loading}
-      {...props}
+      selectedRecords={selectedRecords}
+      onSelectedRecordsChange={handleSelectedRecordsChange}
     />
   );
 }
