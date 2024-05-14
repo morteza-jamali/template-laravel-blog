@@ -207,7 +207,7 @@ export const EditCategory = ({
 
   const handleSubmit = (values: typeof form.values) => {
     router.patch(
-      `/dashboard/category/edit/${category.id}`,
+      `${ROUTES.DASHBOARD.CATEGORY.EDIT}/${category.id}`,
       values as unknown as FormData,
       {
         onStart: () => setLoading(true),

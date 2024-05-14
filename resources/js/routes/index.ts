@@ -11,6 +11,11 @@ export const ROUTES = {
       ALL: '/dashboard/category/all',
       EDIT: '/dashboard/category/edit',
     },
+    TAG: {
+      NEW: '/dashboard/tag/new',
+      ALL: '/dashboard/tag/all',
+      EDIT: '/dashboard/tag/edit',
+    },
   },
 };
 

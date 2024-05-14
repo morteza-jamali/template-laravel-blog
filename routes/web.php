@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TagController;
 
 // Dashboard routes
 Route::get('/dashboard', [CategoryController::class, 'render'])->name(
@@ -47,13 +48,9 @@ Route::get('/dashboard/category/all', [
 ])->name('dashboard.category.all');
 
 // Dashboard/Tags routes
-Route::get('/dashboard/tag/new', [CategoryController::class, 'render'])->name(
-  'dashboard.tag.new',
+Route::delete('/dashboard/tag/all', [TagController::class, 'deleteTag'])->name(
+  'dashboard.tag.all.delete',
 );
-Route::get('/dashboard/tag/edit/{id}', [
-  CategoryController::class,
-  'render',
-])->name('dashboard.tag.edit');
-Route::get('/dashboard/tag/all', [CategoryController::class, 'render'])->name(
+Route::get('/dashboard/tag/all', [TagController::class, 'renderAllTag'])->name(
   'dashboard.tag.all',
 );

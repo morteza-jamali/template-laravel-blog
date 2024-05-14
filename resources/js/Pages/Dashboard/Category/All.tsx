@@ -101,9 +101,9 @@ const DeleteModal = ({ id, onYesCallback, ...rest }: DeleteModalProps) => {
         <Modal.Body>
           <Stack gap={20}>
             <Text>
-              Are you sure you want to delete
+              Are you sure you want to delete{' '}
               {Array.isArray(id) ? (
-                ' all selected categories ?'
+                'all selected categories ?'
               ) : (
                 <>
                   category with ID <Mark>{id}</Mark>?

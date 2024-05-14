@@ -4,6 +4,7 @@ import {
   IconPin,
   IconLayoutBoard,
   IconCategory,
+  IconTags,
 } from '@tabler/icons-react';
 import { Logo, UserProfileButton } from '@/Components/Dashboard';
 import UserProfileData from '@/mocks/UserProfile.json';
@@ -46,6 +47,20 @@ const mockdata = [
           {
             label: 'Add New',
             link: ROUTES.DASHBOARD.CATEGORY.NEW,
+          },
+        ],
+      },
+      {
+        label: 'Tags',
+        icon: IconTags,
+        links: [
+          {
+            label: 'Show All',
+            link: ROUTES.DASHBOARD.TAG.ALL,
+          },
+          {
+            label: 'Add New',
+            link: ROUTES.DASHBOARD.TAG.NEW,
           },
         ],
       },

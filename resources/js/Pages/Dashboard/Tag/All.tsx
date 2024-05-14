@@ -36,14 +36,14 @@ import {
 } from '@tabler/icons-react';
 import { useContextMenu } from 'mantine-contextmenu';
 import { useDataTableColumns } from 'mantine-datatable';
-import { type Category } from '@/types';
+import { type Tag } from '@/types';
 import ROUTES from '@/routes';
 
-const PAGE_TITLE = 'All Categories';
+const PAGE_TITLE = 'All Tags';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
-  { title: 'Categories', href: '#' },
-  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.CATEGORY.ALL },
+  { title: 'Tags', href: '#' },
+  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.TAG.ALL },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
@@ -56,21 +56,21 @@ const PAPER_PROPS: PaperProps = {
   radius: 'md',
 };
 
-interface AllCategoriesProps {
+interface AllTagsProps {
   pathname: string;
-  categories: Category[];
+  tags: Tag[];
 }
 
-interface DeleteCategoryProps {
+interface DeleteTagProps {
   id: number | Array<number>;
   onSuccess: VisitOptions['onSuccess'];
   onError: VisitOptions['onError'];
 }
 
-const deleteCategory =
-  ({ id, ...options }: DeleteCategoryProps) =>
+const deleteTag =
+  ({ id, ...options }: DeleteTagProps) =>
   () =>
-    router.delete(ROUTES.DASHBOARD.CATEGORY.ALL, {
+    router.delete(ROUTES.DASHBOARD.TAG.ALL, {
       data: {
         id: Array.isArray(id) ? id : [id],
       },
@@ -93,7 +93,7 @@ const DeleteModal = ({ id, onYesCallback, ...rest }: DeleteModalProps) => {
           <Modal.Title>
             <Group gap={6}>
               <IconTrashX color="red" />
-              <Text fw={700}>Delete category</Text>
+              <Text fw={700}>Delete tag</Text>
             </Group>
           </Modal.Title>
           <Modal.CloseButton />
@@ -101,12 +101,12 @@ const DeleteModal = ({ id, onYesCallback, ...rest }: DeleteModalProps) => {
         <Modal.Body>
           <Stack gap={20}>
             <Text>
-              Are you sure you want to delete
+              Are you sure you want to delete{' '}
               {Array.isArray(id) ? (
-                ' all selected categories ?'
+                'all selected tags ?'
               ) : (
                 <>
-                  category with ID <Mark>{id}</Mark>?
+                  tag with ID <Mark>{id}</Mark>?
                 </>
               )}
             </Text>
@@ -125,28 +125,26 @@ const DeleteModal = ({ id, onYesCallback, ...rest }: DeleteModalProps) => {
   );
 };
 
-export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
+export const AllTags = ({ tags, pathname }: AllTagsProps) => {
   const ICON_SIZE = 18;
-  const [delete_id, setDeleteID] = useState<
-    Category['id'] | Array<Category['id']>
-  >([]);
+  const [delete_id, setDeleteID] = useState<Tag['id'] | Array<Tag['id']>>([]);
   const { showContextMenu, hideContextMenu } = useContextMenu();
   const [currentSelectedRecords, setCurrentSelectedRecords] = useState<
-    DataTableProps<Category>['data']
+    DataTableProps<Tag>['data']
   >([]);
   const [allSelectedRecords, setAllSelectedRecords] = useState<
-    DataTableProps<Category>['data']
+    DataTableProps<Tag>['data']
   >([]);
   const [selected_all, setSelectedAll] = useState<boolean>(false);
   const [modal_opened, { open, close }] = useDisclosure(false);
   const [query, setQuery] = useState('');
-  const TABLE_KEY = 'all-categories-table';
+  const TABLE_KEY = 'all-tags-table';
   const columnsSharedProps = {
     resizable: true,
     draggable: true,
   };
 
-  const openModal = (id: Category['id'] | Array<Category['id']>) => {
+  const openModal = (id: Tag['id'] | Array<Tag['id']>) => {
     const new_id = Array.isArray(id) && id.length === 1 ? id[0] : id;
 
     setDeleteID(new_id);
@@ -162,14 +160,14 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
       return;
     }
 
-    if (allSelectedRecords.length === categories.length) {
+    if (allSelectedRecords.length === tags.length) {
       setSelectedAll(true);
 
       return;
     }
   }, [allSelectedRecords]);
 
-  const columns: DataTableProps<Category>['columns'] = [
+  const columns: DataTableProps<Tag>['columns'] = [
     {
       accessor: 'id',
       sortable: true,
@@ -180,8 +178,8 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
       filter: (
         <TextInput
           label="Name"
-          description="Show category whose names include the specified text"
-          placeholder="Search category..."
+          description="Show Tag whose names include the specified text"
+          placeholder="Search tag..."
           leftSection={<IconSearch size={16} />}
           value={query}
           onChange={(e) => setQuery(e.currentTarget.value)}
@@ -199,9 +197,6 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
       ellipsis: true,
       width: 200,
       ...columnsSharedProps,
-    },
-    {
-      accessor: 'parent',
     },
     {
       accessor: 'count',
@@ -225,7 +220,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
         </Center>
       ),
       width: '0%',
-      render: ({ id }: Category) => {
+      render: ({ id }: Tag) => {
         return (
           <Group gap="sm" justify="center" wrap="nowrap">
             <Tooltip label="Delete">
@@ -236,7 +231,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
             <Tooltip label="Edit">
               <ActionIcon
                 onClick={() =>
-                  router.visit(`${ROUTES.DASHBOARD.CATEGORY.EDIT}/${id}`)
+                  router.visit(`${ROUTES.DASHBOARD.TAG.EDIT}/${id}`)
                 }
               >
                 <IconEdit size={ICON_SIZE} />
@@ -247,7 +242,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
       },
     },
   ];
-  const { effectiveColumns } = useDataTableColumns<Category>({
+  const { effectiveColumns } = useDataTableColumns<Tag>({
     key: TABLE_KEY,
     columns,
   });
@@ -258,7 +253,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
         id={delete_id}
         onClose={close}
         opened={modal_opened}
-        onYesCallback={deleteCategory({
+        onYesCallback={deleteTag({
           id: delete_id,
           onError: (error) => {
             notifications.show({
@@ -279,8 +274,8 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
               autoClose: 5000,
               title: 'Success',
               message: Array.isArray(delete_id)
-                ? 'All selected categories deleted'
-                : `Category with ID ${delete_id} deleted`,
+                ? 'All selected tags deleted'
+                : `Tag with ID ${delete_id} deleted`,
               color: 'green',
               icon: <IconCheck />,
               withBorder: true,
@@ -296,7 +291,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
             rightSection={
               <Button
                 component={Link}
-                href={ROUTES.DASHBOARD.CATEGORY.NEW}
+                href={ROUTES.DASHBOARD.TAG.NEW}
                 leftSection={<IconPlus size={18} />}
               >
                 Add New
@@ -308,10 +303,10 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
               <Text>
                 {allSelectedRecords.length === 0
                   ? 'No'
-                  : allSelectedRecords.length === categories.length
+                  : allSelectedRecords.length === tags.length
                     ? `All`
                     : allSelectedRecords.length}{' '}
-                categories selected
+                tags selected
               </Text>
               <Button.Group>
                 <Button
@@ -338,7 +333,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
                     )
                   }
                   onClick={toggleAllRecords}
-                  disabled={categories.length === 0}
+                  disabled={tags.length === 0}
                   ml={5}
                   tt="capitalize"
                 >
@@ -347,7 +342,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
               </Button.Group>
             </Group>
             <DataTable
-              data={categories}
+              data={tags}
               columns={effectiveColumns}
               withTableBorder={true}
               withColumnBorders={true}
@@ -380,18 +375,16 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
               onRowContextMenu={({ record, event }) =>
                 showContextMenu([
                   {
-                    key: 'edit-category',
+                    key: 'edit-tag',
                     title: 'Edit',
                     icon: <IconEdit size={16} />,
                     color: 'indigo',
                     onClick: () =>
-                      router.visit(
-                        `${ROUTES.DASHBOARD.CATEGORY.EDIT}/${record.id}`,
-                      ),
+                      router.visit(`${ROUTES.DASHBOARD.TAG.EDIT}/${record.id}`),
                   },
                   { key: 'divider' },
                   {
-                    key: 'delete-category',
+                    key: 'delete-tag',
                     title: 'Delete',
                     icon: <IconTrashX size={16} />,
                     color: 'red',
@@ -407,6 +400,6 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
   );
 };
 
-AllCategories.layout = (page: any) => <AppShell children={page} />;
+AllTags.layout = (page: any) => <AppShell children={page} />;
 
-export default AllCategories;
+export default AllTags;
