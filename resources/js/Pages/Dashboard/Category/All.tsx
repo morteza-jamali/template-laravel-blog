@@ -306,8 +306,12 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
           <Paper {...PAPER_PROPS}>
             <Group justify="space-between" mb="md">
               <Text>
-                selected
-                {/* {selectedRecords.length === 0 ? 'No categories selected' : `${} categories selected`} */}
+                {allSelectedRecords.length === 0
+                  ? 'No'
+                  : allSelectedRecords.length === categories.length
+                    ? `All`
+                    : allSelectedRecords.length}{' '}
+                categories selected
               </Text>
               <Button.Group>
                 <Button

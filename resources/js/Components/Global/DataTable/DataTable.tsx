@@ -48,6 +48,7 @@ export function DataTable<T>({
   onSelectedRecordsChange,
   setAllSelectedRecords,
   selectedAll,
+  ...rest
 }: DataTableProps<T> & DTProps<T>) {
   const [page, setPage] = useState(1);
   const [delete_initial_select, deleteInitialSelect] = useState<boolean>(true);
@@ -155,6 +156,7 @@ export function DataTable<T>({
       fetching={loading}
       selectedRecords={selectedRecords}
       onSelectedRecordsChange={handleSelectedRecordsChange}
+      {...rest}
     />
   );
 }
