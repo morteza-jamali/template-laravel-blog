@@ -11,6 +11,23 @@ use App\Models\Tag;
 
 class TagController extends Controller
 {
+  private const TAG_VALIDATION_RULES = [
+    'name' => 'required|string|min:5',
+    'slug' => [
+      'required',
+      'min:5',
+      'max:200',
+      'unique:tags',
+      'regex:/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/i',
+    ],
+    'description' => 'string',
+  ];
+
+  private function validateTag(Request $request, array $rules)
+  {
+    return $request->validate($rules);
+  }
+
   public function render(Request $request, ?string $id = null, ...$props)
   {
     $pathname = $request->path();
@@ -33,6 +50,20 @@ class TagController extends Controller
     }
 
     return Inertia::render($view, $data);
+  }
+
+  public function renderNewTag(Request $request)
+  {
+    return $this->render($request);
+  }
+
+  public function addTag(Request $request)
+  {
+    $validated = $this->validateTag($request, static::TAG_VALIDATION_RULES);
+
+    Tag::create($validated);
+
+    return to_route('dashboard.tag.new');
   }
 
   public function renderAllTag(Request $request)

@@ -48,6 +48,12 @@ Route::get('/dashboard/category/all', [
 ])->name('dashboard.category.all');
 
 // Dashboard/Tags routes
+Route::get('/dashboard/tag/new', [TagController::class, 'renderNewTag'])->name(
+  'dashboard.tag.new',
+);
+Route::post('/dashboard/tag/new', [TagController::class, 'addTag'])->name(
+  'dashboard.tag.new.add',
+);
 Route::delete('/dashboard/tag/all', [TagController::class, 'deleteTag'])->name(
   'dashboard.tag.all.delete',
 );

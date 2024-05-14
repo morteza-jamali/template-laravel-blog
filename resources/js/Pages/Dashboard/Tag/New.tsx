@@ -11,10 +11,7 @@ import {
   Group,
   Button,
   ScrollArea,
-  Select,
   Textarea,
-  rem,
-  type ComboboxItem,
 } from '@mantine/core';
 import {
   useForm,
@@ -27,17 +24,17 @@ import {
 import { notifications } from '@mantine/notifications';
 import { PageHeader, Surface, AppShell } from '@/Components/Dashboard';
 import { Link, usePage, router } from '@inertiajs/react';
-import { IconCategory2, IconCheck } from '@tabler/icons-react';
+import { IconCheck } from '@tabler/icons-react';
 import { PageLayout, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
 import { STRINGS } from '@/i18n';
-import { type Category } from '@/types';
+import { type Tag } from '@/types';
 
-const PAGE_TITLE: string = 'Add New Category';
+const PAGE_TITLE: string = 'Add New Tag';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
-  { title: 'Categories', href: '#' },
-  { title: 'Add New', href: ROUTES.DASHBOARD.CATEGORY.NEW },
+  { title: 'Tags', href: '#' },
+  { title: 'Add New', href: ROUTES.DASHBOARD.TAG.NEW },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
@@ -52,25 +49,20 @@ const FIELDS_CONDITIONS = {
     MIN: 5,
     MAX: 200,
   },
-  PARENT: {
-    MIN: 0,
-  },
 };
 const PAPER_PROPS: PaperProps = {
   shadow: 'md',
   radius: 'md',
 };
 
-interface NewCategoryProps {
+interface NewTagProps {
   pathname: string;
-  categories: Array<Pick<Category, 'id' | 'name'>>;
 }
 
 interface FormValuesTypes {
   name: string;
   slug?: string;
   description?: string;
-  parent?: string;
 }
 
 interface PublishProps {
@@ -96,55 +88,7 @@ function Publish({ form, loading }: PublishProps) {
   );
 }
 
-interface ParentCategoryProps {
-  form: UseFormReturnType<FormValuesTypes>;
-  data?: ComboboxItem[];
-  disabled?: boolean;
-}
-
-function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
-  data = data ?? [];
-
-  data.unshift({ value: '0', label: 'None' });
-
-  return (
-    <Accordion.Item value="parent">
-      <Accordion.Control
-        icon={
-          <IconCategory2
-            style={{
-              width: rem(20),
-              height: rem(20),
-            }}
-          />
-        }
-      >
-        Parent Category
-      </Accordion.Control>
-      <Accordion.Panel>
-        <Select
-          data={data}
-          withScrollArea={false}
-          styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
-          comboboxProps={{ shadow: 'md' }}
-          searchable
-          nothingFoundMessage="Nothing found..."
-          allowDeselect={false}
-          disabled={disabled}
-          mt="md"
-          key={form.key('parent')}
-          {...form.getInputProps('parent')}
-        />
-      </Accordion.Panel>
-    </Accordion.Item>
-  );
-}
-
-export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
-  const categories_data = categories.map(({ id, name }) => ({
-    value: `${id}`,
-    label: name,
-  }));
+export const NewTag = ({ pathname }: NewTagProps) => {
   const isNotEmpty = _isNotEmpty();
   const [loading, setLoading] = useState<boolean>(false);
   const { errors } = usePage().props;
@@ -152,7 +96,6 @@ export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
     mode: 'uncontrolled',
     initialValues: {
       name: '',
-      parent: '0',
     },
     validate: {
       name: (value) => {
@@ -185,16 +128,11 @@ export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
 
         return null;
       },
-      parent: (value) =>
-        isInRange(
-          { min: FIELDS_CONDITIONS.PARENT.MIN },
-          STRINGS.MIN_NUM('parent', FIELDS_CONDITIONS.PARENT.MIN),
-        )(parseInt(value ?? '')),
     },
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    router.post('/dashboard/category/new', values as unknown as FormData, {
+    router.post(ROUTES.DASHBOARD.TAG.NEW, values as unknown as FormData, {
       onStart: () => setLoading(true),
       onError: (errs) => {
         console.log(`[DEBUG]: `, errs);
@@ -208,7 +146,7 @@ export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
           withCloseButton: true,
           autoClose: 5000,
           title: 'Success',
-          message: 'Category added',
+          message: 'Tag added',
           color: 'green',
           icon: <IconCheck />,
           withBorder: true,
@@ -275,14 +213,9 @@ export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
                 <ScrollArea type="always" scrollbars="y" offsetScrollbars>
-                  <Accordion multiple defaultValue={['parent']}>
+                  <Accordion>
                     <Surface component={Paper} {...PAPER_PROPS}>
                       <Publish form={form} loading={loading} />
-                      <ParentCategory
-                        form={form}
-                        data={categories_data}
-                        disabled={loading}
-                      />
                     </Surface>
                   </Accordion>
                 </ScrollArea>
@@ -295,6 +228,6 @@ export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
   );
 };
 
-NewCategory.layout = (page: any) => <AppShell children={page} />;
+NewTag.layout = (page: any) => <AppShell children={page} />;
 
-export default NewCategory;
+export default NewTag;
