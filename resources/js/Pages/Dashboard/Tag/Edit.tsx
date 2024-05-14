@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Anchor,
   Container,
@@ -10,127 +10,109 @@ import {
   Accordion,
   Group,
   Button,
-  Radio,
-  Tabs,
-  Checkbox,
-  FileInput,
   ScrollArea,
-  TagsInput,
+  Select,
+  Textarea,
   rem,
+  type ComboboxItem,
 } from '@mantine/core';
 import {
-  PageHeader,
-  Surface,
-  TextEditor,
-  AppShell,
-} from '@/Components/Dashboard';
-import { Head, Link } from '@inertiajs/react';
-import {
-  IconCategory,
-  IconTags,
-  IconStackPush,
-  IconPhoto,
-} from '@tabler/icons-react';
-import { UrlPathProvider } from '@/Components/Global';
+  useForm,
+  UseFormReturnType,
+  isNotEmpty as _isNotEmpty,
+  hasLength,
+  isInRange,
+  matches,
+} from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { PageHeader, Surface, AppShell } from '@/Components/Dashboard';
+import { Link, usePage, router } from '@inertiajs/react';
+import { IconCategory2, IconCheck } from '@tabler/icons-react';
+import { PageLayout, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
+import { STRINGS } from '@/i18n';
+import { type Category } from '@/types';
 
-const pageTitle: string = 'Add New Post';
+const PAGE_TITLE: string = 'Edit Category';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
-  { title: 'Posts', href: '#' },
-  { title: 'Add New', href: ROUTES.DASHBOARD.POST.NEW },
+  { title: 'Categories', href: '#' },
+  { title: 'Edit', href: ROUTES.DASHBOARD.CATEGORY.ALL },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
   </Anchor>
 ));
 
+const FIELDS_CONDITIONS = {
+  NAME: {
+    MIN: 5,
+  },
+  SLUG: {
+    MIN: 5,
+    MAX: 200,
+  },
+  PARENT: {
+    MIN: 0,
+  },
+};
 const PAPER_PROPS: PaperProps = {
   shadow: 'md',
   radius: 'md',
 };
 
-const allcategoriesmock = [
-  'cat 1',
-  'programming',
-  'development',
-  'computer',
-  'physics',
-  'chemistry',
-  'website',
-  'smart phone',
-];
-
-type NewPostProps = {
+interface EditCategoryProps {
   pathname: string;
-};
+  category: Category;
+  categories: Array<Pick<Category, 'id' | 'name'>>;
+}
 
-function Publish() {
-  const [statusvalue, setStatusValue] = useState('draft');
-  const [visibilityvalue, setVisibilityValue] = useState('public');
+interface FormValuesTypes {
+  name: string;
+  slug?: string;
+  description?: string;
+  parent?: string;
+}
 
+interface PublishProps {
+  form: UseFormReturnType<FormValuesTypes>;
+  loading?: boolean;
+}
+
+function Publish({ form, loading }: PublishProps) {
   return (
-    <Stack gap={0}>
-      <Group justify="space-between" py="xs" px="md">
-        <Anchor component="button" c="red.9" underline="never">
-          Move to Trash
-        </Anchor>
-        <Button variant="filled">Publish</Button>
-      </Group>
-      <Accordion.Item value="publish">
-        <Accordion.Control
-          icon={
-            <IconStackPush
-              style={{
-                width: rem(20),
-                height: rem(20),
-              }}
-            />
-          }
-        >
-          Publish
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Stack>
-            <Group justify="space-between">
-              <Button variant="default">Save Draft</Button>
-              <Button variant="default">Preview</Button>
-            </Group>
-            <Radio.Group
-              name="documentStatus"
-              label="Status"
-              value={statusvalue}
-              onChange={setStatusValue}
-            >
-              <Group mt="xs">
-                <Radio value="draft" label="Draft" />
-                <Radio value="published" label="Published" />
-              </Group>
-            </Radio.Group>
-            <Radio.Group
-              name="documentVisibility"
-              label="Visibility"
-              value={visibilityvalue}
-              onChange={setVisibilityValue}
-            >
-              <Group mt="xs">
-                <Radio value="public" label="Public" />
-                <Radio value="private" label="Private" />
-              </Group>
-            </Radio.Group>
-          </Stack>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Stack>
+    <Group justify="space-between" py="xs" px="md">
+      <Button
+        color="red"
+        variant="subtle"
+        onClick={() => form.reset()}
+        disabled={loading}
+      >
+        Reset
+      </Button>
+      <Button variant="filled" type="submit" loading={loading}>
+        Update
+      </Button>
+    </Group>
   );
 }
 
-function Categories() {
+interface ParentCategoryProps {
+  form: UseFormReturnType<FormValuesTypes>;
+  data?: ComboboxItem[];
+  disabled?: boolean;
+}
+
+function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
+  data = data ?? [];
+
+  data.unshift({ value: '0', label: 'None' });
+
   return (
-    <Accordion.Item value="categories">
+    <Accordion.Item value="parent">
       <Accordion.Control
         icon={
-          <IconCategory
+          <IconCategory2
             style={{
               width: rem(20),
               height: rem(20),
@@ -138,106 +120,130 @@ function Categories() {
           />
         }
       >
-        Categories
+        Parent Category
       </Accordion.Control>
       <Accordion.Panel>
-        <Stack gap={0}>
-          <Tabs defaultValue="allcategories">
-            <Tabs.List>
-              <Tabs.Tab value="allcategories">All Categories</Tabs.Tab>
-              <Tabs.Tab value="mostused">Most Used</Tabs.Tab>
-            </Tabs.List>
-
-            <Tabs.Panel value="allcategories">
-              {allcategoriesmock.map((catitem, key) => (
-                <Checkbox label={catitem} key={key} my={2} />
-              ))}
-            </Tabs.Panel>
-            <Tabs.Panel value="mostused">
-              {allcategoriesmock.map((catitem, key) => (
-                <Checkbox label={catitem} key={key} my={2} />
-              ))}
-            </Tabs.Panel>
-          </Tabs>
-          <Group justify="flex-start">
-            <Anchor component="button" underline="never">
-              + Add New Category
-            </Anchor>
-          </Group>
-        </Stack>
-      </Accordion.Panel>
-    </Accordion.Item>
-  );
-}
-
-function Tags() {
-  return (
-    <Accordion.Item value="tags">
-      <Accordion.Control
-        icon={
-          <IconTags
-            style={{
-              width: rem(20),
-              height: rem(20),
-            }}
-          />
-        }
-      >
-        Tags
-      </Accordion.Control>
-      <Accordion.Panel>
-        <TagsInput
-          description="Add up to 20 tags"
-          placeholder="Enter tag"
-          maxTags={20}
+        <Select
+          data={data}
+          withScrollArea={false}
+          styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
+          comboboxProps={{ shadow: 'md' }}
+          searchable
+          nothingFoundMessage="Nothing found..."
+          allowDeselect={false}
+          disabled={disabled}
+          mt="md"
+          key={form.key('parent')}
+          {...form.getInputProps('parent')}
         />
       </Accordion.Panel>
     </Accordion.Item>
   );
 }
 
-function Cover() {
-  return (
-    <Accordion.Item value="cover">
-      <Accordion.Control
-        icon={
-          <IconPhoto
-            style={{
-              width: rem(20),
-              height: rem(20),
-            }}
-          />
+export const EditCategory = ({
+  pathname,
+  categories,
+  category,
+}: EditCategoryProps) => {
+  const categories_data = categories.map(({ id, name }) => ({
+    value: `${id}`,
+    label: name,
+  }));
+  const isNotEmpty = _isNotEmpty();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { errors } = usePage().props;
+  const initialValues: FormValuesTypes = {
+    name: category.name,
+    parent: `${category.parent}`,
+    slug: category.slug,
+  };
+
+  if (category.description !== null) {
+    initialValues.description = category.description;
+  }
+
+  const form = useForm<FormValuesTypes>({
+    mode: 'uncontrolled',
+    initialValues,
+    validate: {
+      name: (value) => {
+        if (isNotEmpty(value) !== null) {
+          return STRINGS.REQUIRED_FIELD('name');
         }
-      >
-        Cover
-      </Accordion.Control>
-      <Accordion.Panel>
-        <Tabs defaultValue="url">
-          <Tabs.List>
-            <Tabs.Tab value="url">URL</Tabs.Tab>
-            <Tabs.Tab value="file">File</Tabs.Tab>
-          </Tabs.List>
 
-          <Tabs.Panel value="url">
-            <TextInput placeholder="Place link here" type="url" />
-          </Tabs.Panel>
-          <Tabs.Panel value="file">
-            <FileInput placeholder="Select file" />
-          </Tabs.Panel>
-        </Tabs>
-      </Accordion.Panel>
-    </Accordion.Item>
-  );
-}
+        if (hasLength({ min: FIELDS_CONDITIONS.NAME.MIN })(value) !== null) {
+          return STRINGS.MIN_CHAR('name', FIELDS_CONDITIONS.NAME.MIN);
+        }
 
-export const NewPost = ({ pathname }: NewPostProps) => {
+        return null;
+      },
+      slug: (value) => {
+        if (isNotEmpty(value) !== null) {
+          return STRINGS.REQUIRED_FIELD('slug');
+        }
+
+        if (matches(/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/)(value) !== null) {
+          return STRINGS.FORMAT('slug');
+        }
+
+        if (hasLength({ min: FIELDS_CONDITIONS.SLUG.MIN })(value) !== null) {
+          return STRINGS.MIN_CHAR('slug', FIELDS_CONDITIONS.SLUG.MIN);
+        }
+
+        if (hasLength({ max: FIELDS_CONDITIONS.SLUG.MAX })(value) !== null) {
+          return STRINGS.MAX_CHAR('slug', FIELDS_CONDITIONS.SLUG.MAX);
+        }
+
+        return null;
+      },
+      parent: (value) =>
+        isInRange(
+          { min: FIELDS_CONDITIONS.PARENT.MIN },
+          STRINGS.MIN_NUM('parent', FIELDS_CONDITIONS.PARENT.MIN),
+        )(parseInt(value ?? '')),
+    },
+  });
+
+  const handleSubmit = (values: typeof form.values) => {
+    router.patch(
+      `/dashboard/category/edit/${category.id}`,
+      values as unknown as FormData,
+      {
+        onStart: () => setLoading(true),
+        onError: (errs) => {
+          console.log(`[DEBUG]: `, errs);
+
+          setLoading(false);
+        },
+        onSuccess: () => {
+          setLoading(false);
+          notifications.show({
+            withCloseButton: true,
+            autoClose: 5000,
+            title: 'Success',
+            message: 'Category updated',
+            color: 'green',
+            icon: <IconCheck />,
+            withBorder: true,
+          });
+        },
+      },
+    );
+  };
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      form.setErrors(errors);
+    }
+  }, [errors]);
+
   return (
-    <>
-      <Head title={pageTitle} />
-      <UrlPathProvider pathname={pathname}>
-        <Container fluid>
-          <Stack gap="lg">
-            <PageHeader title={pageTitle} breadcrumbItems={items} />
+    <PageLayout pathname={pathname} title={PAGE_TITLE}>
+      <Container fluid>
+        <Stack gap="lg">
+          <PageHeader title={PAGE_TITLE} breadcrumbItems={items} />
+          <form onSubmit={form.onSubmit(handleSubmit)}>
             <Grid>
               <Grid.Col span={{ base: 12, md: 8 }}>
                 <Surface component={Paper} {...PAPER_PROPS} p="md">
@@ -245,10 +251,38 @@ export const NewPost = ({ pathname }: NewPostProps) => {
                     <Grid.Col span={12}>
                       <Stack>
                         <TextInput
-                          label="Title"
+                          label={
+                            <InputLabelWithHelp
+                              help="The name is how it appears on your site"
+                              label="Name"
+                            />
+                          }
                           placeholder="Enter title here"
+                          withAsterisk
+                          disabled={loading}
+                          key={form.key('name')}
+                          {...form.getInputProps('name')}
                         />
-                        <TextEditor label="Content" />
+                        <TextInput
+                          label={
+                            <InputLabelWithHelp
+                              help="The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens"
+                              label="Slug"
+                            />
+                          }
+                          placeholder="Enter slug here"
+                          withAsterisk
+                          disabled={loading}
+                          key={form.key('slug')}
+                          {...form.getInputProps('slug')}
+                        />
+                        <Textarea
+                          label="Description"
+                          placeholder="Enter description here"
+                          disabled={loading}
+                          key={form.key('description')}
+                          {...form.getInputProps('description')}
+                        />
                       </Stack>
                     </Grid.Col>
                   </Grid>
@@ -256,24 +290,26 @@ export const NewPost = ({ pathname }: NewPostProps) => {
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
                 <ScrollArea type="always" scrollbars="y" offsetScrollbars>
-                  <Accordion multiple defaultValue={['publish']}>
+                  <Accordion multiple defaultValue={['parent']}>
                     <Surface component={Paper} {...PAPER_PROPS}>
-                      <Publish />
-                      <Categories />
-                      <Tags />
-                      <Cover />
+                      <Publish form={form} loading={loading} />
+                      <ParentCategory
+                        form={form}
+                        data={categories_data}
+                        disabled={loading}
+                      />
                     </Surface>
                   </Accordion>
                 </ScrollArea>
               </Grid.Col>
             </Grid>
-          </Stack>
-        </Container>
-      </UrlPathProvider>
-    </>
+          </form>
+        </Stack>
+      </Container>
+    </PageLayout>
   );
 };
 
-NewPost.layout = (page: any) => <AppShell children={page} />;
+EditCategory.layout = (page: any) => <AppShell children={page} />;
 
-export default NewPost;
+export default EditCategory;

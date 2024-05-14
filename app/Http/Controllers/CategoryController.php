@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Models\Category;
-use Inertia\Inertia;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
+use Inertia\Inertia;
+use App\Models\Category;
 
-class DashboardController extends Controller
+class CategoryController extends Controller
 {
   private const CATEGORY_VALIDATION_RULES = [
     'name' => 'required|string|min:5',
@@ -131,48 +131,4 @@ class DashboardController extends Controller
 
     return to_route('dashboard.category.all');
   }
-
-  /**
-   * Display a listing of the resource.
-   */
-  // public function index()
-  // {
-  //   $posts = Post::latest()->get();
-
-  //   return view('index', compact('posts'));
-  // }
-
-  /**
-   * Store a newly created resource in storage.
-   */
-  // public function store(Request $request)
-  // {
-  //   $validated = $request->validate([
-  //     'title' => 'required|string|unique:posts|min:5|max:200',
-  //     'content' => 'required|string|min:1',
-  //   ]);
-
-  //   $validated['slug'] = Str::slug($validated['title'], '-');
-
-  //   Post::create($validated);
-
-  //   return redirect()
-  //     ->route('admin')
-  //     ->with('notification', 'Post created successfully');
-  // }
-
-  /**
-   * Display the specified resource.
-   */
-  // public function show(int $id)
-  // {
-  //   $post = Post::find($id);
-
-  //   return view('post', compact('post'));
-  // }
-
-  // public function admin()
-  // {
-  //   return view('admin');
-  // }
 }
