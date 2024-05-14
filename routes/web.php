@@ -33,7 +33,7 @@ Route::post('/dashboard/category/new', [
 ])->name('dashboard.category.new.add');
 Route::get('/dashboard/category/edit/{id}', [
   DashboardController::class,
-  'render',
+  'renderEditCategory',
 ])->name('dashboard.category.edit');
 Route::delete('/dashboard/category/all', [
   DashboardController::class,

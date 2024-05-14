@@ -12,6 +12,11 @@ use Illuminate\Support\Arr;
 
 class DashboardController extends Controller
 {
+  private function getParentCategories()
+  {
+    return Category::select('id', 'name')->get()->toArray();
+  }
+
   public function render(Request $request, ?string $id = null, ...$props)
   {
     $pathname = $request->path();
@@ -39,7 +44,15 @@ class DashboardController extends Controller
   public function renderNewCategory(Request $request)
   {
     return $this->render($request, null, [
-      'categories' => Category::select('id', 'name')->get()->toArray(),
+      'categories' => $this->getParentCategories(),
+    ]);
+  }
+
+  public function renderEditCategory(Request $request, string $id)
+  {
+    return $this->render($request, $id, [
+      'category' => Category::where('id', $id)->get()->toArray()[0],
+      'categories' => $this->getParentCategories(),
     ]);
   }
 

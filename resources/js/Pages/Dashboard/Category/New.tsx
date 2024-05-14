@@ -14,6 +14,7 @@ import {
   Select,
   Textarea,
   rem,
+  type ComboboxItem,
 } from '@mantine/core';
 import {
   useForm,
@@ -25,16 +26,14 @@ import {
 } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { PageHeader, Surface, AppShell } from '@/Components/Dashboard';
-import { Head, Link, usePage, router } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { IconCategory2, IconCheck } from '@tabler/icons-react';
-import { UrlPathProvider, InputLabelWithHelp } from '@/Components/Global';
+import { PageLayout, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
 import { STRINGS } from '@/i18n';
+import { type Category } from '@/types';
 
-import type { Category } from '@/types';
-import type { ComboboxItem } from '@mantine/core';
-
-const pageTitle: string = 'Add New Category';
+const PAGE_TITLE: string = 'Add New Category';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
   { title: 'Categories', href: '#' },
@@ -62,9 +61,9 @@ const PAPER_PROPS: PaperProps = {
   radius: 'md',
 };
 
-interface NewPostProps {
+interface NewCategoryProps {
   pathname: string;
-  categories: Pick<Category, 'id' | 'name'>[];
+  categories: Array<Pick<Category, 'id' | 'name'>>;
 }
 
 interface FormValuesTypes {
@@ -141,7 +140,7 @@ function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
   );
 }
 
-export const NewCategory = ({ pathname, categories }: NewPostProps) => {
+export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
   const categories_data = categories.map(({ id, name }) => ({
     value: `${id}`,
     label: name,
@@ -225,76 +224,73 @@ export const NewCategory = ({ pathname, categories }: NewPostProps) => {
   }, [errors]);
 
   return (
-    <>
-      <Head title={pageTitle} />
-      <UrlPathProvider pathname={pathname}>
-        <Container fluid>
-          <Stack gap="lg">
-            <PageHeader title={pageTitle} breadcrumbItems={items} />
-            <form onSubmit={form.onSubmit(handleSubmit)}>
-              <Grid>
-                <Grid.Col span={{ base: 12, md: 8 }}>
-                  <Surface component={Paper} {...PAPER_PROPS} p="md">
-                    <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
-                      <Grid.Col span={12}>
-                        <Stack>
-                          <TextInput
-                            label={
-                              <InputLabelWithHelp
-                                help="The name is how it appears on your site"
-                                label="Name"
-                              />
-                            }
-                            placeholder="Enter title here"
-                            withAsterisk
-                            disabled={loading}
-                            key={form.key('name')}
-                            {...form.getInputProps('name')}
-                          />
-                          <TextInput
-                            label={
-                              <InputLabelWithHelp
-                                help="The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens"
-                                label="Slug"
-                              />
-                            }
-                            placeholder="Enter slug here"
-                            disabled={loading}
-                            key={form.key('slug')}
-                            {...form.getInputProps('slug')}
-                          />
-                          <Textarea
-                            label="Description"
-                            placeholder="Enter description here"
-                            disabled={loading}
-                            key={form.key('description')}
-                            {...form.getInputProps('description')}
-                          />
-                        </Stack>
-                      </Grid.Col>
-                    </Grid>
-                  </Surface>
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 4 }}>
-                  <ScrollArea type="always" scrollbars="y" offsetScrollbars>
-                    <Accordion multiple defaultValue={['parent']}>
-                      <Surface component={Paper} {...PAPER_PROPS}>
-                        <Publish form={form} loading={loading} />
-                        <ParentCategory
-                          form={form}
-                          data={categories_data}
+    <PageLayout pathname={pathname} title={PAGE_TITLE}>
+      <Container fluid>
+        <Stack gap="lg">
+          <PageHeader title={PAGE_TITLE} breadcrumbItems={items} />
+          <form onSubmit={form.onSubmit(handleSubmit)}>
+            <Grid>
+              <Grid.Col span={{ base: 12, md: 8 }}>
+                <Surface component={Paper} {...PAPER_PROPS} p="md">
+                  <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
+                    <Grid.Col span={12}>
+                      <Stack>
+                        <TextInput
+                          label={
+                            <InputLabelWithHelp
+                              help="The name is how it appears on your site"
+                              label="Name"
+                            />
+                          }
+                          placeholder="Enter title here"
+                          withAsterisk
                           disabled={loading}
+                          key={form.key('name')}
+                          {...form.getInputProps('name')}
                         />
-                      </Surface>
-                    </Accordion>
-                  </ScrollArea>
-                </Grid.Col>
-              </Grid>
-            </form>
-          </Stack>
-        </Container>
-      </UrlPathProvider>
-    </>
+                        <TextInput
+                          label={
+                            <InputLabelWithHelp
+                              help="The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens"
+                              label="Slug"
+                            />
+                          }
+                          placeholder="Enter slug here"
+                          disabled={loading}
+                          key={form.key('slug')}
+                          {...form.getInputProps('slug')}
+                        />
+                        <Textarea
+                          label="Description"
+                          placeholder="Enter description here"
+                          disabled={loading}
+                          key={form.key('description')}
+                          {...form.getInputProps('description')}
+                        />
+                      </Stack>
+                    </Grid.Col>
+                  </Grid>
+                </Surface>
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 4 }}>
+                <ScrollArea type="always" scrollbars="y" offsetScrollbars>
+                  <Accordion multiple defaultValue={['parent']}>
+                    <Surface component={Paper} {...PAPER_PROPS}>
+                      <Publish form={form} loading={loading} />
+                      <ParentCategory
+                        form={form}
+                        data={categories_data}
+                        disabled={loading}
+                      />
+                    </Surface>
+                  </Accordion>
+                </ScrollArea>
+              </Grid.Col>
+            </Grid>
+          </form>
+        </Stack>
+      </Container>
+    </PageLayout>
   );
 };
 
