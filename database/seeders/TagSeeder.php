@@ -3,14 +3,14 @@
 namespace Database\Seeders;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
-class CategorySeeder extends Seeder
+class TagSeeder extends Seeder
 {
   private const ROWS_COUNT = 50;
-  private const TABLE_NAME = 'categories';
+  private const TABLE_NAME = 'tags';
 
   /**
    * Run the database seeds.
@@ -36,7 +36,6 @@ class CategorySeeder extends Seeder
         fake()->numberBetween(1, 3),
       );
 
-      // TODO: seed `parent` column
       DB::table(static::TABLE_NAME)->insert([
         'name' => $name,
         'slug' => $slug,

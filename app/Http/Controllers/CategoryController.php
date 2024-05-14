@@ -96,7 +96,7 @@ class CategoryController extends Controller
 
   public function editCategory(Request $request, string $id)
   {
-    $rules = self::CATEGORY_VALIDATION_RULES;
+    $rules = static::CATEGORY_VALIDATION_RULES;
 
     if (Category::where('id', $id)->first()->slug == $request->input('slug')) {
       array_splice(
@@ -117,7 +117,7 @@ class CategoryController extends Controller
   {
     $validated = $this->validateCategory(
       $request,
-      self::CATEGORY_VALIDATION_RULES,
+      static::CATEGORY_VALIDATION_RULES,
     );
 
     Category::create($validated);
