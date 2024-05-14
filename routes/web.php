@@ -60,3 +60,11 @@ Route::delete('/dashboard/tag/all', [TagController::class, 'deleteTag'])->name(
 Route::get('/dashboard/tag/all', [TagController::class, 'renderAllTag'])->name(
   'dashboard.tag.all',
 );
+Route::get('/dashboard/tag/edit/{id}', [
+  TagController::class,
+  'renderEditTag',
+])->name('dashboard.tag.edit');
+Route::patch('/dashboard/tag/edit/{id}', [
+  TagController::class,
+  'editTag',
+])->name('dashboard.tag.edit.patch');

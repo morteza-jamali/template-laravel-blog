@@ -11,10 +11,7 @@ import {
   Group,
   Button,
   ScrollArea,
-  Select,
   Textarea,
-  rem,
-  type ComboboxItem,
 } from '@mantine/core';
 import {
   useForm,
@@ -27,17 +24,17 @@ import {
 import { notifications } from '@mantine/notifications';
 import { PageHeader, Surface, AppShell } from '@/Components/Dashboard';
 import { Link, usePage, router } from '@inertiajs/react';
-import { IconCategory2, IconCheck } from '@tabler/icons-react';
+import { IconCheck } from '@tabler/icons-react';
 import { PageLayout, InputLabelWithHelp } from '@/Components/Global';
 import ROUTES from '@/routes';
 import { STRINGS } from '@/i18n';
-import { type Category } from '@/types';
+import { type Tag } from '@/types';
 
-const PAGE_TITLE: string = 'Edit Category';
+const PAGE_TITLE: string = 'Edit Tag';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
-  { title: 'Categories', href: '#' },
-  { title: 'Edit', href: ROUTES.DASHBOARD.CATEGORY.ALL },
+  { title: 'Tags', href: '#' },
+  { title: 'Edit', href: ROUTES.DASHBOARD.TAG.ALL },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
@@ -52,26 +49,21 @@ const FIELDS_CONDITIONS = {
     MIN: 5,
     MAX: 200,
   },
-  PARENT: {
-    MIN: 0,
-  },
 };
 const PAPER_PROPS: PaperProps = {
   shadow: 'md',
   radius: 'md',
 };
 
-interface EditCategoryProps {
+interface EditTagProps {
   pathname: string;
-  category: Category;
-  categories: Array<Pick<Category, 'id' | 'name'>>;
+  tag: Tag;
 }
 
 interface FormValuesTypes {
   name: string;
   slug?: string;
   description?: string;
-  parent?: string;
 }
 
 interface PublishProps {
@@ -97,70 +89,17 @@ function Publish({ form, loading }: PublishProps) {
   );
 }
 
-interface ParentCategoryProps {
-  form: UseFormReturnType<FormValuesTypes>;
-  data?: ComboboxItem[];
-  disabled?: boolean;
-}
-
-function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
-  data = data ?? [];
-
-  data.unshift({ value: '0', label: 'None' });
-
-  return (
-    <Accordion.Item value="parent">
-      <Accordion.Control
-        icon={
-          <IconCategory2
-            style={{
-              width: rem(20),
-              height: rem(20),
-            }}
-          />
-        }
-      >
-        Parent Category
-      </Accordion.Control>
-      <Accordion.Panel>
-        <Select
-          data={data}
-          withScrollArea={false}
-          styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
-          comboboxProps={{ shadow: 'md' }}
-          searchable
-          nothingFoundMessage="Nothing found..."
-          allowDeselect={false}
-          disabled={disabled}
-          mt="md"
-          key={form.key('parent')}
-          {...form.getInputProps('parent')}
-        />
-      </Accordion.Panel>
-    </Accordion.Item>
-  );
-}
-
-export const EditCategory = ({
-  pathname,
-  categories,
-  category,
-}: EditCategoryProps) => {
-  const categories_data = categories.map(({ id, name }) => ({
-    value: `${id}`,
-    label: name,
-  }));
+export const EditTag = ({ pathname, tag }: EditTagProps) => {
   const isNotEmpty = _isNotEmpty();
   const [loading, setLoading] = useState<boolean>(false);
   const { errors } = usePage().props;
   const initialValues: FormValuesTypes = {
-    name: category.name,
-    parent: `${category.parent}`,
-    slug: category.slug,
+    name: tag.name,
+    slug: tag.slug,
   };
 
-  if (category.description !== null) {
-    initialValues.description = category.description;
+  if (tag.description !== null) {
+    initialValues.description = tag.description;
   }
 
   const form = useForm<FormValuesTypes>({
@@ -197,17 +136,12 @@ export const EditCategory = ({
 
         return null;
       },
-      parent: (value) =>
-        isInRange(
-          { min: FIELDS_CONDITIONS.PARENT.MIN },
-          STRINGS.MIN_NUM('parent', FIELDS_CONDITIONS.PARENT.MIN),
-        )(parseInt(value ?? '')),
     },
   });
 
   const handleSubmit = (values: typeof form.values) => {
     router.patch(
-      `/dashboard/category/edit/${category.id}`,
+      `${ROUTES.DASHBOARD.TAG.EDIT}/${tag.id}`,
       values as unknown as FormData,
       {
         onStart: () => setLoading(true),
@@ -222,7 +156,7 @@ export const EditCategory = ({
             withCloseButton: true,
             autoClose: 5000,
             title: 'Success',
-            message: 'Category updated',
+            message: 'Tag updated',
             color: 'green',
             icon: <IconCheck />,
             withBorder: true,
@@ -290,14 +224,9 @@ export const EditCategory = ({
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
                 <ScrollArea type="always" scrollbars="y" offsetScrollbars>
-                  <Accordion multiple defaultValue={['parent']}>
+                  <Accordion>
                     <Surface component={Paper} {...PAPER_PROPS}>
                       <Publish form={form} loading={loading} />
-                      <ParentCategory
-                        form={form}
-                        data={categories_data}
-                        disabled={loading}
-                      />
                     </Surface>
                   </Accordion>
                 </ScrollArea>
@@ -310,6 +239,6 @@ export const EditCategory = ({
   );
 };
 
-EditCategory.layout = (page: any) => <AppShell children={page} />;
+EditTag.layout = (page: any) => <AppShell children={page} />;
 
-export default EditCategory;
+export default EditTag;

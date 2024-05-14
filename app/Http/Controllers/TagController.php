@@ -93,4 +93,30 @@ class TagController extends Controller
 
     return to_route('dashboard.tag.all');
   }
+
+  public function editTag(Request $request, string $id)
+  {
+    $rules = static::TAG_VALIDATION_RULES;
+
+    if (Tag::where('id', $id)->first()->slug == $request->input('slug')) {
+      array_splice(
+        $rules['slug'],
+        array_search('unique:tags', $rules['slug']),
+        1,
+      );
+    }
+
+    $validated = $this->validateTag($request, $rules);
+
+    Tag::where('id', $id)->update($validated);
+
+    return to_route('dashboard.tag.edit', ['id' => $id]);
+  }
+
+  public function renderEditTag(Request $request, string $id)
+  {
+    return $this->render($request, $id, [
+      'tag' => Tag::where('id', $id)->get()->toArray()[0],
+    ]);
+  }
 }
