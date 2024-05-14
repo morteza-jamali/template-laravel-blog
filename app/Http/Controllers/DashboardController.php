@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-// use App\Models\Post;
 use App\Models\Category;
 use Inertia\Inertia;
 use Illuminate\Support\Carbon;
@@ -12,9 +11,27 @@ use Illuminate\Support\Arr;
 
 class DashboardController extends Controller
 {
+  private const CATEGORY_VALIDATION_RULES = [
+    'name' => 'required|string|min:5',
+    'slug' => [
+      'required',
+      'min:5',
+      'max:200',
+      'unique:categories',
+      'regex:/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/i',
+    ],
+    'description' => 'string',
+    'parent' => 'required|integer|min:0',
+  ];
+
   private function getParentCategories()
   {
     return Category::select('id', 'name')->get()->toArray();
+  }
+
+  private function validateCategory(Request $request, array $rules)
+  {
+    return $request->validate($rules);
   }
 
   public function render(Request $request, ?string $id = null, ...$props)
@@ -77,20 +94,31 @@ class DashboardController extends Controller
     ]);
   }
 
+  public function editCategory(Request $request, string $id)
+  {
+    $rules = self::CATEGORY_VALIDATION_RULES;
+
+    if (Category::where('id', $id)->first()->slug == $request->input('slug')) {
+      array_splice(
+        $rules['slug'],
+        array_search('unique:categories', $rules['slug']),
+        1,
+      );
+    }
+
+    $validated = $this->validateCategory($request, $rules);
+
+    Category::where('id', $id)->update($validated);
+
+    return to_route('dashboard.category.edit', ['id' => $id]);
+  }
+
   public function addCategory(Request $request)
   {
-    $validated = $request->validate([
-      'name' => 'required|string|min:5',
-      'slug' => [
-        'required',
-        'min:5',
-        'max:200',
-        'unique:categories',
-        'regex:/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/i',
-      ],
-      'description' => 'string',
-      'parent' => 'required|integer|min:0',
-    ]);
+    $validated = $this->validateCategory(
+      $request,
+      self::CATEGORY_VALIDATION_RULES,
+    );
 
     Category::create($validated);
 

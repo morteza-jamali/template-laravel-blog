@@ -88,10 +88,10 @@ function Publish({ form, loading }: PublishProps) {
         onClick={() => form.reset()}
         disabled={loading}
       >
-        Clear
+        Reset
       </Button>
       <Button variant="filled" type="submit" loading={loading}>
-        Add
+        Update
       </Button>
     </Group>
   );
@@ -146,8 +146,6 @@ export const EditCategory = ({
   categories,
   category,
 }: EditCategoryProps) => {
-  console.log(category);
-
   const categories_data = categories.map(({ id, name }) => ({
     value: `${id}`,
     label: name,
@@ -155,12 +153,19 @@ export const EditCategory = ({
   const isNotEmpty = _isNotEmpty();
   const [loading, setLoading] = useState<boolean>(false);
   const { errors } = usePage().props;
+  const initialValues: FormValuesTypes = {
+    name: category.name,
+    parent: `${category.parent}`,
+    slug: category.slug,
+  };
+
+  if (category.description !== null) {
+    initialValues.description = category.description;
+  }
+
   const form = useForm<FormValuesTypes>({
     mode: 'uncontrolled',
-    initialValues: {
-      name: '',
-      parent: '0',
-    },
+    initialValues,
     validate: {
       name: (value) => {
         if (isNotEmpty(value) !== null) {
@@ -201,27 +206,30 @@ export const EditCategory = ({
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    router.post('/dashboard/category/new', values as unknown as FormData, {
-      onStart: () => setLoading(true),
-      onError: (errs) => {
-        console.log(`[DEBUG]: `, errs);
+    router.patch(
+      `/dashboard/category/edit/${category.id}`,
+      values as unknown as FormData,
+      {
+        onStart: () => setLoading(true),
+        onError: (errs) => {
+          console.log(`[DEBUG]: `, errs);
 
-        setLoading(false);
+          setLoading(false);
+        },
+        onSuccess: () => {
+          setLoading(false);
+          notifications.show({
+            withCloseButton: true,
+            autoClose: 5000,
+            title: 'Success',
+            message: 'Category updated',
+            color: 'green',
+            icon: <IconCheck />,
+            withBorder: true,
+          });
+        },
       },
-      onSuccess: () => {
-        form.reset();
-        setLoading(false);
-        notifications.show({
-          withCloseButton: true,
-          autoClose: 5000,
-          title: 'Success',
-          message: 'Category added',
-          color: 'green',
-          icon: <IconCheck />,
-          withBorder: true,
-        });
-      },
-    });
+    );
   };
 
   useEffect(() => {
@@ -263,6 +271,7 @@ export const EditCategory = ({
                             />
                           }
                           placeholder="Enter slug here"
+                          withAsterisk
                           disabled={loading}
                           key={form.key('slug')}
                           {...form.getInputProps('slug')}

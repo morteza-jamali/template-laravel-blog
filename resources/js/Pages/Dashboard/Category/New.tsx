@@ -256,6 +256,7 @@ export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
                             />
                           }
                           placeholder="Enter slug here"
+                          withAsterisk
                           disabled={loading}
                           key={form.key('slug')}
                           {...form.getInputProps('slug')}
