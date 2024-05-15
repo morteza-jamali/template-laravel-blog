@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
-  private const ROWS_COUNT = 50;
+  public const ROWS_COUNT = 50;
   private const TABLE_NAME = 'categories';
 
   /**

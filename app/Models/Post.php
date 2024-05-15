@@ -16,5 +16,7 @@ class Post extends Model
     'content',
     'cover',
     'status',
+    'tags',
+    'categories',
   ];
 }
