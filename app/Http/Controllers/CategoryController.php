@@ -36,6 +36,7 @@ class CategoryController extends Controller
 
   public function render(Request $request, ?string $id = null, ...$props)
   {
+    // TODO: remove $pathname
     $pathname = $request->path();
 
     if (!is_null($id)) {

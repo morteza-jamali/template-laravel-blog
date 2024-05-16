@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\Blog\HomeController;
 
 // Dashboard routes
 Route::get('/dashboard', [CategoryController::class, 'render'])->name(
@@ -68,3 +69,6 @@ Route::patch('/dashboard/tag/edit/{id}', [
   TagController::class,
   'editTag',
 ])->name('dashboard.tag.edit.patch');
+
+// Website Home Page
+Route::get('/', [HomeController::class, 'render'])->name('blog.home');
