@@ -5,3 +5,5 @@ export * from './Subscribe';
 export * from './CardImageBG';
 export * from './CardImageBG2';
 export * from './ArticleCardImg';
+export * from './TrendingSection';
+export * from './VerticalCard';
