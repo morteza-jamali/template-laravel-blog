@@ -15,6 +15,7 @@ import {
   Collapse,
   Container,
   ScrollArea,
+  Autocomplete,
   rem,
   useMantineTheme,
 } from '@mantine/core';
@@ -28,6 +29,7 @@ import {
   IconFingerprint,
   IconCoin,
   IconChevronDown,
+  IconSearch,
 } from '@tabler/icons-react';
 import classes from './Header.module.css';
 
@@ -92,7 +94,7 @@ export function Header() {
   ));
 
   return (
-    <Box pb={120}>
+    <Box pb={50}>
       <header className={classes.header}>
         <Container className={classes.container} size="lg">
           <Group justify="space-between" h="100%">
@@ -160,16 +162,39 @@ export function Header() {
               </a>
             </Group>
 
-            <Group visibleFrom="sm">
-              <Button variant="default">Log in</Button>
-              <Button>Sign up</Button>
-            </Group>
+            <Group gap="sm">
+              <Autocomplete
+                className={classes.search}
+                placeholder="Search"
+                leftSection={
+                  <IconSearch
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+                data={[
+                  'React',
+                  'Angular',
+                  'Vue',
+                  'Next.js',
+                  'Riot.js',
+                  'Svelte',
+                  'Blitz.js',
+                ]}
+                visibleFrom="xs"
+              />
 
-            <Burger
-              opened={drawerOpened}
-              onClick={toggleDrawer}
-              hiddenFrom="sm"
-            />
+              <Group visibleFrom="sm" gap="xs">
+                <Button variant="default">Log in</Button>
+                <Button>Sign up</Button>
+              </Group>
+
+              <Burger
+                opened={drawerOpened}
+                onClick={toggleDrawer}
+                hiddenFrom="sm"
+              />
+            </Group>
           </Group>
         </Container>
       </header>
