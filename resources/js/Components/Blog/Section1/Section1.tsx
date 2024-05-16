@@ -1,6 +1,7 @@
-import { Container, Grid, SimpleGrid, Skeleton, rem } from '@mantine/core';
+import { Container, Grid, SimpleGrid, rem } from '@mantine/core';
+import { CardImageBG, CardImageBG2 } from '@/Components/Blog';
 
-const PRIMARY_COL_HEIGHT = rem(300);
+const PRIMARY_COL_HEIGHT = rem(500);
 
 export function Section1() {
   const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
@@ -8,28 +9,13 @@ export function Section1() {
   return (
     <Container my="md" size="lg">
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-        <Skeleton height={PRIMARY_COL_HEIGHT} radius="md" animate={false} />
+        <CardImageBG2 h={PRIMARY_COL_HEIGHT} />
         <Grid gutter="md">
           <Grid.Col>
-            <Skeleton
-              height={SECONDARY_COL_HEIGHT}
-              radius="md"
-              animate={false}
-            />
+            <CardImageBG h={SECONDARY_COL_HEIGHT} />
           </Grid.Col>
-          <Grid.Col span={6}>
-            <Skeleton
-              height={SECONDARY_COL_HEIGHT}
-              radius="md"
-              animate={false}
-            />
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Skeleton
-              height={SECONDARY_COL_HEIGHT}
-              radius="md"
-              animate={false}
-            />
+          <Grid.Col>
+            <CardImageBG h={SECONDARY_COL_HEIGHT} />
           </Grid.Col>
         </Grid>
       </SimpleGrid>
