@@ -1,5 +1,5 @@
 import { PageLayout } from '@/Components/Global';
-import { Header } from '@/Components/Blog';
+import { Header, Footer } from '@/Components/Blog';
 
 export const Home = () => {
   return (
@@ -8,6 +8,7 @@ export const Home = () => {
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam recusandae
       esse non, minus corrupti dolorum quos repudiandae sed beatae, praesentium
       laboriosam dicta adipisci atque veniam, quasi eos et quae deleniti?
+      <Footer />
     </PageLayout>
   );
 };
