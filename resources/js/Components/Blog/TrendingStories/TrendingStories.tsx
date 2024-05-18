@@ -10,7 +10,7 @@ import {
 import { Link } from '@inertiajs/react';
 import { IconArrowRight } from '@tabler/icons-react';
 
-export function TrendingSection() {
+export function TrendingStories() {
   return (
     <Container size="lg" my={100}>
       <Stack>
@@ -28,8 +28,8 @@ export function TrendingSection() {
         <SimpleGrid cols={2} verticalSpacing="lg">
           {Array(6)
             .fill(0)
-            .map(() => (
-              <VerticalCard />
+            .map((_, index) => (
+              <VerticalCard key={index} />
             ))}
         </SimpleGrid>
       </Stack>
@@ -37,4 +37,4 @@ export function TrendingSection() {
   );
 }
 
-export default TrendingSection;
+export default TrendingStories;

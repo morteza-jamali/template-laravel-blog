@@ -2,17 +2,19 @@ import { PageLayout } from '@/Components/Global';
 import {
   Header,
   Footer,
-  Section1,
+  TopStories,
   Subscribe,
-  TrendingSection,
+  TrendingStories,
+  RecentNews,
 } from '@/Components/Blog';
 
 export const Home = () => {
   return (
     <PageLayout title="Home">
       <Header />
-      <Section1 />
-      <TrendingSection />
+      <RecentNews />
+      <TopStories />
+      <TrendingStories />
       <Subscribe />
       <Footer />
     </PageLayout>
