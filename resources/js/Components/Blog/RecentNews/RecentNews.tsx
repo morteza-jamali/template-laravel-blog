@@ -7,7 +7,12 @@ import {
   Title,
   Space,
 } from '@mantine/core';
-import { AdBanner, CategoriesBox, VerticalCard } from '@/Components/Blog';
+import {
+  AdBanner,
+  CategoriesBox,
+  Subscribe,
+  VerticalCard,
+} from '@/Components/Blog';
 import { IconArrowRight } from '@tabler/icons-react';
 import { Link } from '@inertiajs/react';
 
@@ -41,6 +46,7 @@ export function RecentNews() {
           <Stack>
             <AdBanner type="V1" />
             <CategoriesBox />
+            <Subscribe />
           </Stack>
         </Grid.Col>
       </Grid>

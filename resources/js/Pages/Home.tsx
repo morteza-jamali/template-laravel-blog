@@ -3,7 +3,6 @@ import {
   Header,
   Footer,
   TopStories,
-  Subscribe,
   TrendingStories,
   RecentNews,
   EditorsPicks,
@@ -17,7 +16,6 @@ export const Home = () => {
       <TopStories />
       <TrendingStories />
       <RecentNews />
-      <Subscribe />
       <Footer />
     </PageLayout>
   );
