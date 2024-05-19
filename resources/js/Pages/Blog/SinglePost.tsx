@@ -1,8 +1,9 @@
-import { ParentLayout, MainSection } from '@/Components/Blog';
+import { ParentLayout, MainSection, PostHeader } from '@/Components/Blog';
 
 export function SinglePost() {
   return (
     <ParentLayout title="My post title">
+      <PostHeader />
       <MainSection>
         <h1>
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet

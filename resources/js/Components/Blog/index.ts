@@ -12,3 +12,4 @@ export * from './AdBanner';
 export * from './EditorsPicks';
 export * from './CategoriesBox';
 export * from './ParentLayout';
+export * from './PostHeader';
