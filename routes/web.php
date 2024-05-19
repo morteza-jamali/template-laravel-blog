@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\Blog\HomeController;
+use App\Http\Controllers\Blog\SinglePostController;
 
 // Dashboard routes
 Route::get('/dashboard', [CategoryController::class, 'render'])->name(
@@ -70,5 +71,11 @@ Route::patch('/dashboard/tag/edit/{id}', [
   'editTag',
 ])->name('dashboard.tag.edit.patch');
 
-// Website Home Page
+// Blog routes
+// Home Page
 Route::get('/', [HomeController::class, 'render'])->name('blog.home');
+
+// Post Page
+Route::get('/post/{id}', [SinglePostController::class, 'render'])->name(
+  'blog.singlepost',
+);
