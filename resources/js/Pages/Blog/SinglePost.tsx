@@ -3,6 +3,7 @@ import {
   MainSection,
   PostHeader,
   PostAuthor,
+  SharePost,
 } from '@/Components/Blog';
 
 export function SinglePost() {
@@ -16,6 +17,7 @@ export function SinglePost() {
           Facere, officia. Aperiam, esse est et officiis eligendi temporibus
           iure nihil veniam. Temporibus!
         </h1>
+        <SharePost />
         <PostAuthor />
       </MainSection>
     </ParentLayout>
