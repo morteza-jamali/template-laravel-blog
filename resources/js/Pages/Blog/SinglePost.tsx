@@ -1,9 +1,14 @@
-import { ParentLayout, MainSection, PostHeader } from '@/Components/Blog';
+import {
+  ParentLayout,
+  MainSection,
+  PostHeader,
+  PostAuthor,
+} from '@/Components/Blog';
 
 export function SinglePost() {
   return (
     <ParentLayout title="My post title">
-      <PostHeader />
+      <PostHeader mb={60} />
       <MainSection>
         <h1>
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eveniet
@@ -11,6 +16,7 @@ export function SinglePost() {
           Facere, officia. Aperiam, esse est et officiis eligendi temporibus
           iure nihil veniam. Temporibus!
         </h1>
+        <PostAuthor />
       </MainSection>
     </ParentLayout>
   );

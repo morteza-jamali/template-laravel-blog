@@ -7,14 +7,15 @@ import {
   Container,
   Title,
   Badge,
+  type ContainerProps,
 } from '@mantine/core';
 import classes from './PostHeader.module.css';
 
-export interface PostHeaderProps {}
+export interface PostHeaderProps extends ContainerProps {}
 
-export function PostHeader({}: PostHeaderProps) {
+export function PostHeader({ ...rest }: PostHeaderProps) {
   return (
-    <Container size="lg">
+    <Container size="lg" {...rest}>
       <Card p={0}>
         <Group wrap="nowrap" gap={0} justify="space-between" grow>
           <div className={classes.body}>
