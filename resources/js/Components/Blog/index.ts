@@ -10,3 +10,4 @@ export * from './VerticalCard';
 export * from './RecentNews';
 export * from './AdBanner';
 export * from './EditorsPicks';
+export * from './CategoriesBox';
