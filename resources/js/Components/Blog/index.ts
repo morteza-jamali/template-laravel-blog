@@ -8,3 +8,5 @@ export * from './ArticleCardImg';
 export * from './TrendingStories';
 export * from './VerticalCard';
 export * from './RecentNews';
+export * from './AdBanner';
+export * from './EditorsPicks';
