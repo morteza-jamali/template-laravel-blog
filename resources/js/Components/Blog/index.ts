@@ -17,3 +17,4 @@ export * from './PostAuthor';
 export * from './SharePost';
 export * from './PostContent';
 export * from './NexPrevPost';
+export * from './TagsBox';
