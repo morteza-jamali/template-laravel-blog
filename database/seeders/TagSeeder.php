@@ -9,8 +9,12 @@ use Illuminate\Support\Str;
 
 class TagSeeder extends Seeder
 {
-  public const ROWS_COUNT = 50;
   private const TABLE_NAME = 'tags';
+
+  public static function getRowsCount()
+  {
+    return env('TAGS_RC', 50);
+  }
 
   /**
    * Run the database seeds.
@@ -26,7 +30,7 @@ class TagSeeder extends Seeder
       );
     };
 
-    foreach (array_fill(0, static::ROWS_COUNT, 0) as $_) {
+    foreach (array_fill(0, static::getRowsCount(), 0) as $_) {
       $slug = fake()->slug(3, false);
       $name = Str::title(Str::replace('-', ' ', $slug));
       $description = fake()->numberBetween(0, 3) === 1 ? null : fake()->text();

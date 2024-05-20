@@ -11,8 +11,12 @@ use Database\Seeders\TagSeeder;
 
 class PostSeeder extends Seeder
 {
-  private const ROWS_COUNT = 50;
   private const TABLE_NAME = 'posts';
+
+  public static function getRowsCount()
+  {
+    return env('POSTS_RC', 50);
+  }
 
   private function getTrueOrFalse(?int $length = 3)
   {
@@ -21,15 +25,6 @@ class PostSeeder extends Seeder
     }
 
     return false;
-  }
-
-  private function fakeImageUrl()
-  {
-    $height = fake()->numberBetween(3, 6);
-    $width = fake()->numberBetween(3, 9);
-    $random = uniqid();
-
-    return "https://picsum.photos/{$width}00/{$height}00?random={$random}";
   }
 
   private function fakeTerms(int $max_count)
@@ -51,14 +46,17 @@ class PostSeeder extends Seeder
       );
     };
 
-    foreach (array_fill(0, static::ROWS_COUNT, 0) as $_) {
+    foreach (array_fill(0, static::getRowsCount(), 0) as $_) {
       $slug = fake()->slug(fake()->numberBetween(3, 10), false);
       $title = Str::title(Str::replace('-', ' ', $slug));
       $content = fake()->paragraphs(fake()->numberBetween(3, 10), true);
-      $cover = $this->fakeImageUrl();
+      $cover = fake()->imageUrl(
+        width: fake()->numberBetween(3, 9) * 100,
+        height: fake()->numberBetween(3, 6) * 100,
+      );
       $status = $this->getTrueOrFalse() ? 'publish' : 'draft';
-      $tags = $this->fakeTerms(TagSeeder::ROWS_COUNT);
-      $categories = $this->fakeTerms(CategorySeeder::ROWS_COUNT);
+      $tags = $this->fakeTerms(TagSeeder::getRowsCount());
+      $categories = $this->fakeTerms(CategorySeeder::getRowsCount());
       $created_at = $fakeTimeStamp();
       $updated_at = $this->getTrueOrFalse()
         ? $created_at
