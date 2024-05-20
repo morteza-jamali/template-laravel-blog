@@ -3,6 +3,7 @@
 /public/hot
 /public/storage
 /public/mocks
+/public/images/faker
 /storage/*.key
 /vendor
 .env.backup

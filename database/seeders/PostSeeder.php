@@ -6,8 +6,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\TagSeeder;
+use Psl\Filesystem;
 
 class PostSeeder extends Seeder
 {
@@ -16,6 +18,15 @@ class PostSeeder extends Seeder
   public static function getRowsCount()
   {
     return env('POSTS_RC', 50);
+  }
+
+  private function reCreateFakerImagesDir(string $dir)
+  {
+    if (Filesystem\exists($dir)) {
+      Filesystem\delete_directory($dir, true);
+    }
+
+    Filesystem\create_directory($dir);
   }
 
   private function getTrueOrFalse(?int $length = 3)
@@ -32,11 +43,23 @@ class PostSeeder extends Seeder
     return implode(',', fake()->randomElements(range(1, $max_count), null));
   }
 
+  private function fakeHtml()
+  {
+    $length = $this->getTrueOrFalse() ? 'long' : 'short';
+
+    return Http::get(
+      "https://loripsum.net/api/10/$length/decorate/link/ul/dl/ol/bq/code/headers",
+    )->body();
+  }
+
   /**
    * Run the database seeds.
    */
   public function run(): void
   {
+    $faker_images_dir = public_path('images/faker');
+
+    $this->reCreateFakerImagesDir($faker_images_dir);
     DB::table(static::TABLE_NAME)->truncate();
 
     $fakeTimeStamp = function () {
@@ -49,11 +72,15 @@ class PostSeeder extends Seeder
     foreach (array_fill(0, static::getRowsCount(), 0) as $_) {
       $slug = fake()->slug(fake()->numberBetween(3, 10), false);
       $title = Str::title(Str::replace('-', ' ', $slug));
-      $content = fake()->paragraphs(fake()->numberBetween(3, 10), true);
-      $cover = fake()->imageUrl(
-        width: fake()->numberBetween(3, 9) * 100,
-        height: fake()->numberBetween(3, 6) * 100,
-      );
+      $content = $this->fakeHtml();
+      $cover =
+        '/images/faker/' .
+        fake()->image(
+          dir: $faker_images_dir,
+          width: fake()->numberBetween(3, 9) * 100,
+          height: fake()->numberBetween(3, 6) * 100,
+          isFullPath: false,
+        );
       $status = $this->getTrueOrFalse() ? 'publish' : 'draft';
       $tags = $this->fakeTerms(TagSeeder::getRowsCount());
       $categories = $this->fakeTerms(CategorySeeder::getRowsCount());
