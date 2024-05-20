@@ -5,6 +5,7 @@ import {
   PostAuthor,
   SharePost,
   PostContent,
+  NexPrevPost,
 } from '@/Components/Blog';
 import { Group } from '@mantine/core';
 
@@ -140,6 +141,7 @@ export function SinglePost() {
         </Group>
         <SharePost />
         <PostAuthor />
+        <NexPrevPost />
       </MainSection>
     </ParentLayout>
   );
