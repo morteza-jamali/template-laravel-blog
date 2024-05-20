@@ -16,7 +16,7 @@ export interface PostHeaderProps extends ContainerProps {}
 export function PostHeader({ ...rest }: PostHeaderProps) {
   return (
     <Container size="lg" {...rest}>
-      <Card p={0}>
+      <Card p={0} radius={0}>
         <Group wrap="nowrap" gap={0} justify="space-between" grow>
           <div className={classes.body}>
             <Badge tt="uppercase" size="lg">
@@ -42,7 +42,10 @@ export function PostHeader({ ...rest }: PostHeaderProps) {
             </Group>
           </div>
           <div>
-            <Image src="https://images.unsplash.com/photo-1602080858428-57174f9431cf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80" />
+            <Image
+              radius="md"
+              src="https://images.unsplash.com/photo-1602080858428-57174f9431cf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+            />
           </div>
         </Group>
       </Card>

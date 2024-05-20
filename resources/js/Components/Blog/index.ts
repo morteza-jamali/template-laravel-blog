@@ -15,3 +15,4 @@ export * from './ParentLayout';
 export * from './PostHeader';
 export * from './PostAuthor';
 export * from './SharePost';
+export * from './PostContent';
