@@ -1,14 +1,14 @@
 import { type ReactNode } from 'react';
-import { Container, Grid, Stack } from '@mantine/core';
+import { Container, Grid, Stack, type ContainerProps } from '@mantine/core';
 import { AdBanner, CategoriesBox, Subscribe } from '@/Components/Blog';
 
-export interface MainSectionProps {
+export interface MainSectionProps extends ContainerProps {
   children: ReactNode;
 }
 
-export function MainSection({ children }: MainSectionProps) {
+export function MainSection({ children, ...rest }: MainSectionProps) {
   return (
-    <Container size="lg">
+    <Container size="lg" {...rest}>
       <Grid gutter="xl">
         <Grid.Col span="auto">{children}</Grid.Col>
         <Grid.Col span={4}>

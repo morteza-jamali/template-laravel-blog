@@ -136,12 +136,15 @@ export function SinglePost() {
           align="flex-start"
           gap="xl"
         >
-          <SharePost type="vertical" />
+          <SharePost
+            type="vertical"
+            ml="calc(var(--group-gap, var(--mantine-spacing-md)) * -2)"
+          />
           <PostContent content={_temp_post_content} />
         </Group>
-        <SharePost />
+        <SharePost mb="xl" mt="calc(var(--mantine-spacing-xl) * 2)" />
         <PostAuthor />
-        <NexPrevPost />
+        <NexPrevPost my="calc(var(--mantine-spacing-xl) * 3)" />
       </MainSection>
     </ParentLayout>
   );

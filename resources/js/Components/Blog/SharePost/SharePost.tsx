@@ -1,4 +1,12 @@
-import { ActionIcon, Button, Group, Stack, Text, Tooltip } from '@mantine/core';
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Stack,
+  Text,
+  Tooltip,
+  type MantineStyleProps,
+} from '@mantine/core';
 import {
   IconBrandX,
   IconBrandFacebook,
@@ -28,7 +36,7 @@ const ITEMS = [
   },
 ];
 
-export interface SharePostProps {
+export interface SharePostProps extends MantineStyleProps {
   type?: 'horizontal' | 'vertical';
 }
 
@@ -65,19 +73,19 @@ function Items({ type }: ItemsProps) {
   );
 }
 
-export function SharePost({ type }: SharePostProps) {
+export function SharePost({ type, ...rest }: SharePostProps) {
   type = type ?? 'horizontal';
 
   if (type === 'vertical') {
     return (
-      <Stack>
+      <Stack {...rest}>
         <Items type={type} />
       </Stack>
     );
   }
 
   return (
-    <Group gap="xs">
+    <Group gap="xs" {...rest}>
       <Text fw={700}>Share:</Text>
       <Items type={type} />
     </Group>

@@ -1,5 +1,12 @@
 import { Link } from '@inertiajs/react';
-import { Divider, Group, Stack, Text, UnstyledButton } from '@mantine/core';
+import {
+  Divider,
+  Group,
+  Stack,
+  Text,
+  UnstyledButton,
+  type MantineStyleProps,
+} from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 interface BtnProps {
@@ -26,7 +33,9 @@ function Btn({ type }: BtnProps) {
   );
 }
 
-export function NexPrevPost() {
+export interface NexPrevPostProps extends MantineStyleProps {}
+
+export function NexPrevPost(props: NexPrevPostProps) {
   return (
     <Group
       justify="space-between"
@@ -34,6 +43,7 @@ export function NexPrevPost() {
       grow
       gap="lg"
       wrap="nowrap"
+      {...props}
     >
       <Btn type="prev" />
       <Divider orientation="vertical" />
