@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\Blog\HomeController;
 use App\Http\Controllers\Blog\SinglePostController;
+use App\Http\Controllers\Blog\SingleCategoryController;
 
 // Dashboard routes
 Route::get('/dashboard', [CategoryController::class, 'render'])->name(
@@ -78,4 +79,9 @@ Route::get('/', [HomeController::class, 'render'])->name('blog.home');
 // Post Page
 Route::get('/post/{id}', [SinglePostController::class, 'render'])->name(
   'blog.singlepost',
+);
+
+// Single Category Page
+Route::get('/category/{id}', [SingleCategoryController::class, 'render'])->name(
+  'blog.category.singlecategory',
 );
