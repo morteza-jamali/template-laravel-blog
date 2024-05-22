@@ -31,8 +31,8 @@ import {
   IconStackPush,
   IconPhoto,
 } from '@tabler/icons-react';
-import { UrlPathProvider } from '@/Components/Global';
 import ROUTES from '@/routes';
+import { PageLayout } from '@/Components/Global';
 
 const pageTitle: string = 'Add New Post';
 const items = [
@@ -232,45 +232,39 @@ function Cover() {
 
 export const NewPost = ({ pathname }: NewPostProps) => {
   return (
-    <>
-      <Head title={pageTitle} />
-      <UrlPathProvider pathname={pathname}>
-        <Container fluid>
-          <Stack gap="lg">
-            <PageHeader title={pageTitle} breadcrumbItems={items} />
-            <Grid>
-              <Grid.Col span={{ base: 12, md: 8 }}>
-                <Surface component={Paper} {...PAPER_PROPS} p="md">
-                  <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
-                    <Grid.Col span={12}>
-                      <Stack>
-                        <TextInput
-                          label="Title"
-                          placeholder="Enter title here"
-                        />
-                        <TextEditor label="Content" />
-                      </Stack>
-                    </Grid.Col>
-                  </Grid>
-                </Surface>
-              </Grid.Col>
-              <Grid.Col span={{ base: 12, md: 4 }}>
-                <ScrollArea type="always" scrollbars="y" offsetScrollbars>
-                  <Accordion multiple defaultValue={['publish']}>
-                    <Surface component={Paper} {...PAPER_PROPS}>
-                      <Publish />
-                      <Categories />
-                      <Tags />
-                      <Cover />
-                    </Surface>
-                  </Accordion>
-                </ScrollArea>
-              </Grid.Col>
-            </Grid>
-          </Stack>
-        </Container>
-      </UrlPathProvider>
-    </>
+    <PageLayout title={pageTitle}>
+      <Container fluid>
+        <Stack gap="lg">
+          <PageHeader title={pageTitle} breadcrumbItems={items} />
+          <Grid>
+            <Grid.Col span={{ base: 12, md: 8 }}>
+              <Surface component={Paper} {...PAPER_PROPS} p="md">
+                <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
+                  <Grid.Col span={12}>
+                    <Stack>
+                      <TextInput label="Title" placeholder="Enter title here" />
+                      <TextEditor label="Content" />
+                    </Stack>
+                  </Grid.Col>
+                </Grid>
+              </Surface>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <ScrollArea type="always" scrollbars="y" offsetScrollbars>
+                <Accordion multiple defaultValue={['publish']}>
+                  <Surface component={Paper} {...PAPER_PROPS}>
+                    <Publish />
+                    <Categories />
+                    <Tags />
+                    <Cover />
+                  </Surface>
+                </Accordion>
+              </ScrollArea>
+            </Grid.Col>
+          </Grid>
+        </Stack>
+      </Container>
+    </PageLayout>
   );
 };
 

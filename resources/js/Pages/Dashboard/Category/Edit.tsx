@@ -239,7 +239,7 @@ export const EditCategory = ({
   }, [errors]);
 
   return (
-    <PageLayout pathname={pathname} title={PAGE_TITLE}>
+    <PageLayout title={PAGE_TITLE}>
       <Container fluid>
         <Stack gap="lg">
           <PageHeader title={PAGE_TITLE} breadcrumbItems={items} />

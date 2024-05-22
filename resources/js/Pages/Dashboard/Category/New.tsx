@@ -140,7 +140,7 @@ function ParentCategory({ data, form, disabled }: ParentCategoryProps) {
   );
 }
 
-export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
+export const NewCategory = ({ categories }: NewCategoryProps) => {
   const categories_data = categories.map(({ id, name }) => ({
     value: `${id}`,
     label: name,
@@ -224,7 +224,7 @@ export const NewCategory = ({ pathname, categories }: NewCategoryProps) => {
   }, [errors]);
 
   return (
-    <PageLayout pathname={pathname} title={PAGE_TITLE}>
+    <PageLayout title={PAGE_TITLE}>
       <Container fluid>
         <Stack gap="lg">
           <PageHeader title={PAGE_TITLE} breadcrumbItems={items} />

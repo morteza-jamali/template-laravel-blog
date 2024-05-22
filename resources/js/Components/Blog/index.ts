@@ -19,3 +19,4 @@ export * from './PostContent';
 export * from './NexPrevPost';
 export * from './TagsBox';
 export * from './Breadcrumbs';
+export * from './CategoryPosts';

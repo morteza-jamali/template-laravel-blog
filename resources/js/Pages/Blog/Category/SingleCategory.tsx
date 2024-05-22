@@ -1,5 +1,10 @@
-import { ParentLayout, MainSection, Breadcrumbs } from '@/Components/Blog';
-import { Container, Group, Title } from '@mantine/core';
+import {
+  ParentLayout,
+  MainSection,
+  Breadcrumbs,
+  CategoryPosts,
+} from '@/Components/Blog';
+import { Container, Title } from '@mantine/core';
 
 const breadcrumbs = [
   { title: 'Home', href: '/' },
@@ -17,17 +22,7 @@ export function SingleCategory() {
         </Title>
       </Container>
       <MainSection>
-        <Group
-          justify="space-between"
-          wrap="nowrap"
-          align="flex-start"
-          gap="xl"
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit, fugiat
-          minima ducimus molestias culpa non ipsum similique inventore quae,
-          minus hic asperiores vero ratione iusto eaque, adipisci soluta harum
-          aut.
-        </Group>
+        <CategoryPosts />
       </MainSection>
     </ParentLayout>
   );

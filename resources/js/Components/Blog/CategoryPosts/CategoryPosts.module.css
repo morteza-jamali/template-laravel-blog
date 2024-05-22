@@ -1,0 +1,18 @@
+.root {
+  & table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  & tbody tr {
+    display: flex;
+
+    & td:first-child {
+      flex-grow: 1;
+    }
+
+    & td:not(:first-child) {
+      display: none;
+    }
+  }
+}

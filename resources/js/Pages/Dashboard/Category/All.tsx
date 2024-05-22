@@ -253,7 +253,7 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
   });
 
   return (
-    <PageLayout pathname={pathname} title={PAGE_TITLE}>
+    <PageLayout title={PAGE_TITLE}>
       <DeleteModal
         id={delete_id}
         onClose={close}

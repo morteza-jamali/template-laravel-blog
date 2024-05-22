@@ -248,7 +248,7 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
   });
 
   return (
-    <PageLayout pathname={pathname} title={PAGE_TITLE}>
+    <PageLayout title={PAGE_TITLE}>
       <DeleteModal
         id={delete_id}
         onClose={close}

@@ -16,6 +16,7 @@ import { IconDotsVertical, IconPlus } from '@tabler/icons-react';
 // import { Metadata } from 'next';
 import ROUTES from '@/routes';
 import { useFetchData } from '@/hooks';
+import { PageLayout } from '@/Components/Global';
 
 const PAGE_TITLE = 'All Posts';
 const items = [
@@ -42,8 +43,7 @@ export const AllPosts = () => {
   } = useFetchData('/mocks/Invoices.json');
 
   return (
-    <>
-      <Head title={PAGE_TITLE} />
+    <PageLayout title={PAGE_TITLE}>
       <Container fluid>
         <Stack gap="lg">
           <PageHeader
@@ -76,7 +76,7 @@ export const AllPosts = () => {
           </Paper>
         </Stack>
       </Container>
-    </>
+    </PageLayout>
   );
 };
 
