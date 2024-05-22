@@ -1,20 +1,25 @@
 import { Card, Image, Avatar, Text, Group } from '@mantine/core';
+import { type Post } from '@/types';
 import classes from './VerticalCard.module.css';
 
-export function VerticalCard() {
+export interface VerticalCardProps extends Partial<Post> {}
+
+export function VerticalCard({
+  categories,
+  title,
+  created_at,
+  cover,
+}: VerticalCardProps) {
   return (
     <Card withBorder radius="md" p={0} className={classes.card}>
       <Group wrap="nowrap" gap={0}>
-        <Image
-          src="https://images.unsplash.com/photo-1602080858428-57174f9431cf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-          height={160}
-        />
+        <Image src={cover} height={160} />
         <div className={classes.body}>
           <Text tt="uppercase" c="dimmed" fw={700} size="xs">
             technology
           </Text>
           <Text className={classes.title} mt="xs" mb="md">
-            The best laptop for Frontend engineers in 2022
+            {title}
           </Text>
           <Group wrap="nowrap" gap="xs">
             <Group gap="xs" wrap="nowrap">
@@ -28,7 +33,7 @@ export function VerticalCard() {
               •
             </Text>
             <Text size="xs" c="dimmed">
-              Feb 6th
+              {created_at}
             </Text>
           </Group>
         </div>

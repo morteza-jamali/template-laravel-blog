@@ -1,25 +1,29 @@
 import { VerticalCard } from '@/Components/Blog';
 import { DataTable, type DataTableSortStatus } from 'mantine-datatable';
-import { generateCategories } from '@/faker/Categories';
+import { gPosts } from '@/faker/Post';
+import { Post } from '@/types';
 import classes from './CategoryPosts.module.css';
 import { useEffect, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 
-const categories = generateCategories(20);
-
 export interface CategoryPostsProps {}
 
+const posts = gPosts(20);
+
 export function CategoryPosts({}: CategoryPostsProps) {
-  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<any>>({
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<Post>>({
     columnAccessor: 'title',
     direction: 'asc',
   });
-  const [records, setRecords] = useState(sortBy(categories, 'title'));
+  const [records, setRecords] = useState(sortBy(posts, 'title'));
 
   useEffect(() => {
-    const data = sortBy(categories, sortStatus.columnAccessor) as any[];
+    const data = sortBy(posts, sortStatus.columnAccessor) as Post[];
     setRecords(sortStatus.direction === 'desc' ? data.reverse() : data);
   }, [sortStatus]);
+
+  console.clear();
+  console.log(posts);
 
   return (
     <DataTable
@@ -29,10 +33,17 @@ export function CategoryPosts({}: CategoryPostsProps) {
         {
           accessor: 'title',
           sortable: true,
-          render: (category, index) => <VerticalCard key={index} />,
+          render: (post, index) => (
+            <VerticalCard
+              title={post.title}
+              cover={post.cover}
+              created_at={post.created_at}
+              key={index}
+            />
+          ),
         },
         {
-          accessor: 'count',
+          accessor: 'created_at',
           sortable: true,
           render: () => null,
         },

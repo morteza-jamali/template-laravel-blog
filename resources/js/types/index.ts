@@ -71,3 +71,17 @@ export type Tag = {
   created_at: string;
   updated_at: string;
 };
+
+export type Post = {
+  id: number;
+  author: number;
+  title: string;
+  slug: string;
+  content: string;
+  categories: string;
+  tags: string;
+  cover: string;
+  status: 'publish' | 'draft';
+  created_at: string;
+  updated_at: string;
+};
