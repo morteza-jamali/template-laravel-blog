@@ -16,7 +16,6 @@ class FakeTag extends Command implements Isolatable
    * @var string
    */
   protected $signature = 'fake:tag
-                          --isolated
                           {--C|count=50 : Fake tags count}';
 
   /**

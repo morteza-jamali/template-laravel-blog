@@ -16,7 +16,6 @@ class FakeCategory extends Command implements Isolatable
    * @var string
    */
   protected $signature = 'fake:category
-                          --isolated
                           {--C|count=50 : Fake categories count}';
 
   /**
