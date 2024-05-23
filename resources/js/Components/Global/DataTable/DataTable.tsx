@@ -25,10 +25,10 @@ export interface FilterFnCallback<T> {
 export interface DataTableProps<T> {
   data: T[];
   sort_status: DTSortStatus;
-  selectedRecords: DTProps<T>['selectedRecords'];
-  onSelectedRecordsChange: DTProps<T>['onSelectedRecordsChange'];
-  setAllSelectedRecords: Dispatch<SetStateAction<Array<T>>>;
-  selectedAll: boolean;
+  selectedRecords?: DTProps<T>['selectedRecords'];
+  onSelectedRecordsChange?: DTProps<T>['onSelectedRecordsChange'];
+  setAllSelectedRecords?: Dispatch<SetStateAction<Array<T>>>;
+  selectedAll?: boolean;
   columns: DTProps<T>['columns'];
   query: string;
   error?: ReactNode;
@@ -110,8 +110,8 @@ export function DataTable<T>({
 
     setRecords(filtered);
 
-    if (allRecordsSelected) {
-      (onSelectedRecordsChange as any)(
+    if (typeof onSelectedRecordsChange === 'function' && allRecordsSelected) {
+      onSelectedRecordsChange(
         differenceBy(filtered, unselectedRecords, (r) => (r as any).id),
       );
     }
@@ -126,12 +126,14 @@ export function DataTable<T>({
   ]);
 
   useEffect(() => {
-    if (allRecordsSelected) {
-      setAllSelectedRecords(
-        differenceBy(data, unselectedRecords, (r) => (r as any).id),
-      );
-    } else {
-      setAllSelectedRecords(selectedRecords as T[]);
+    if (typeof setAllSelectedRecords === 'function') {
+      if (allRecordsSelected) {
+        setAllSelectedRecords(
+          differenceBy(data, unselectedRecords, (r) => (r as any).id),
+        );
+      } else {
+        setAllSelectedRecords(selectedRecords as T[]);
+      }
     }
   }, [selectedRecords]);
 
@@ -155,7 +157,11 @@ export function DataTable<T>({
       onSortStatusChange={setSortStatus as any}
       fetching={loading}
       selectedRecords={selectedRecords}
-      onSelectedRecordsChange={handleSelectedRecordsChange}
+      onSelectedRecordsChange={
+        typeof onSelectedRecordsChange === 'function'
+          ? handleSelectedRecordsChange
+          : undefined
+      }
       {...rest}
     />
   );
