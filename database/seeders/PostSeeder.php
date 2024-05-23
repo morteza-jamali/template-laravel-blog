@@ -29,7 +29,7 @@ class PostSeeder extends Seeder
     Filesystem\create_directory($dir);
   }
 
-  private function getTrueOrFalse(?int $length = 3)
+  private function getTrueOrFalse(?int $length = 2)
   {
     if (fake()->numberBetween(0, $length) === $length - 1) {
       return true;

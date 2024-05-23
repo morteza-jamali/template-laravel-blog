@@ -13,6 +13,8 @@ return new class extends Migration {
     Schema::create('posts', function (Blueprint $table) {
       $table->id();
       $table->bigInteger('author')->unsigned()->default(0);
+      $table->bigInteger('view')->unsigned()->default(0);
+      $table->bigInteger('like')->unsigned()->default(0);
       $table->text('title');
       $table->string('slug', 200)->unique();
       $table->longText('content');
