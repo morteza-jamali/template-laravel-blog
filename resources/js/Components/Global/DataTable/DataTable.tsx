@@ -18,11 +18,11 @@ import { ErrorAlert } from '@/Components/Dashboard';
 
 const PAGE_SIZES = [5, 10, 20];
 
-export interface FilterFnCallback<T> {
+export interface FilterFnCallback<T = Record<string, unknown>> {
   (param: Partial<T>): any;
 }
 
-export interface DataTableProps<T> {
+export type DataTableProps<T = Record<string, unknown>> = DTProps<T> & {
   data: T[];
   sort_status: DTSortStatus;
   selectedRecords?: DTProps<T>['selectedRecords'];
@@ -34,7 +34,7 @@ export interface DataTableProps<T> {
   error?: ReactNode;
   loading?: boolean;
   filterFn: (dq: string) => FilterFnCallback<T>;
-}
+};
 
 export function DataTable<T>({
   data,
@@ -49,7 +49,7 @@ export function DataTable<T>({
   setAllSelectedRecords,
   selectedAll,
   ...rest
-}: DataTableProps<T> & DTProps<T>) {
+}: DataTableProps<T>) {
   const [page, setPage] = useState(1);
   const [delete_initial_select, deleteInitialSelect] = useState<boolean>(true);
   const [allRecordsSelected, setAllRecordsSelected] = useState(selectedAll);
@@ -141,10 +141,6 @@ export function DataTable<T>({
     <ErrorAlert title="Error loading invoices" message={error.toString()} />
   ) : (
     <DT
-      minHeight={200}
-      verticalSpacing="xs"
-      striped
-      highlightOnHover
       columns={columns as any}
       records={records}
       totalRecords={debouncedQuery ? records.length : data.length}

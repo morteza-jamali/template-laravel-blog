@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { VerticalCard } from '@/Components/Blog';
-import { DataTable, DataTableProps } from '@/Components/Global/DataTable';
+import { DataTable, type DataTableProps } from '@/Components/Global/DataTable';
 import { gPosts } from '@/faker/Post';
 import { Post } from '@/types';
 import classes from './CategoryPosts.module.css';
@@ -41,11 +41,14 @@ export function CategoryPosts({}: CategoryPostsProps) {
   ];
 
   return (
+    //@ts-ignore
     <DataTable
       withRowBorders={false}
       className={classes.root}
       textSelectionDisabled
-      data={posts}
+      paginationSize="md"
+      recordsPerPageLabel="Posts per page"
+      data={posts} // TODO: Change no records component
       columns={columns}
       query={query}
       sort_status={{

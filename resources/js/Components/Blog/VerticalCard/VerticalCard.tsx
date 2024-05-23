@@ -11,7 +11,7 @@ export function VerticalCard({
   cover,
 }: VerticalCardProps) {
   return (
-    <Card withBorder radius="md" p={0} className={classes.card}>
+    <Card withBorder radius="md" p={0} className={classes.card} shadow="sm">
       <Group wrap="nowrap" gap={0}>
         <Image src={cover} height={160} />
         <div className={classes.body}>

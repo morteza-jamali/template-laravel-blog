@@ -347,6 +347,10 @@ export const AllCategories = ({ categories, pathname }: AllCategoriesProps) => {
               </Button.Group>
             </Group>
             <DataTable
+              striped
+              highlightOnHover
+              minHeight={200}
+              verticalSpacing="xs"
               data={categories}
               columns={effectiveColumns}
               withTableBorder={true}
