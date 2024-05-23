@@ -22,7 +22,6 @@ import '@mantine/tiptap/styles.css';
 import '@mantine/carousel/styles.css';
 import '@mantine/notifications/styles.css';
 import 'mantine-datatable/styles.css';
-import 'mantine-datatable/styles.layer.css';
 import 'mantine-contextmenu/styles.css';
 import 'mantine-contextmenu/styles.layer.css';
 import '../../../../css/layout.css';

@@ -1,13 +1,10 @@
 import './bootstrap';
+import '@/styles/global';
 
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { RootLayout } from '@/Components/Global';
-
-import '@mantine/core/styles.css';
-import '@mantine/core/styles.layer.css';
-import '../css/app.css';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
