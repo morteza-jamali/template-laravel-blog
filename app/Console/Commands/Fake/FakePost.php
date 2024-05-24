@@ -47,10 +47,21 @@ class FakePost extends Command implements Isolatable
     }
 
     $posts = [];
+    $sd = Storage::disk('public');
     $count = (int) $this->option('count');
+    $savepics = $this->option('savepics');
+    $append = $this->option('append');
     $cover_width = fake()->numberBetween(3, 9) * 100;
     $cover_height = fake()->numberBetween(3, 6) * 100;
     $bar = $this->output->createProgressBar($count);
+
+    if ($savepics) {
+      if (!$append) {
+        $sd->deleteDirectory('images');
+      }
+
+      $sd->makeDirectory('images');
+    }
 
     foreach (array_fill(0, $count, 0) as $_) {
       $slug = fake()->slug(fake()->numberBetween(3, 10), false);
@@ -58,9 +69,7 @@ class FakePost extends Command implements Isolatable
       $content = fakeHtml();
       $cover = '';
 
-      if ($this->option('savepics')) {
-        Storage::disk('public')->makeDirectory('images');
-
+      if ($savepics) {
         $cover =
           '/storage/images/' .
           fake()->image(
@@ -99,12 +108,7 @@ class FakePost extends Command implements Isolatable
       $bar->advance();
     }
 
-    putJson(
-      disk: 'public',
-      path: 'fake/posts',
-      arr: $posts,
-      append: $this->option('append'),
-    );
+    putJson(disk: 'public', path: 'fake/posts', arr: $posts, append: $append);
     $bar->finish();
     echo PHP_EOL;
   }
