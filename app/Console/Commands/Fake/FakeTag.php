@@ -5,7 +5,6 @@ namespace App\Console\Commands\Fake;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Console\Isolatable;
 
 class FakeTag extends Command implements Isolatable
@@ -25,23 +24,6 @@ class FakeTag extends Command implements Isolatable
    */
   protected $description = 'Generate fake tags';
 
-  private function getTrueOrFalse(?int $length = 2)
-  {
-    if (fake()->numberBetween(0, $length) === $length - 1) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private function fakeTimeStamp()
-  {
-    return Carbon::createFromFormat(
-      'Y-m-d H:i:s',
-      fake()->date('Y-m-d') . ' ' . fake()->time('H:i:s'),
-    );
-  }
-
   /**
    * Execute the console command.
    */
@@ -60,9 +42,9 @@ class FakeTag extends Command implements Isolatable
     foreach (array_fill(0, $count, 0) as $_) {
       $slug = fake()->slug(3, false);
       $name = Str::title(Str::replace('-', ' ', $slug));
-      $description = $this->getTrueOrFalse() ? fake()->text() : null;
-      $count = $this->getTrueOrFalse() ? fake()->randomNumber(4) : 0;
-      $created_at = $this->fakeTimeStamp();
+      $description = getTrueOrFalse() ? fake()->text() : null;
+      $count = getTrueOrFalse() ? fake()->randomNumber(4) : 0;
+      $created_at = fakeTimeStamp();
       $updated_at = Carbon::parse($created_at)->addYears(
         fake()->numberBetween(1, 3),
       );
@@ -77,6 +59,6 @@ class FakeTag extends Command implements Isolatable
       ]);
     }
 
-    Storage::disk('public')->put('fake/tags.json', json_encode($tags));
+    putJson(disk: 'public', path: 'fake/tags', arr: $tags);
   }
 }

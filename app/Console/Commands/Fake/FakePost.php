@@ -30,26 +30,9 @@ class FakePost extends Command implements Isolatable
    */
   protected $description = 'Generate fake posts';
 
-  private function getTrueOrFalse(?int $length = 2)
-  {
-    if (fake()->numberBetween(0, $length) === $length - 1) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private function fakeTimeStamp()
-  {
-    return Carbon::createFromFormat(
-      'Y-m-d H:i:s',
-      fake()->date('Y-m-d') . ' ' . fake()->time('H:i:s'),
-    );
-  }
-
   private function fakeHtml()
   {
-    $length = $this->getTrueOrFalse() ? 'long' : 'short';
+    $length = getTrueOrFalse() ? 'long' : 'short';
 
     return Http::get(
       "https://loripsum.net/api/10/$length/decorate/link/ul/dl/ol/bq/code/headers",
@@ -104,13 +87,13 @@ class FakePost extends Command implements Isolatable
         $cover = fake()->imageUrl(width: $cover_width, height: $cover_height);
       }
 
-      $status = $this->getTrueOrFalse() ? 'publish' : 'draft';
+      $status = getTrueOrFalse() ? 'publish' : 'draft';
       $view = fake()->numberBetween(1, 999);
       $like = fake()->numberBetween(1, 999);
       $tags = $this->fakeTerms((int) $this->option('tagscount'));
       $categories = $this->fakeTerms((int) $this->option('categoriescount'));
-      $created_at = $this->fakeTimeStamp();
-      $updated_at = $this->getTrueOrFalse()
+      $created_at = fakeTimeStamp();
+      $updated_at = getTrueOrFalse()
         ? $created_at
         : Carbon::parse($created_at)->addYears(fake()->numberBetween(1, 3));
 
@@ -130,7 +113,7 @@ class FakePost extends Command implements Isolatable
       $bar->advance();
     }
 
-    Storage::disk('public')->put('fake/posts.json', json_encode($posts));
+    putJson(disk: 'public', path: 'fake/posts', arr: $posts);
     $bar->finish();
     echo PHP_EOL;
   }
