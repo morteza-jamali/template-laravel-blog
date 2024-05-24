@@ -16,6 +16,7 @@ class FakeCategory extends Command implements Isolatable
    * @var string
    */
   protected $signature = 'fake:category
+                          {--A|append : Append new data}
                           {--C|count=50 : Fake categories count}';
 
   /**
@@ -61,6 +62,11 @@ class FakeCategory extends Command implements Isolatable
       ]);
     }
 
-    putJson(disk: 'public', path: 'fake/categories', arr: $categories);
+    putJson(
+      disk: 'public',
+      path: 'fake/categories',
+      arr: $categories,
+      append: $this->option('append'),
+    );
   }
 }

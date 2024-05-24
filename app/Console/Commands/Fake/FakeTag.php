@@ -15,6 +15,7 @@ class FakeTag extends Command implements Isolatable
    * @var string
    */
   protected $signature = 'fake:tag
+                          {--A|append : Append new data}
                           {--C|count=50 : Fake tags count}';
 
   /**
@@ -59,6 +60,11 @@ class FakeTag extends Command implements Isolatable
       ]);
     }
 
-    putJson(disk: 'public', path: 'fake/tags', arr: $tags);
+    putJson(
+      disk: 'public',
+      path: 'fake/tags',
+      arr: $tags,
+      append: $this->option('append'),
+    );
   }
 }

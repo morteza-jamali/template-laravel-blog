@@ -5,7 +5,6 @@ namespace App\Console\Commands\Fake;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Arr;
@@ -18,6 +17,7 @@ class FakePost extends Command implements Isolatable
    * @var string
    */
   protected $signature = 'fake:post
+                            {--A|append : Append new data}
                             {--T|tagscount=50 : Maximum tags count}
                             {--K|categoriescount=50 : Maximum categories count}
                             {--S|savepics : Whether to save pictures or not}
@@ -29,20 +29,6 @@ class FakePost extends Command implements Isolatable
    * @var string
    */
   protected $description = 'Generate fake posts';
-
-  private function fakeHtml()
-  {
-    $length = getTrueOrFalse() ? 'long' : 'short';
-
-    return Http::get(
-      "https://loripsum.net/api/10/$length/decorate/link/ul/dl/ol/bq/code/headers",
-    )->body();
-  }
-
-  private function fakeTerms(int $max_count)
-  {
-    return implode(',', fake()->randomElements(range(1, $max_count), null));
-  }
 
   /**
    * Execute the console command.
@@ -69,7 +55,7 @@ class FakePost extends Command implements Isolatable
     foreach (array_fill(0, $count, 0) as $_) {
       $slug = fake()->slug(fake()->numberBetween(3, 10), false);
       $title = Str::title(Str::replace('-', ' ', $slug));
-      $content = $this->fakeHtml();
+      $content = fakeHtml();
       $cover = '';
 
       if ($this->option('savepics')) {
@@ -90,8 +76,8 @@ class FakePost extends Command implements Isolatable
       $status = getTrueOrFalse() ? 'publish' : 'draft';
       $view = fake()->numberBetween(1, 999);
       $like = fake()->numberBetween(1, 999);
-      $tags = $this->fakeTerms((int) $this->option('tagscount'));
-      $categories = $this->fakeTerms((int) $this->option('categoriescount'));
+      $tags = fakeTerms((int) $this->option('tagscount'));
+      $categories = fakeTerms((int) $this->option('categoriescount'));
       $created_at = fakeTimeStamp();
       $updated_at = getTrueOrFalse()
         ? $created_at
@@ -113,7 +99,12 @@ class FakePost extends Command implements Isolatable
       $bar->advance();
     }
 
-    putJson(disk: 'public', path: 'fake/posts', arr: $posts);
+    putJson(
+      disk: 'public',
+      path: 'fake/posts',
+      arr: $posts,
+      append: $this->option('append'),
+    );
     $bar->finish();
     echo PHP_EOL;
   }

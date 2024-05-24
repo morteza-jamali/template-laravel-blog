@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 if (!function_exists('getTrueOrFalse')) {
   function getTrueOrFalse(?int $length = 2)
@@ -25,8 +28,38 @@ if (!function_exists('fakeTimeStamp')) {
 }
 
 if (!function_exists('putJson')) {
-  function putJson(string $disk, string $path, array $arr = [])
+  function putJson(
+    string $disk,
+    string $path,
+    array $arr = [],
+    bool $append = false,
+  ) {
+    $file = "$path.json";
+    $sd = Storage::disk($disk);
+
+    if ($append) {
+      $array = File::json($sd->path($file));
+      $arr = Arr::collapse([$array, $arr]);
+    }
+
+    $sd->put($file, json_encode($arr));
+  }
+}
+
+if (!function_exists('fakeHtml')) {
+  function fakeHtml()
   {
-    Storage::disk($disk)->put("$path.json", json_encode($arr));
+    $length = getTrueOrFalse() ? 'long' : 'short';
+
+    return Http::get(
+      "https://loripsum.net/api/10/$length/decorate/link/ul/dl/ol/bq/code/headers",
+    )->body();
+  }
+}
+
+if (!function_exists('fakeTerms')) {
+  function fakeTerms(int $max_count)
+  {
+    return implode(',', fake()->randomElements(range(1, $max_count), null));
   }
 }
