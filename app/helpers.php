@@ -38,7 +38,13 @@ if (!function_exists('putJson')) {
     $sd = Storage::disk($disk);
 
     if ($append) {
-      $array = File::json($sd->path($file));
+      $array = [];
+
+      try {
+        $array = File::json($sd->path($file));
+      } catch (Exception $e) {
+      }
+
       $arr = Arr::collapse([$array, $arr]);
     }
 

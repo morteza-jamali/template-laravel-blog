@@ -46,9 +46,9 @@ class FakeTag extends Command implements Isolatable
       $description = getTrueOrFalse() ? fake()->text() : null;
       $count = getTrueOrFalse() ? fake()->randomNumber(4) : 0;
       $created_at = fakeTimeStamp();
-      $updated_at = Carbon::parse($created_at)->addYears(
-        fake()->numberBetween(1, 3),
-      );
+      $updated_at = getTrueOrFalse()
+        ? $created_at
+        : Carbon::parse($created_at)->addYears(fake()->numberBetween(1, 3));
 
       array_push($tags, [
         'name' => $name,
@@ -66,5 +66,6 @@ class FakeTag extends Command implements Isolatable
       arr: $tags,
       append: $this->option('append'),
     );
+    $this->info('Fake tags generated.');
   }
 }

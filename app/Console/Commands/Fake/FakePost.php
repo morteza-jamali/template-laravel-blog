@@ -110,6 +110,7 @@ class FakePost extends Command implements Isolatable
 
     putJson(disk: 'public', path: 'fake/posts', arr: $posts, append: $append);
     $bar->finish();
-    echo PHP_EOL;
+    $this->newLine();
+    $this->info('Fake posts generated.');
   }
 }
