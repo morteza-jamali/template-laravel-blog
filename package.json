@@ -11,6 +11,7 @@
     "@dnd-kit/core": "^6.1.0",
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "@formkit/auto-animate": "^0.8.2",
     "@inertiajs/react": "^1.0.16",
     "@mantine/carousel": "^7.8.1",
     "@mantine/charts": "^7.8.1",
@@ -51,13 +52,11 @@
     "react-countup": "^6.5.3",
     "react-dom": "^18.3.1",
     "react-simple-maps": "^3.0.0",
-    "recharts": "^2.12.6",
-    "uuid": "^9.0.1"
+    "recharts": "^2.12.6"
   },
   "devDependencies": {
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
-    "@faker-js/faker": "^8.4.1",
     "@headlessui/react": "^1.4.2",
     "@prettier/plugin-php": "^0.22.2",
     "@shufo/prettier-plugin-blade": "^1.14.1",
@@ -68,7 +67,6 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.10",
     "@types/react-simple-maps": "^3.0.4",
-    "@types/uuid": "^9.0.8",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.12",
     "axios": "^1.6.4",

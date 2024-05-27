@@ -1,9 +1,4 @@
 .root {
-  & table {
-    display: flex;
-    flex-direction: column;
-  }
-
   & tbody tr {
     display: flex;
 
@@ -18,5 +13,21 @@
         display: none;
       }
     }
+  }
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  & th:not(:last-child) {
+    border-bottom: none;
+    padding: 0;
+  }
+
+  & th[role='button'] {
+    display: none;
   }
 }
