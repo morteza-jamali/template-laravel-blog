@@ -11,25 +11,75 @@ import { Group, Select, TextInput } from '@mantine/core';
 
 export interface CategoryPostsProps {}
 
-interface HeaderCellProps {
-  name: string;
+type SortDirection = 'asc' | 'desc';
+type SortableLabel = 'title' | 'created_at' | 'view' | 'like';
+type SortType = Omit<SortableLabel, 'title'>;
+
+interface NewHeaderProps {
+  refs: Array<{ label: SortableLabel; ref: HTMLElement }> | null;
 }
 
-const HeaderCell = ({ name }: HeaderCellProps) => {
-  const id = useId();
+const NewHeader = ({ refs }: NewHeaderProps) => {
+  const [type, setType] = useState<SortType>('created_at');
+  const [direction, setDirection] = useState<SortDirection>('desc');
 
-  return <div id={`${id}_${name}`} />;
+  const sort = (t?: SortType) => {
+    refs?.filter(({ label }) => label === (t ?? type))[0].ref.click();
+  };
+
+  const onTypeChange = (value: string | null) => {
+    if (value !== type) {
+      setType(value as SortType);
+      sort(value as SortType);
+    }
+  };
+
+  const onDirectionChange = (value: string | null) => {
+    if (value !== direction) {
+      setDirection(value as SortDirection);
+      sort();
+    }
+  };
+
+  return (
+    <Group wrap="nowrap" gap="xs" align="flex-end">
+      <Select
+        label="Sort"
+        value={type as string}
+        onChange={onTypeChange}
+        data={[
+          { value: 'view', label: 'Most viewed' },
+          { value: 'created_at', label: 'Most recent' },
+          { value: 'like', label: 'Most liked' },
+        ]}
+        allowDeselect={false}
+      />
+      <Select
+        onChange={onDirectionChange}
+        value={direction}
+        data={[
+          { value: 'asc', label: 'Ascending' },
+          { value: 'desc', label: 'Descending' },
+        ]}
+        allowDeselect={false}
+      />
+      <TextInput
+        placeholder="Search tags, title"
+        rightSection={<IconSearch size={16} />}
+      />
+    </Group>
+  );
 };
 
 export function CategoryPosts({}: CategoryPostsProps) {
+  const id = useId();
   const [bodyRef] = useAutoAnimate<HTMLTableSectionElement>();
+  const [table_ref, setTableRef] = useState<HTMLTableElement | null>(null);
+  const [sortable_refs, setSortableRefs] = useState<
+    NewHeaderProps['refs'] | null
+  >(null);
   const [posts, setPosts] = useState<Array<Post>>([]);
 
-  useEffect(() => {
-    gPosts().then((posts) => setPosts(posts));
-  }, []);
-
-  const [query, setQuery] = useState('');
   const sortables: Array<DataTableColumn<Post>> = [
     {
       accessor: 'title',
@@ -38,12 +88,39 @@ export function CategoryPosts({}: CategoryPostsProps) {
       accessor: 'created_at',
     },
     {
-      accessor: 'updated_at',
-    },
-    {
       accessor: 'view',
     },
-  ].map((item) => ({
+    {
+      accessor: 'like',
+    },
+  ];
+
+  useEffect(() => {
+    gPosts().then((posts) => setPosts(posts));
+  }, []);
+
+  useEffect(() => {
+    let filtered: NewHeaderProps['refs'] = [];
+    const refs = table_ref?.querySelectorAll(
+      '.mantine-Table-th',
+    ) as unknown as Array<HTMLElement>;
+
+    if (refs) {
+      for (const s of sortables) {
+        filtered.push({
+          label: s.accessor as SortableLabel,
+          ref: [...refs].filter(
+            (r) => r.querySelector(`[id='${id}__${s.accessor}__']`) !== null,
+          )[0],
+        });
+      }
+
+      setSortableRefs(filtered);
+    }
+  }, [table_ref]);
+
+  const [query, setQuery] = useState('');
+  const columns = sortables.map((item) => ({
     title: item.accessor,
     sortable: true,
     render: () => null,
@@ -51,7 +128,7 @@ export function CategoryPosts({}: CategoryPostsProps) {
   }));
 
   const body_columns: Array<DataTableColumn<Post>> = [
-    ...sortables.map((r_item, index) => {
+    ...columns.map((r_item, index) => {
       const item = { ...r_item };
 
       if (index === 0) {
@@ -65,36 +142,16 @@ export function CategoryPosts({}: CategoryPostsProps) {
         );
       }
 
-      item.title = <HeaderCell name={item.accessor} />;
+      item.title = <div id={`${id}__${item.accessor}__`} />;
 
       return item;
     }),
     {
       accessor: '',
-      title: (
-        <Group wrap="nowrap" gap="xs" align="flex-end">
-          <Select
-            label="Your favorite library"
-            placeholder="Pick value"
-            data={['React', 'Angular', 'Vue', 'Svelte']}
-          />
-          <Select
-            label="Your favorite library"
-            placeholder="Pick value"
-            data={['React', 'Angular', 'Vue', 'Svelte']}
-          />
-          <TextInput
-            placeholder="Search tags, title"
-            rightSection={<IconSearch size={16} />}
-          />
-        </Group>
-      ),
+      title: <NewHeader refs={sortable_refs} />,
       render: () => null,
     },
   ];
-
-  console.log(body_columns);
-  console.log(sortables);
 
   return (
     //@ts-ignore
@@ -110,21 +167,7 @@ export function CategoryPosts({}: CategoryPostsProps) {
       recordsPerPageLabel="Posts per page"
       data={posts} // TODO: Change no records component
       columns={body_columns}
-      tableRef={(ref) => {
-        const titleRef = ref?.querySelectorAll(
-          '.mantine-Table-th',
-        )[1] as HTMLElement;
-
-        // setInterval(() => {
-        //   titleRef?.click();
-        // }, 3000);
-
-        console.log(titleRef);
-
-        // ref?.tHead?.querySelector('#category_posts_table_header_title'),
-        // childNodes[0]?.childNodes[0]?.childNodes[0]?.childNodes[0]
-        //   ?.childNodes[0]?.childNodes[0]
-      }}
+      tableRef={setTableRef}
       bodyRef={bodyRef}
       query={query}
       sort_status={{
