@@ -2,7 +2,10 @@ import { useEffect, useState, useId } from 'react';
 import { VerticalCard } from '@/Components/Blog';
 import { IconSearch } from '@tabler/icons-react';
 import { DataTable } from '@/Components/Global/DataTable';
-import { type DataTableColumn } from 'mantine-datatable';
+import {
+  type DataTableSortStatus,
+  type DataTableColumn,
+} from 'mantine-datatable';
 import { gPosts } from '@/faker/Post';
 import { type Post } from '@/types';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
@@ -13,24 +16,26 @@ export interface CategoryPostsProps {}
 
 type SortDirection = 'asc' | 'desc';
 type SortableLabel = 'title' | 'created_at' | 'view' | 'like';
-type SortType = Omit<SortableLabel, 'title'>;
 
 interface NewHeaderProps {
+  initial_sort: { columnAccessor: SortableLabel; direction: SortDirection };
   refs: Array<{ label: SortableLabel; ref: HTMLElement }> | null;
 }
 
-const NewHeader = ({ refs }: NewHeaderProps) => {
-  const [type, setType] = useState<SortType>('created_at');
-  const [direction, setDirection] = useState<SortDirection>('desc');
+const NewHeader = ({ refs, initial_sort }: NewHeaderProps) => {
+  const [type, setType] = useState<SortableLabel>(initial_sort.columnAccessor);
+  const [direction, setDirection] = useState<SortDirection>(
+    initial_sort.direction,
+  );
 
-  const sort = (t?: SortType) => {
+  const sort = (t?: SortableLabel) => {
     refs?.filter(({ label }) => label === (t ?? type))[0].ref.click();
   };
 
   const onTypeChange = (value: string | null) => {
     if (value !== type) {
-      setType(value as SortType);
-      sort(value as SortType);
+      setType(value as SortableLabel);
+      sort(value as SortableLabel);
     }
   };
 
@@ -51,6 +56,7 @@ const NewHeader = ({ refs }: NewHeaderProps) => {
           { value: 'view', label: 'Most viewed' },
           { value: 'created_at', label: 'Most recent' },
           { value: 'like', label: 'Most liked' },
+          { value: 'title', label: 'Alphabetically' },
         ]}
         allowDeselect={false}
       />
@@ -79,6 +85,11 @@ export function CategoryPosts({}: CategoryPostsProps) {
     NewHeaderProps['refs'] | null
   >(null);
   const [posts, setPosts] = useState<Array<Post>>([]);
+
+  const initial_sort = {
+    columnAccessor: 'created_at',
+    direction: 'desc',
+  };
 
   const sortables: Array<DataTableColumn<Post>> = [
     {
@@ -137,6 +148,8 @@ export function CategoryPosts({}: CategoryPostsProps) {
             title={post.title}
             cover={post.cover}
             created_at={post.created_at}
+            like={post.like}
+            view={post.view}
             key={index}
           />
         );
@@ -148,7 +161,12 @@ export function CategoryPosts({}: CategoryPostsProps) {
     }),
     {
       accessor: '',
-      title: <NewHeader refs={sortable_refs} />,
+      title: (
+        <NewHeader
+          refs={sortable_refs}
+          initial_sort={initial_sort as NewHeaderProps['initial_sort']}
+        />
+      ),
       render: () => null,
     },
   ];
@@ -170,10 +188,7 @@ export function CategoryPosts({}: CategoryPostsProps) {
       tableRef={setTableRef}
       bodyRef={bodyRef}
       query={query}
-      sort_status={{
-        columnAccessor: 'created_at',
-        direction: 'asc',
-      }}
+      sort_status={initial_sort as DataTableSortStatus}
       filterFn={(debouncedQuery) =>
         ({ title }) => {
           if (

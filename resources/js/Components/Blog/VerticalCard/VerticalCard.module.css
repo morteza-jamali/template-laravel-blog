@@ -4,10 +4,9 @@
 
 .title {
   font-weight: bold;
-  font-family:
-    Greycliff CF,
-    var(--mantine-font-family);
-  line-height: 1.2;
+  margin-top: var(--mantine-spacing-md);
+  margin-bottom: rem(5px);
+  display: block;
 }
 
 .body {

@@ -75,6 +75,8 @@ export type Tag = {
 export type Post = {
   id: number;
   author: number;
+  view: number;
+  like: number;
   title: string;
   slug: string;
   content: string;

@@ -1,4 +1,5 @@
-import { Card, Image, Avatar, Text, Group } from '@mantine/core';
+import { Card, Image, Avatar, Text, Group, Badge } from '@mantine/core';
+import { IconHeart, IconEye } from '@tabler/icons-react';
 import { type Post } from '@/types';
 import classes from './VerticalCard.module.css';
 
@@ -9,16 +10,24 @@ export function VerticalCard({
   title,
   created_at,
   cover,
+  view,
+  like,
 }: VerticalCardProps) {
   return (
     <Card withBorder radius="md" p={0} className={classes.card} shadow="sm">
       <Group wrap="nowrap" gap={0}>
         <Image src={cover} height={160} />
         <div className={classes.body}>
-          <Text tt="uppercase" c="dimmed" fw={700} size="xs">
+          <Badge component="a" href="#">
             technology
-          </Text>
-          <Text className={classes.title} mt="xs" mb="md">
+          </Badge>
+          <Text
+            className={classes.title}
+            component="a"
+            href="#"
+            mt="xs"
+            mb="md"
+          >
             {title}
           </Text>
           <Group wrap="nowrap" gap="xs">
@@ -35,6 +44,20 @@ export function VerticalCard({
             <Text size="xs" c="dimmed">
               {created_at}
             </Text>
+            <Badge
+              variant="transparent"
+              color="gray"
+              leftSection={<IconHeart size={14} />}
+            >
+              {like}
+            </Badge>
+            <Badge
+              variant="transparent"
+              color="gray"
+              leftSection={<IconEye size={14} />}
+            >
+              {view}
+            </Badge>
           </Group>
         </div>
       </Group>
