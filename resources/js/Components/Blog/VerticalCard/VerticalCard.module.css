@@ -12,3 +12,7 @@
 .body {
   padding: var(--mantine-spacing-md);
 }
+
+.badge {
+  cursor: pointer;
+}

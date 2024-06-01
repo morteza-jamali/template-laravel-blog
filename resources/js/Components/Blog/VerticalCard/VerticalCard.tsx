@@ -18,7 +18,7 @@ export function VerticalCard({
       <Group wrap="nowrap" gap={0}>
         <Image src={cover} height={160} />
         <div className={classes.body}>
-          <Badge component="a" href="#">
+          <Badge component="a" href="#" className={classes.badge}>
             technology
           </Badge>
           <Text

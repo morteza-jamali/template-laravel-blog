@@ -2,27 +2,24 @@ import {
   ParentLayout,
   MainSection,
   Breadcrumbs,
-  CategoryPosts,
+  AllCategories,
 } from '@/Components/Blog';
 import { Container, Title } from '@mantine/core';
 
-const breadcrumbs = [
-  { title: 'Home', href: '/' },
-  { title: 'Categories', href: '#' },
-  { title: 'Category name' },
-];
+const PAGE_TITLE = 'All Categories';
+const breadcrumbs = [{ title: 'Home', href: '/' }, { title: PAGE_TITLE }];
 
 export function SingleCategory() {
   return (
-    <ParentLayout title="Category name">
+    <ParentLayout title={PAGE_TITLE}>
       <Container size="lg">
         <Breadcrumbs items={breadcrumbs} />
         <Title order={2} my="xl">
-          Category name
+          {PAGE_TITLE}
         </Title>
       </Container>
       <MainSection>
-        <CategoryPosts />
+        <AllCategories />
       </MainSection>
     </ParentLayout>
   );

@@ -7,12 +7,12 @@ import {
   type DataTableColumn,
 } from 'mantine-datatable';
 import { importData } from '@/faker/helpers';
-import { type Post } from '@/types';
+import { type Tag } from '@/types';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import classes from './CategoryPosts.module.css';
+import classes from './AllCategories.module.css';
 import { Group, Select, TextInput } from '@mantine/core';
 
-export interface CategoryPostsProps {}
+export interface CardTableProps {}
 
 type SortDirection = 'asc' | 'desc';
 type SortableLabel = 'title' | 'created_at' | 'view' | 'like';
@@ -77,21 +77,21 @@ const NewHeader = ({ refs, initial_sort }: NewHeaderProps) => {
   );
 };
 
-export function CategoryPosts({}: CategoryPostsProps) {
+export function CardTable({}: CardTableProps) {
   const id = useId();
   const [bodyRef] = useAutoAnimate<HTMLTableSectionElement>();
   const [table_ref, setTableRef] = useState<HTMLTableElement | null>(null);
   const [sortable_refs, setSortableRefs] = useState<
     NewHeaderProps['refs'] | null
   >(null);
-  const [posts, setPosts] = useState<Array<Post>>([]);
+  const [tags, setTags] = useState<Array<Tag>>([]);
 
   const initial_sort = {
     columnAccessor: 'created_at',
     direction: 'desc',
   };
 
-  const sortables: Array<DataTableColumn<Post>> = [
+  const sortables: Array<DataTableColumn<Tag>> = [
     {
       accessor: 'title',
     },
@@ -107,8 +107,8 @@ export function CategoryPosts({}: CategoryPostsProps) {
   ];
 
   useEffect(() => {
-    importData<Post>({ path: '#/storage/fake/posts.json' }).then((posts) =>
-      setPosts(posts),
+    importData<Tag>({ path: '#/storage/fake/tags.json' }).then((tags) =>
+      setTags(tags),
     );
   }, []);
 
@@ -140,7 +140,7 @@ export function CategoryPosts({}: CategoryPostsProps) {
     ...item,
   }));
 
-  const body_columns: Array<DataTableColumn<Post>> = [
+  const body_columns: Array<DataTableColumn<Tag>> = [
     ...columns.map((r_item, index) => {
       const item = { ...r_item };
 
@@ -184,18 +184,18 @@ export function CategoryPosts({}: CategoryPostsProps) {
       }}
       textSelectionDisabled
       paginationSize="md"
-      recordsPerPageLabel="Posts per page"
-      data={posts} // TODO: Change no records component
+      recordsPerPageLabel="Tags per page"
+      data={tags} // TODO: Change no records component
       columns={body_columns}
       tableRef={setTableRef}
       bodyRef={bodyRef}
       query={query}
       sort_status={initial_sort as DataTableSortStatus}
       filterFn={(debouncedQuery) =>
-        ({ title }) => {
+        ({ name }) => {
           if (
             debouncedQuery !== '' &&
-            !(title as string)
+            !(name as string)
               .toLowerCase()
               .includes(debouncedQuery.trim().toLowerCase())
           ) {
@@ -208,4 +208,4 @@ export function CategoryPosts({}: CategoryPostsProps) {
   );
 }
 
-export default CategoryPosts;
+export default CardTable;

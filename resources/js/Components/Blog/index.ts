@@ -20,3 +20,5 @@ export * from './NexPrevPost';
 export * from './TagsBox';
 export * from './Breadcrumbs';
 export * from './CategoryPosts';
+export * from './AllCategories';
+export * from './CardTable';

@@ -1,0 +1,33 @@
+.root {
+  & tbody tr {
+    display: flex;
+
+    & td {
+      border-bottom: none !important;
+
+      &:first-child {
+        flex-grow: 1;
+      }
+
+      &:not(:first-child) {
+        display: none;
+      }
+    }
+  }
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  & th:not(:last-child) {
+    border-bottom: none;
+    padding: 0;
+  }
+
+  & th[role='button'] {
+    display: none;
+  }
+}
