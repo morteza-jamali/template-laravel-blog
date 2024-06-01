@@ -1,41 +1,46 @@
 import { useEffect, useState, useId } from 'react';
-import { VerticalCard } from '@/Components/Blog';
 import { IconSearch } from '@tabler/icons-react';
-import { DataTable } from '@/Components/Global/DataTable';
+import { DataTable, type DataTableProps } from '@/Components/Global/DataTable';
 import {
-  type DataTableSortStatus,
   type DataTableColumn,
+  type DataTableSortStatus,
 } from 'mantine-datatable';
-import { importData } from '@/faker/helpers';
-import { type Tag } from '@/types';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
-import classes from './AllCategories.module.css';
+import classes from './CardTable.module.css';
 import { Group, Select, TextInput } from '@mantine/core';
 
-export interface CardTableProps {}
+export type CardTableProps<T> = Omit<DataTableProps<T>, 'columns'> & {
+  card: DataTableColumn<T>['render'];
+  columns: Array<DataTableColumn<T>>;
+};
 
 type SortDirection = 'asc' | 'desc';
-type SortableLabel = 'title' | 'created_at' | 'view' | 'like';
 
 interface NewHeaderProps {
-  initial_sort: { columnAccessor: SortableLabel; direction: SortDirection };
-  refs: Array<{ label: SortableLabel; ref: HTMLElement }> | null;
+  sort_status: DataTableSortStatus;
+  refs: Array<{
+    label: string;
+    value: string;
+    ref: HTMLElement;
+  }> | null;
 }
 
-const NewHeader = ({ refs, initial_sort }: NewHeaderProps) => {
-  const [type, setType] = useState<SortableLabel>(initial_sort.columnAccessor);
+const generateTitleId = ({ id, accessor }: { id: string; accessor: string }) =>
+  `${id}__${accessor}__`;
+
+const NewHeader = ({ refs, sort_status }: NewHeaderProps) => {
+  const [type, setType] = useState<string>(sort_status.columnAccessor);
   const [direction, setDirection] = useState<SortDirection>(
-    initial_sort.direction,
+    sort_status.direction,
   );
 
-  const sort = (t?: SortableLabel) => {
-    refs?.filter(({ label }) => label === (t ?? type))[0].ref.click();
+  const sort = (t?: string) => {
+    refs?.filter(({ value }) => value === (t ?? type))[0].ref.click();
   };
 
   const onTypeChange = (value: string | null) => {
     if (value !== type) {
-      setType(value as SortableLabel);
-      sort(value as SortableLabel);
+      setType(value as string);
+      sort(value as string);
     }
   };
 
@@ -52,12 +57,7 @@ const NewHeader = ({ refs, initial_sort }: NewHeaderProps) => {
         label="Sort"
         value={type as string}
         onChange={onTypeChange}
-        data={[
-          { value: 'view', label: 'Most viewed' },
-          { value: 'created_at', label: 'Most recent' },
-          { value: 'like', label: 'Most liked' },
-          { value: 'title', label: 'Alphabetically' },
-        ]}
+        data={refs?.map(({ label, value }) => ({ label, value }))}
         allowDeselect={false}
       />
       <Select
@@ -77,40 +77,14 @@ const NewHeader = ({ refs, initial_sort }: NewHeaderProps) => {
   );
 };
 
-export function CardTable({}: CardTableProps) {
+export function CardTable<T>({ card, columns, ...props }: CardTableProps<T>) {
   const id = useId();
-  const [bodyRef] = useAutoAnimate<HTMLTableSectionElement>();
   const [table_ref, setTableRef] = useState<HTMLTableElement | null>(null);
   const [sortable_refs, setSortableRefs] = useState<
     NewHeaderProps['refs'] | null
   >(null);
-  const [tags, setTags] = useState<Array<Tag>>([]);
 
-  const initial_sort = {
-    columnAccessor: 'created_at',
-    direction: 'desc',
-  };
-
-  const sortables: Array<DataTableColumn<Tag>> = [
-    {
-      accessor: 'title',
-    },
-    {
-      accessor: 'created_at',
-    },
-    {
-      accessor: 'view',
-    },
-    {
-      accessor: 'like',
-    },
-  ];
-
-  useEffect(() => {
-    importData<Tag>({ path: '#/storage/fake/tags.json' }).then((tags) =>
-      setTags(tags),
-    );
-  }, []);
+  const sortables = columns.filter(({ sortable }) => sortable);
 
   useEffect(() => {
     let filtered: NewHeaderProps['refs'] = [];
@@ -121,9 +95,13 @@ export function CardTable({}: CardTableProps) {
     if (refs) {
       for (const s of sortables) {
         filtered.push({
-          label: s.accessor as SortableLabel,
+          label: String(s.title),
+          value: String(s.accessor),
           ref: [...refs].filter(
-            (r) => r.querySelector(`[id='${id}__${s.accessor}__']`) !== null,
+            (r) =>
+              r.querySelector(
+                `[id='${generateTitleId({ id, accessor: String(s.accessor) })}']`,
+              ) !== null,
           )[0],
         });
       }
@@ -132,43 +110,25 @@ export function CardTable({}: CardTableProps) {
     }
   }, [table_ref]);
 
-  const [query, setQuery] = useState('');
-  const columns = sortables.map((item) => ({
-    title: item.accessor,
-    sortable: true,
-    render: () => null,
-    ...item,
-  }));
-
-  const body_columns: Array<DataTableColumn<Tag>> = [
-    ...columns.map((r_item, index) => {
-      const item = { ...r_item };
+  const body_columns = [
+    ...sortables.map((r_col, index) => {
+      const col = { ...r_col };
 
       if (index === 0) {
-        item.render = (post, index) => (
-          <VerticalCard
-            title={post.title}
-            cover={post.cover}
-            created_at={post.created_at}
-            like={post.like}
-            view={post.view}
-            key={index}
-          />
-        );
+        col.render = card;
+      } else {
+        col.render = () => null;
       }
 
-      item.title = <div id={`${id}__${item.accessor}__`} />;
+      col.title = (
+        <div id={generateTitleId({ id, accessor: String(col.accessor) })} />
+      );
 
-      return item;
+      return col;
     }),
     {
       accessor: '',
-      title: (
-        <NewHeader
-          refs={sortable_refs}
-          initial_sort={initial_sort as NewHeaderProps['initial_sort']}
-        />
-      ),
+      title: <NewHeader refs={sortable_refs} sort_status={props.sort_status} />,
       render: () => null,
     },
   ];
@@ -182,28 +142,9 @@ export function CardTable({}: CardTableProps) {
         table: classes.table,
         header: classes.header,
       }}
-      textSelectionDisabled
-      paginationSize="md"
-      recordsPerPageLabel="Tags per page"
-      data={tags} // TODO: Change no records component
       columns={body_columns}
       tableRef={setTableRef}
-      bodyRef={bodyRef}
-      query={query}
-      sort_status={initial_sort as DataTableSortStatus}
-      filterFn={(debouncedQuery) =>
-        ({ name }) => {
-          if (
-            debouncedQuery !== '' &&
-            !(name as string)
-              .toLowerCase()
-              .includes(debouncedQuery.trim().toLowerCase())
-          ) {
-            return false;
-          }
-
-          return true;
-        }}
+      {...props}
     />
   );
 }

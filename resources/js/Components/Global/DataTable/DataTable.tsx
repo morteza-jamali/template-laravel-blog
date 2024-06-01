@@ -12,6 +12,7 @@ import {
   DataTableProps as DTProps,
   DataTableSortStatus as DTSortStatus,
 } from 'mantine-datatable';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import sortBy from 'lodash/sortBy';
 import { useDebouncedValue } from '@mantine/hooks';
 import { ErrorAlert } from '@/Components/Dashboard';
@@ -23,7 +24,7 @@ export interface FilterFnCallback<T = Record<string, unknown>> {
 }
 
 export type DataTableProps<T = Record<string, unknown>> = DTProps<T> & {
-  data: T[];
+  data: Array<T>;
   sort_status: DTSortStatus;
   selectedRecords?: DTProps<T>['selectedRecords'];
   onSelectedRecordsChange?: DTProps<T>['onSelectedRecordsChange'];
@@ -51,6 +52,7 @@ export function DataTable<T>({
   ...rest
 }: DataTableProps<T>) {
   const [page, setPage] = useState(1);
+  const [bodyRef] = useAutoAnimate<HTMLTableSectionElement>();
   const [delete_initial_select, deleteInitialSelect] = useState<boolean>(true);
   const [allRecordsSelected, setAllRecordsSelected] = useState(selectedAll);
   const [unselectedRecords, setUnselectedRecords] = useState<Array<T>>([]);
@@ -100,9 +102,9 @@ export function DataTable<T>({
   useEffect(() => {
     const from = (page - 1) * pageSize;
     const to = from + pageSize;
-    const d = sortBy(data, sortStatus.columnAccessor) as T[];
+    const d = sortBy(data, sortStatus.columnAccessor) as Array<T>;
     const dd = sortStatus.direction === 'desc' ? d.reverse() : d;
-    let filtered = dd.slice(from, to) as T[];
+    let filtered = dd.slice(from, to) as Array<T>;
 
     if (debouncedQuery) {
       filtered = data.filter(filterFn(debouncedQuery)).slice(from, to);
@@ -132,7 +134,7 @@ export function DataTable<T>({
           differenceBy(data, unselectedRecords, (r) => (r as any).id),
         );
       } else {
-        setAllSelectedRecords(selectedRecords as T[]);
+        setAllSelectedRecords(selectedRecords as Array<T>);
       }
     }
   }, [selectedRecords]);
@@ -146,6 +148,7 @@ export function DataTable<T>({
       totalRecords={debouncedQuery ? records.length : data.length}
       recordsPerPage={pageSize}
       page={page}
+      bodyRef={bodyRef}
       onPageChange={(p) => setPage(p)}
       recordsPerPageOptions={PAGE_SIZES}
       onRecordsPerPageChange={setPageSize}
