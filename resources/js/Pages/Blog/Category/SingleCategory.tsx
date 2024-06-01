@@ -23,9 +23,7 @@ export function SingleCategory() {
   const [posts, setPosts] = useState<Array<Post>>([]);
 
   useEffect(() => {
-    importData<Post>({ path: '#/storage/fake/posts.json' }).then((posts) =>
-      setPosts(posts),
-    );
+    importData<Post>({ path: 'posts' }).then((posts) => setPosts(posts));
   }, []);
 
   const columns: CardTableProps<Post>['columns'] = [

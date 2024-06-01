@@ -18,8 +18,8 @@ export function AllCategories() {
   const [categories, setCategories] = useState<Array<Category>>([]);
 
   useEffect(() => {
-    importData<Category>({ path: '#/storage/fake/categories.json' }).then(
-      (categories) => setCategories(categories),
+    importData<Category>({ path: 'categories' }).then((categories) =>
+      setCategories(categories),
     );
   }, []);
 

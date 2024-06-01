@@ -17,6 +17,6 @@ export interface ImportDataProps extends Omit<SliceProps, 'data'> {
   path: string;
 }
 export const importData = <T>({ path, count }: ImportDataProps) =>
-  import(path).then(({ default: data }) =>
-    addId<T>({ data: slice({ data, count }) }),
-  );
+  fetch(`/storage/fake/${path}.json`)
+    .then((response) => response.json())
+    .then((data) => addId<T>({ data: slice({ data, count }) }));
