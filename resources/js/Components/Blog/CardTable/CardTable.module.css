@@ -22,7 +22,7 @@
 }
 
 .header {
-  & th:not(:last-child) {
+  & th {
     border-bottom: none;
     padding: 0;
   }

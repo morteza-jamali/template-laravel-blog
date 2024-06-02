@@ -8,7 +8,10 @@ import {
 import classes from './CardTable.module.css';
 import { Group, Select, TextInput } from '@mantine/core';
 
-export type CardTableProps<T> = Omit<DataTableProps<T>, 'columns'> & {
+export type CardTableProps<T> = Omit<
+  DataTableProps<T>,
+  'columns' | 'classNames'
+> & {
   card: DataTableColumn<T>['render'];
   columns: Array<DataTableColumn<T>>;
 };

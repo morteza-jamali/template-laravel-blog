@@ -18,6 +18,17 @@ const breadcrumbs = [
   { title: PAGE_TITLE },
 ];
 
+const Card: CardTableProps<Post>['card'] = (post, index) => (
+  <VerticalCard
+    title={post.title}
+    cover={post.cover}
+    created_at={post.created_at}
+    like={post.like}
+    view={post.view}
+    key={index}
+  />
+);
+
 export function SingleCategory() {
   const [query, setQuery] = useState('');
   const [posts, setPosts] = useState<Array<Post>>([]);
@@ -48,17 +59,6 @@ export function SingleCategory() {
       sortable: true,
     },
   ];
-
-  const card: CardTableProps<Post>['card'] = (post, index) => (
-    <VerticalCard
-      title={post.title}
-      cover={post.cover}
-      created_at={post.created_at}
-      like={post.like}
-      view={post.view}
-      key={index}
-    />
-  );
 
   const filterFn: CardTableProps<Post>['filterFn'] =
     (debouncedQuery) =>
@@ -97,7 +97,7 @@ export function SingleCategory() {
           data={posts} // TODO: Change no records component
           sort_status={sort_status}
           columns={columns}
-          card={card}
+          card={Card}
           filterFn={filterFn}
         />
       </MainSection>

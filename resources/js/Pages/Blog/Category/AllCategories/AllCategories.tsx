@@ -7,11 +7,56 @@ import {
   type CardTableProps,
 } from '@/Components/Blog';
 import { type Category } from '@/types';
+import { IconArticle, IconCalendarTime } from '@tabler/icons-react';
 import { importData } from '@/faker/helpers';
-import { Container, Title } from '@mantine/core';
+import {
+  Container,
+  Title,
+  Card as MCard,
+  Stack,
+  Text,
+  Group,
+  Badge,
+} from '@mantine/core';
+import classes from './AllCategories.module.css';
 
 const PAGE_TITLE = 'All Categories';
 const breadcrumbs = [{ title: 'Home', href: '/' }, { title: PAGE_TITLE }];
+
+const Card: CardTableProps<Category>['card'] = (
+  { name, count, created_at },
+  index,
+) => (
+  <MCard
+    shadow="sm"
+    radius="md"
+    withBorder
+    key={index}
+    component="a"
+    href="#"
+    className={classes.card}
+  >
+    <Stack>
+      <Text size="sm">{name}</Text>
+      <Group wrap="nowrap" gap="xs">
+        <Badge
+          variant="transparent"
+          leftSection={<IconArticle size={16} />}
+          p={0}
+        >
+          {count}
+        </Badge>
+        <Badge
+          variant="transparent"
+          leftSection={<IconCalendarTime size={16} />}
+          p={0}
+        >
+          {created_at}
+        </Badge>
+      </Group>
+    </Stack>
+  </MCard>
+);
 
 export function AllCategories() {
   const [query, setQuery] = useState('');
@@ -40,10 +85,6 @@ export function AllCategories() {
       sortable: true,
     },
   ];
-
-  const card: CardTableProps<Category>['card'] = ({ name }, index) => (
-    <div key={index}>{name}</div>
-  );
 
   const filterFn: CardTableProps<Category>['filterFn'] =
     (debouncedQuery) =>
@@ -82,8 +123,9 @@ export function AllCategories() {
           data={categories} // TODO: Change no records component
           sort_status={sort_status}
           columns={columns}
-          card={card}
+          card={Card}
           filterFn={filterFn}
+          className={classes.card_table}
         />
       </MainSection>
     </ParentLayout>

@@ -10,6 +10,6 @@ class AllCategoriesController extends Controller
 {
   public function render()
   {
-    return Inertia::render('Blog/Category/AllCategories');
+    return Inertia::render('Blog/Category/AllCategories/AllCategories');
   }
 }
