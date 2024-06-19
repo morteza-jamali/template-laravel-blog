@@ -9,6 +9,7 @@ use App\Http\Controllers\Blog\SingleCategoryController;
 use App\Http\Controllers\Blog\AllCategoriesController;
 use App\Http\Controllers\Blog\SingleTagController;
 use App\Http\Controllers\Blog\AllTagsController;
+use App\Http\Controllers\Blog\AllPostsController;
 
 // Dashboard routes
 Route::get('/dashboard', [CategoryController::class, 'render'])->name(
@@ -79,9 +80,14 @@ Route::patch('/dashboard/tag/edit/{id}', [
 // Home Page
 Route::get('/', [HomeController::class, 'render'])->name('blog.home');
 
-// Post Page
+// Single Post Page
 Route::get('/post/{id}', [SinglePostController::class, 'render'])->name(
-  'blog.singlepost',
+  'blog.post.singlepost',
+);
+
+// All Posts Page
+Route::get('/posts', [AllPostsController::class, 'render'])->name(
+  'blog.post.allposts',
 );
 
 // Single Category Page

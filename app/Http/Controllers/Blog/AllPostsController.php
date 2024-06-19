@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class SinglePostController extends Controller
+class AllPostsController extends Controller
 {
   public function render()
   {
-    return Inertia::render('Blog/Post/SinglePost');
+    return Inertia::render('Blog/Post/AllPosts');
   }
 }
