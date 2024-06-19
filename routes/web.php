@@ -7,6 +7,7 @@ use App\Http\Controllers\Blog\HomeController;
 use App\Http\Controllers\Blog\SinglePostController;
 use App\Http\Controllers\Blog\SingleCategoryController;
 use App\Http\Controllers\Blog\AllCategoriesController;
+use App\Http\Controllers\Blog\SingleTagController;
 
 // Dashboard routes
 Route::get('/dashboard', [CategoryController::class, 'render'])->name(
@@ -91,3 +92,13 @@ Route::get('/category/{id}', [SingleCategoryController::class, 'render'])->name(
 Route::get('/categories', [AllCategoriesController::class, 'render'])->name(
   'blog.category.allcategories',
 );
+
+// Single Tag Page
+Route::get('/tag/{id}', [SingleTagController::class, 'render'])->name(
+  'blog.tag.singletag',
+);
+
+// All Tags page
+// Route::get('/categories', [AllCategoriesController::class, 'render'])->name(
+//   'blog.category.allcategories',
+// );

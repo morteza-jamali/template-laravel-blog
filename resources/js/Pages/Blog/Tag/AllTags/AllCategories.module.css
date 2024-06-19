@@ -1,0 +1,16 @@
+.card_table {
+  & tbody {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--mantine-spacing-xs) var(--mantine-spacing-xs);
+  }
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+}
+
+.stack {
+  height: 100%;
+}
