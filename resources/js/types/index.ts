@@ -87,3 +87,7 @@ export type Post = {
   created_at: string;
   updated_at: string;
 };
+
+export type CompletePost = Omit<Post, 'categories'> & {
+  categories: Array<Category>;
+};

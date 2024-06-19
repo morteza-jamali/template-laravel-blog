@@ -11,10 +11,17 @@ import {
 import { CardImageBG, CardImageBG2 } from '@/Components/Blog';
 import { IconArrowRight } from '@tabler/icons-react';
 import { Link } from '@inertiajs/react';
+import { type CompletePost } from '@/types';
 
 const PRIMARY_COL_HEIGHT = rem(500);
 
-export function TopStories() {
+export interface TopStoriesProps {
+  data: Array<CompletePost>;
+}
+
+export function TopStories({ data }: TopStoriesProps) {
+  console.log(data);
+
   const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
 
   return (
@@ -32,7 +39,7 @@ export function TopStories() {
           </Button>
         </Group>
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-          <CardImageBG2 h={PRIMARY_COL_HEIGHT} />
+          <CardImageBG2 post={data[0]} h={PRIMARY_COL_HEIGHT} />
           <Grid gutter="md">
             <Grid.Col>
               <CardImageBG h={SECONDARY_COL_HEIGHT} />

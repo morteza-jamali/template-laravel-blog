@@ -6,16 +6,21 @@ import {
   AdBanner,
   VerticalCard,
   ParentLayout,
+  type TopStoriesProps,
 } from '@/Components/Blog';
 import { Button, Group, Space, Stack, Title } from '@mantine/core';
 import { Link } from '@inertiajs/react';
 import { IconArrowRight } from '@tabler/icons-react';
 
-export const Home = () => {
+interface HomeProps {
+  top_posts: TopStoriesProps['data'];
+}
+
+export const Home = ({ top_posts }: HomeProps) => {
   return (
     <ParentLayout title="Home">
       <EditorsPicks />
-      <TopStories />
+      <TopStories data={top_posts} />
       <TrendingStories />
       <MainSection>
         <Stack>

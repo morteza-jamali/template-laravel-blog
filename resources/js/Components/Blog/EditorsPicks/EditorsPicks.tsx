@@ -59,7 +59,7 @@ export function EditorsPicks() {
           {Array(4)
             .fill(0)
             .map((_, index) => (
-              <VerticalCard key={index} />
+              <VerticalCard title="This is for example" key={index} />
             ))}
         </Stack>
       </SimpleGrid>

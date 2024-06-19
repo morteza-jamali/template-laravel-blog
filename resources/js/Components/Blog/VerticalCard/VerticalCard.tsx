@@ -41,23 +41,29 @@ export function VerticalCard({
             <Text size="xs" c="dimmed">
               •
             </Text>
-            <Text size="xs" c="dimmed">
-              {created_at}
-            </Text>
-            <Badge
-              variant="transparent"
-              color="gray"
-              leftSection={<IconHeart size={14} />}
-            >
-              {like}
-            </Badge>
-            <Badge
-              variant="transparent"
-              color="gray"
-              leftSection={<IconEye size={14} />}
-            >
-              {view}
-            </Badge>
+            {created_at ? (
+              <Text size="xs" c="dimmed">
+                {created_at}
+              </Text>
+            ) : null}
+            {like ? (
+              <Badge
+                variant="transparent"
+                color="gray"
+                leftSection={<IconHeart size={14} />}
+              >
+                {like}
+              </Badge>
+            ) : null}
+            {view ? (
+              <Badge
+                variant="transparent"
+                color="gray"
+                leftSection={<IconEye size={14} />}
+              >
+                {view}
+              </Badge>
+            ) : null}
           </Group>
         </div>
       </Group>
