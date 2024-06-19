@@ -4,9 +4,16 @@ import { AdBanner, CategoriesBox, Subscribe, TagsBox } from '@/Components/Blog';
 
 export interface MainSectionProps extends ContainerProps {
   children: ReactNode;
+  tags_box?: boolean;
+  categories_box?: boolean;
 }
 
-export function MainSection({ children, ...rest }: MainSectionProps) {
+export function MainSection({
+  children,
+  tags_box,
+  categories_box,
+  ...rest
+}: MainSectionProps) {
   return (
     <Container size="lg" {...rest}>
       <Grid gutter="xl">
@@ -14,8 +21,8 @@ export function MainSection({ children, ...rest }: MainSectionProps) {
         <Grid.Col span={4}>
           <Stack>
             <AdBanner type="V1" />
-            <CategoriesBox />
-            <TagsBox />
+            {categories_box ?? true ? <CategoriesBox /> : null}
+            {tags_box ?? true ? <TagsBox /> : null}
             <Subscribe />
           </Stack>
         </Grid.Col>

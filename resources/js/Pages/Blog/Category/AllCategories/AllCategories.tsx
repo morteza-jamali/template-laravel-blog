@@ -36,7 +36,7 @@ const Card: CardTableProps<Category>['card'] = (
     href="#"
     className={classes.card}
   >
-    <Stack>
+    <Stack justify="space-between" className={classes.stack}>
       <Text size="sm">{name}</Text>
       <Group wrap="nowrap" gap="xs">
         <Badge
@@ -114,7 +114,7 @@ export function AllCategories() {
           {PAGE_TITLE}
         </Title>
       </Container>
-      <MainSection>
+      <MainSection categories_box={false}>
         <CardTable
           textSelectionDisabled
           paginationSize="md"
@@ -122,6 +122,7 @@ export function AllCategories() {
           query={query}
           data={categories} // TODO: Change no records component
           sort_status={sort_status}
+          page_size={50}
           columns={columns}
           card={Card}
           filterFn={filterFn}

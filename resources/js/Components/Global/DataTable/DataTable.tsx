@@ -17,7 +17,7 @@ import sortBy from 'lodash/sortBy';
 import { useDebouncedValue } from '@mantine/hooks';
 import { ErrorAlert } from '@/Components/Dashboard';
 
-const PAGE_SIZES = [5, 10, 20];
+const PAGE_SIZES = [5, 10, 20, 50, 100];
 
 export interface FilterFnCallback<T = Record<string, unknown>> {
   (param: Partial<T>): any;
@@ -34,6 +34,7 @@ export type DataTableProps<T = Record<string, unknown>> = DTProps<T> & {
   query: string;
   error?: ReactNode;
   loading?: boolean;
+  page_size?: 5 | 10 | 20 | 50 | 100;
   filterFn: (dq: string) => FilterFnCallback<T>;
 };
 
@@ -44,6 +45,7 @@ export function DataTable<T>({
   sort_status,
   columns,
   query,
+  page_size,
   filterFn,
   selectedRecords,
   onSelectedRecordsChange,
@@ -56,7 +58,7 @@ export function DataTable<T>({
   const [delete_initial_select, deleteInitialSelect] = useState<boolean>(true);
   const [allRecordsSelected, setAllRecordsSelected] = useState(selectedAll);
   const [unselectedRecords, setUnselectedRecords] = useState<Array<T>>([]);
-  const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
+  const [pageSize, setPageSize] = useState((page_size ?? 5) as number);
   const [records, setRecords] = useState<DataTableProps<T>['data']>(
     data.slice(0, pageSize),
   );
