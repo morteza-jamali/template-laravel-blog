@@ -6,7 +6,7 @@ import {
   CardTable,
   type CardTableProps,
 } from '@/Components/Blog';
-import { type Category } from '@/types';
+import { type Tag } from '@/types';
 import { IconArticle, IconCalendarTime } from '@tabler/icons-react';
 import { importData } from '@/faker/helpers';
 import {
@@ -18,12 +18,12 @@ import {
   Group,
   Badge,
 } from '@mantine/core';
-import classes from './AllCategories.module.css';
+import classes from './AllTags.module.css';
 
-const PAGE_TITLE = 'All Categories';
+const PAGE_TITLE = 'All Tags';
 const breadcrumbs = [{ title: 'Home', href: '/' }, { title: PAGE_TITLE }];
 
-const Card: CardTableProps<Category>['card'] = (
+const Card: CardTableProps<Tag>['card'] = (
   { name, count, created_at },
   index,
 ) => (
@@ -58,17 +58,15 @@ const Card: CardTableProps<Category>['card'] = (
   </MCard>
 );
 
-export function AllCategories() {
+export function AllTags() {
   const [query, setQuery] = useState('');
-  const [categories, setCategories] = useState<Array<Category>>([]);
+  const [tags, setTags] = useState<Array<Tag>>([]);
 
   useEffect(() => {
-    importData<Category>({ path: 'categories' }).then((categories) =>
-      setCategories(categories),
-    );
+    importData<Tag>({ path: 'tags' }).then((tags) => setTags(tags));
   }, []);
 
-  const columns: CardTableProps<Category>['columns'] = [
+  const columns: CardTableProps<Tag>['columns'] = [
     {
       accessor: 'name',
       title: 'Alphabetically',
@@ -86,7 +84,7 @@ export function AllCategories() {
     },
   ];
 
-  const filterFn: CardTableProps<Category>['filterFn'] =
+  const filterFn: CardTableProps<Tag>['filterFn'] =
     (debouncedQuery) =>
     ({ name }) => {
       if (
@@ -101,7 +99,7 @@ export function AllCategories() {
       return true;
     };
 
-  const sort_status: CardTableProps<Category>['sort_status'] = {
+  const sort_status: CardTableProps<Tag>['sort_status'] = {
     columnAccessor: 'created_at',
     direction: 'desc',
   };
@@ -114,13 +112,13 @@ export function AllCategories() {
           {PAGE_TITLE}
         </Title>
       </Container>
-      <MainSection categories_box={false}>
+      <MainSection tags_box={false}>
         <CardTable
           textSelectionDisabled
           paginationSize="md"
-          recordsPerPageLabel="Categories per page"
+          recordsPerPageLabel="Tags per page"
           query={query}
-          data={categories} // TODO: Change no records component
+          data={tags} // TODO: Change no records component
           sort_status={sort_status}
           page_size={50}
           columns={columns}
@@ -133,4 +131,4 @@ export function AllCategories() {
   );
 }
 
-export default AllCategories;
+export default AllTags;
