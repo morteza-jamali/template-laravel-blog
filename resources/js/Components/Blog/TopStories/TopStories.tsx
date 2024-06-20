@@ -42,10 +42,10 @@ export function TopStories({ data }: TopStoriesProps) {
           <CardImageBG2 post={data[0]} h={PRIMARY_COL_HEIGHT} />
           <Grid gutter="md">
             <Grid.Col>
-              <CardImageBG h={SECONDARY_COL_HEIGHT} />
+              <CardImageBG post={data[1]} h={SECONDARY_COL_HEIGHT} />
             </Grid.Col>
             <Grid.Col>
-              <CardImageBG h={SECONDARY_COL_HEIGHT} />
+              <CardImageBG post={data[2]} h={SECONDARY_COL_HEIGHT} />
             </Grid.Col>
           </Grid>
         </SimpleGrid>

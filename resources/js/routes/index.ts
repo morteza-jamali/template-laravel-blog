@@ -17,6 +17,16 @@ export const ROUTES = {
       EDIT: '/dashboard/tag/edit',
     },
   },
+  BLOG: {
+    CATEGORY: {
+      SINGLE: '/category',
+      ALL: '/categories',
+    },
+    POST: {
+      SINGLE: '/post',
+      ALL: '/posts',
+    },
+  },
 };
 
 export default ROUTES;

@@ -19,7 +19,7 @@ class FakePost extends Command implements Isolatable
   protected $signature = 'fake:post
                             {--A|append : Append new data}
                             {--T|tagscount=50 : Maximum tags count}
-                            {--K|categoriescount=50 : Maximum categories count}
+                            {--K|categoriescount=3 : Maximum categories count}
                             {--S|savepics : Whether to save pictures or not}
                             {--C|count=50 : Fake posts count}';
 

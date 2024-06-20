@@ -1,8 +1,23 @@
 import { IconEye, IconMessageCircle } from '@tabler/icons-react';
-import { Card, Text, Group, Center, rem, useMantineTheme } from '@mantine/core';
+import {
+  Card,
+  Text,
+  Group,
+  Center,
+  rem,
+  useMantineTheme,
+  type CardProps,
+} from '@mantine/core';
+import { Link } from '@inertiajs/react';
+import ROUTES from '@/routes';
 import classes from './CardImageBG.module.css';
+import { type CompletePost } from '@/types';
 
-export function CardImageBG({ h }: { h?: string }) {
+export interface CardImageBGProps extends CardProps {
+  post: CompletePost;
+}
+
+export function CardImageBG({ post, ...rest }: CardImageBGProps) {
   const theme = useMantineTheme();
 
   return (
@@ -11,16 +26,14 @@ export function CardImageBG({ h }: { h?: string }) {
       shadow="lg"
       className={classes.card}
       radius="md"
-      component="a"
-      href="https://mantine.dev/"
-      target="_blank"
-      h={h}
+      component={Link}
+      href={`${ROUTES.BLOG.POST.SINGLE}/${post.id}`}
+      {...rest}
     >
       <div
         className={classes.image}
         style={{
-          backgroundImage:
-            'url(https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80)',
+          backgroundImage: `url(${post.cover})`,
         }}
       />
       <div className={classes.overlay} />
@@ -28,13 +41,23 @@ export function CardImageBG({ h }: { h?: string }) {
       <div className={classes.content}>
         <div>
           <Text size="lg" className={classes.title} fw={500}>
-            Journey to Swiss Alps
+            {post.title}
           </Text>
 
           <Group justify="space-between" gap="xs">
-            <Text size="sm" className={classes.author}>
-              Robert Gluesticker
-            </Text>
+            <Group>
+              {post.categories.map((category) => (
+                <Text
+                  size="sm"
+                  component={Link}
+                  href={`${ROUTES.BLOG.CATEGORY.SINGLE}/${category.id}`}
+                  className={classes.author}
+                  key={category.slug}
+                >
+                  {category.name}
+                </Text>
+              ))}
+            </Group>
 
             <Group gap="lg">
               <Center>
