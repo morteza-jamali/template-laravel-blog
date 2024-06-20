@@ -6,24 +6,16 @@ import {
   SimpleGrid,
   Stack,
   Title,
-  rem,
 } from '@mantine/core';
-import { CardImageBG, CardImageBG2 } from '@/Components/Blog';
+import { CardImageBG, CardImageBGProps } from '@/Components/Blog';
 import { IconArrowRight } from '@tabler/icons-react';
 import { Link } from '@inertiajs/react';
-import { type CompletePost } from '@/types';
-
-const PRIMARY_COL_HEIGHT = rem(500);
 
 export interface TopStoriesProps {
-  data: Array<CompletePost>;
+  data: Array<CardImageBGProps['post']>;
 }
 
 export function TopStories({ data }: TopStoriesProps) {
-  console.log(data);
-
-  const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
-
   return (
     <Container my="md" size="lg">
       <Stack>
@@ -39,13 +31,13 @@ export function TopStories({ data }: TopStoriesProps) {
           </Button>
         </Group>
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-          <CardImageBG2 post={data[0]} h={PRIMARY_COL_HEIGHT} />
+          <CardImageBG size="md" post={data[0]} />
           <Grid gutter="md">
             <Grid.Col>
-              <CardImageBG post={data[1]} h={SECONDARY_COL_HEIGHT} />
+              <CardImageBG size="sm" post={data[1]} />
             </Grid.Col>
             <Grid.Col>
-              <CardImageBG post={data[2]} h={SECONDARY_COL_HEIGHT} />
+              <CardImageBG size="sm" post={data[2]} />
             </Grid.Col>
           </Grid>
         </SimpleGrid>

@@ -85,6 +85,7 @@ class FakePost extends Command implements Isolatable
       $status = getTrueOrFalse() ? 'publish' : 'draft';
       $view = fake()->numberBetween(1, 999);
       $like = fake()->numberBetween(1, 999);
+      // FIXME: Use `categories.json` & `tags.json` content
       $tags = fakeTerms((int) $this->option('tagscount'));
       $categories = fakeTerms((int) $this->option('categoriescount'));
       $created_at = fakeTimeStamp();

@@ -3,7 +3,6 @@ export * from './Footer';
 export * from './TopStories';
 export * from './Subscribe';
 export * from './CardImageBG';
-export * from './CardImageBG2';
 export * from './ArticleCardImg';
 export * from './TrendingStories';
 export * from './VerticalCard';
