@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Blog;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Inertia\Inertia;
 use App\Models\Post;
@@ -29,10 +28,16 @@ class HomeController extends Controller
     return Arr::take(Post::get()->sortByDesc('like')->toArray(), $count);
   }
 
+  private function getTrendingPosts(?int $count = 10)
+  {
+    return Arr::take(Post::get()->sortByDesc('view')->toArray(), $count);
+  }
+
   public function render()
   {
     return Inertia::render('Home', [
       'top_posts' => $this->setCategories($this->getTopPosts(3)),
+      'trending_posts' => $this->setCategories($this->getTrendingPosts(6)),
     ]);
   }
 }

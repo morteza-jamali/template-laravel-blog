@@ -1,26 +1,32 @@
 import { Card, Image, Avatar, Text, Group, Badge } from '@mantine/core';
+import { Link } from '@inertiajs/react';
 import { IconHeart, IconEye } from '@tabler/icons-react';
-import { type Post } from '@/types';
+import { type CompletePost, type RequiredBy } from '@/types';
 import classes from './VerticalCard.module.css';
+import ROUTES from '@/routes';
 
-export interface VerticalCardProps extends Partial<Post> {}
+export interface VerticalCardProps {
+  data: RequiredBy<CompletePost, 'title' | 'id'>;
+}
 
-export function VerticalCard({
-  categories,
-  title,
-  created_at,
-  cover,
-  view,
-  like,
-}: VerticalCardProps) {
+export function VerticalCard({ data }: VerticalCardProps) {
   return (
     <Card withBorder radius="md" p={0} className={classes.card} shadow="sm">
       <Group wrap="nowrap" gap={0}>
-        <Image src={cover} height={160} />
+        <Image src={data?.cover} height={160} />
         <div className={classes.body}>
-          <Badge component="a" href="#" className={classes.badge}>
-            technology
-          </Badge>
+          {data?.categories
+            ? data.categories.map((category) => (
+                <Badge
+                  component={Link}
+                  href={`${ROUTES.BLOG.CATEGORY.SINGLE}/${category.id}`}
+                  className={classes.badge}
+                  key={category.slug}
+                >
+                  {category.name}
+                </Badge>
+              ))
+            : null}
           <Text
             className={classes.title}
             component="a"
@@ -28,7 +34,7 @@ export function VerticalCard({
             mt="xs"
             mb="md"
           >
-            {title}
+            {data.title}
           </Text>
           <Group wrap="nowrap" gap="xs">
             <Group gap="xs" wrap="nowrap">
@@ -41,27 +47,27 @@ export function VerticalCard({
             <Text size="xs" c="dimmed">
               •
             </Text>
-            {created_at ? (
+            {data?.created_at ? (
               <Text size="xs" c="dimmed">
-                {created_at}
+                {data?.created_at}
               </Text>
             ) : null}
-            {like ? (
+            {data?.like ? (
               <Badge
                 variant="transparent"
                 color="gray"
                 leftSection={<IconHeart size={14} />}
               >
-                {like}
+                {data?.like}
               </Badge>
             ) : null}
-            {view ? (
+            {data?.view ? (
               <Badge
                 variant="transparent"
                 color="gray"
                 leftSection={<IconEye size={14} />}
               >
-                {view}
+                {data?.view}
               </Badge>
             ) : null}
           </Group>

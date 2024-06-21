@@ -4,6 +4,7 @@ import {
   Title,
   Button,
   Group,
+  Badge,
   rem,
   type PaperProps,
 } from '@mantine/core';
@@ -34,15 +35,17 @@ export function CardImageBG({ size, post, ...rest }: CardImageBGProps) {
       <div>
         <Group>
           {post.categories.map((category) => (
-            <Text
+            <Badge
               component={Link}
               href={`${ROUTES.BLOG.CATEGORY.SINGLE}/${category.id}`}
+              variant="filled"
+              color="gray"
               className={classes.category}
-              size="xs"
+              size="sm"
               key={category.slug}
             >
               {category.name}
-            </Text>
+            </Badge>
           ))}
         </Group>
         <Title

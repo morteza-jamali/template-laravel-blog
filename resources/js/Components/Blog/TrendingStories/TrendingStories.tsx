@@ -1,4 +1,4 @@
-import { VerticalCard } from '@/Components/Blog';
+import { VerticalCard, type VerticalCardProps } from '@/Components/Blog';
 import {
   Container,
   Group,
@@ -10,7 +10,11 @@ import {
 import { Link } from '@inertiajs/react';
 import { IconArrowRight } from '@tabler/icons-react';
 
-export function TrendingStories() {
+export interface TrendingStoriesProps {
+  data: Array<VerticalCardProps['data']>;
+}
+
+export function TrendingStories({ data }: TrendingStoriesProps) {
   return (
     <Container size="lg" my={100}>
       <Stack>
@@ -26,11 +30,9 @@ export function TrendingStories() {
           </Button>
         </Group>
         <SimpleGrid cols={2} verticalSpacing="lg">
-          {Array(6)
-            .fill(0)
-            .map((_, index) => (
-              <VerticalCard key={index} />
-            ))}
+          {data.map((post) => (
+            <VerticalCard data={post} key={post.slug} />
+          ))}
         </SimpleGrid>
       </Stack>
     </Container>

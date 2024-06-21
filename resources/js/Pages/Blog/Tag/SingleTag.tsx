@@ -19,14 +19,7 @@ const breadcrumbs = [
 ];
 
 const Card: CardTableProps<Post>['card'] = (post, index) => (
-  <VerticalCard
-    title={post.title}
-    cover={post.cover}
-    created_at={post.created_at}
-    like={post.like}
-    view={post.view}
-    key={index}
-  />
+  <VerticalCard data={post as any} key={index} />
 );
 
 export function SingleTag() {
