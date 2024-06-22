@@ -1,19 +1,24 @@
 import { type ReactNode } from 'react';
 import { Container, Grid, Stack, type ContainerProps } from '@mantine/core';
-import { AdBanner, CategoriesBox, Subscribe, TagsBox } from '@/Components/Blog';
+import {
+  AdBanner,
+  CategoriesBox,
+  Subscribe,
+  TagsBox,
+  type CategoriesBoxProps,
+} from '@/Components/Blog';
+
+export interface MainSectionDataProps {
+  tags_box?: boolean;
+  categories?: CategoriesBoxProps['data'];
+}
 
 export interface MainSectionProps extends ContainerProps {
   children: ReactNode;
-  tags_box?: boolean;
-  categories_box?: boolean;
+  data?: MainSectionDataProps;
 }
 
-export function MainSection({
-  children,
-  tags_box,
-  categories_box,
-  ...rest
-}: MainSectionProps) {
+export function MainSection({ children, data, ...rest }: MainSectionProps) {
   return (
     <Container size="lg" {...rest}>
       <Grid gutter="xl">
@@ -21,8 +26,8 @@ export function MainSection({
         <Grid.Col span={4}>
           <Stack>
             <AdBanner type="V1" />
-            {categories_box ?? true ? <CategoriesBox /> : null}
-            {tags_box ?? true ? <TagsBox /> : null}
+            {data?.categories ? <CategoriesBox data={data.categories} /> : null}
+            {data?.tags_box ?? true ? <TagsBox /> : null}
             <Subscribe />
           </Stack>
         </Grid.Col>

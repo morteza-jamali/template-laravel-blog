@@ -8,6 +8,7 @@ import {
   ParentLayout,
   type TopStoriesProps,
   type TrendingStoriesProps,
+  type MainSectionProps,
 } from '@/Components/Blog';
 import { Button, Group, Space, Stack, Title } from '@mantine/core';
 import { Link } from '@inertiajs/react';
@@ -16,15 +17,20 @@ import { IconArrowRight } from '@tabler/icons-react';
 interface HomeProps {
   top_posts: TopStoriesProps['data'];
   trending_posts: TrendingStoriesProps['data'];
+  top_categories: Required<Required<MainSectionProps>['data']>['categories'];
 }
 
-export const Home = ({ top_posts, trending_posts }: HomeProps) => {
+export const Home = ({
+  top_posts,
+  trending_posts,
+  top_categories,
+}: HomeProps) => {
   return (
     <ParentLayout title="Home">
       <EditorsPicks />
       <TopStories data={top_posts} />
       <TrendingStories data={trending_posts} />
-      <MainSection>
+      <MainSection data={{ categories: top_categories }}>
         <Stack>
           <AdBanner type="H1" />
           <Space />
