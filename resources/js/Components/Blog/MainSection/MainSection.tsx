@@ -9,17 +9,18 @@ import {
   type TagsBoxProps,
 } from '@/Components/Blog';
 
-export interface MainSectionDataProps {
-  tags?: TagsBoxProps['data'];
-  categories?: CategoriesBoxProps['data'];
-}
-
 export interface MainSectionProps extends ContainerProps {
   children: ReactNode;
-  data?: MainSectionDataProps;
+  tags?: TagsBoxProps;
+  categories?: CategoriesBoxProps;
 }
 
-export function MainSection({ children, data, ...rest }: MainSectionProps) {
+export function MainSection({
+  children,
+  tags,
+  categories,
+  ...rest
+}: MainSectionProps) {
   return (
     <Container size="lg" {...rest}>
       <Grid gutter="xl">
@@ -27,8 +28,8 @@ export function MainSection({ children, data, ...rest }: MainSectionProps) {
         <Grid.Col span={4}>
           <Stack>
             <AdBanner type="V1" />
-            {data?.categories ? <CategoriesBox data={data.categories} /> : null}
-            {data?.tags ? <TagsBox data={data.tags} /> : null}
+            {categories ? <CategoriesBox {...categories} /> : null}
+            {tags ? <TagsBox {...tags} /> : null}
             <Subscribe />
           </Stack>
         </Grid.Col>

@@ -14,9 +14,14 @@ import ROUTES from '@/routes';
 
 export interface CategoriesBoxProps {
   data: Array<Category>;
+  title?: string;
+  link?: {
+    title: string;
+    href: string;
+  };
 }
 
-export function CategoriesBox({ data }: CategoriesBoxProps) {
+export function CategoriesBox({ data, link, title }: CategoriesBoxProps) {
   const items = data.map(({ slug, name, id }) => (
     <UnstyledButton
       key={slug}
@@ -33,15 +38,15 @@ export function CategoriesBox({ data }: CategoriesBoxProps) {
   return (
     <Card withBorder radius="md" className={classes.card}>
       <Group justify="space-between">
-        <Title order={4}>Top Categories</Title>
+        <Title order={4}>{title ?? 'Top Categories'}</Title>
         <Anchor
           size="xs"
           component={Link}
           c="dimmed"
           style={{ lineHeight: 1 }}
-          href={ROUTES.BLOG.CATEGORY.ALL}
+          href={link ? link.href : ROUTES.BLOG.CATEGORY.ALL}
         >
-          See All Categories
+          {link ? link.title : 'See All Categories'}
         </Anchor>
       </Group>
       <SimpleGrid cols={3} mt="md">

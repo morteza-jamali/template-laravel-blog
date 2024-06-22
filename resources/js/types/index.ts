@@ -90,6 +90,7 @@ export type Post = {
   updated_at: string;
 };
 
-export type CompletePost = Omit<Post, 'categories'> & {
+export type CompletePost = Omit<Post, 'categories' | 'tags'> & {
   categories: Array<Category>;
+  tags: Array<Tag>;
 };

@@ -1,3 +1,5 @@
+import ROUTES from '@/routes';
+import { type Post } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
   Divider,
@@ -11,31 +13,40 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 interface BtnProps {
   type: 'prev' | 'next';
+  data: Post;
 }
 
-function Btn({ type }: BtnProps) {
+function Btn({ type, data }: BtnProps) {
   const isNext = type === 'next';
   const isPrev = type === 'prev';
 
   return (
-    <UnstyledButton component={Link} href="#">
+    <UnstyledButton
+      component={Link}
+      href={`${ROUTES.BLOG.POST.SINGLE}/${data.id}`}
+    >
       <Stack gap="xs">
         <Group justify="space-between" wrap="nowrap">
           {isPrev ? <IconChevronLeft size={16} /> : null}
           <Text fw={700}>Next Post</Text>
           {isNext ? <IconChevronRight size={16} /> : null}
         </Group>
-        <Text>
-          Build fully functional accessible web applications faster than ever
-        </Text>
+        <Text>{data.title}</Text>
       </Stack>
     </UnstyledButton>
   );
 }
 
-export interface NexPrevPostProps extends MantineStyleProps {}
+export interface NexPrevPostProps extends MantineStyleProps {
+  data: {
+    next_post: BtnProps['data'];
+    previous_post: BtnProps['data'];
+  };
+}
 
-export function NexPrevPost(props: NexPrevPostProps) {
+export function NexPrevPost({ data, ...rest }: NexPrevPostProps) {
+  const { next_post, previous_post } = data;
+
   return (
     <Group
       justify="space-between"
@@ -43,11 +54,11 @@ export function NexPrevPost(props: NexPrevPostProps) {
       grow
       gap="lg"
       wrap="nowrap"
-      {...props}
+      {...rest}
     >
-      <Btn type="prev" />
+      <Btn type="prev" data={previous_post} />
       <Divider orientation="vertical" />
-      <Btn type="next" />
+      <Btn type="next" data={next_post} />
     </Group>
   );
 }

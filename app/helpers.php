@@ -5,6 +5,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use App\Models\Category;
+use App\Models\Tag;
 
 if (!function_exists('getTrueOrFalse')) {
   function getTrueOrFalse(?int $length = 2)
@@ -67,5 +69,35 @@ if (!function_exists('fakeTerms')) {
   function fakeTerms(int $max_count)
   {
     return implode(',', fake()->randomElements(range(1, $max_count), null));
+  }
+}
+
+if (!function_exists('setPostCategories')) {
+  function setPostCategories($data)
+  {
+    return Arr::map($data, function (array $value) {
+      $categories = Category::whereIn('id', explode(',', $value['categories']))
+        ->get()
+        ->toArray();
+
+      $value['categories'] = $categories;
+
+      return $value;
+    });
+  }
+}
+
+if (!function_exists('setPostTags')) {
+  function setPostTags($data)
+  {
+    return Arr::map($data, function (array $value) {
+      $tags = Tag::whereIn('id', explode(',', $value['tags']))
+        ->get()
+        ->toArray();
+
+      $value['tags'] = $tags;
+
+      return $value;
+    });
   }
 }

@@ -9,7 +9,8 @@ import {
   type VerticalCardProps,
   type TopStoriesProps,
   type TrendingStoriesProps,
-  type MainSectionProps,
+  type CategoriesBoxProps,
+  type TagsBoxProps,
 } from '@/Components/Blog';
 import { Button, Group, Space, Stack, Title } from '@mantine/core';
 import { Link } from '@inertiajs/react';
@@ -18,8 +19,8 @@ import { IconArrowRight } from '@tabler/icons-react';
 interface HomeProps {
   top_posts: TopStoriesProps['data'];
   trending_posts: TrendingStoriesProps['data'];
-  top_categories: Required<Required<MainSectionProps>['data']>['categories'];
-  top_tags: Required<Required<MainSectionProps>['data']>['tags'];
+  top_categories: CategoriesBoxProps['data'];
+  top_tags: TagsBoxProps['data'];
   recent_posts: Array<VerticalCardProps['data']>;
 }
 
@@ -35,7 +36,10 @@ export const Home = ({
       <EditorsPicks />
       <TopStories data={top_posts} />
       <TrendingStories data={trending_posts} />
-      <MainSection data={{ categories: top_categories, tags: top_tags }}>
+      <MainSection
+        categories={{ data: top_categories }}
+        tags={{ data: top_tags }}
+      >
         <Stack>
           <AdBanner type="H1" />
           <Space />
