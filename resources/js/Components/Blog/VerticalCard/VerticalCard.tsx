@@ -1,6 +1,6 @@
 import { Card, Image, Avatar, Text, Group, Badge } from '@mantine/core';
 import { Link } from '@inertiajs/react';
-import { IconHeart, IconEye } from '@tabler/icons-react';
+import { IconHeart, IconEye, IconCalendar } from '@tabler/icons-react';
 import { type CompletePost, type RequiredBy } from '@/types';
 import classes from './VerticalCard.module.css';
 import ROUTES from '@/routes';
@@ -39,20 +39,18 @@ export function VerticalCard({ data }: VerticalCardProps) {
             {data.title}
           </Text>
           <Group wrap="nowrap" gap="xs">
-            <Group gap="xs" wrap="nowrap">
-              <Avatar
-                size={20}
-                src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-              />
-              <Text size="xs">Elsa Typechecker</Text>
+            <Group gap={2} wrap="nowrap">
+              <Avatar size="sm" />
+              <Text size="xs">Admin</Text>
             </Group>
-            <Text size="xs" c="dimmed">
-              •
-            </Text>
             {data?.created_at ? (
-              <Text size="xs" c="dimmed">
-                {data?.created_at}
-              </Text>
+              <Badge
+                variant="transparent"
+                color="gray"
+                leftSection={<IconCalendar size={14} />}
+              >
+                {data.created_at}
+              </Badge>
             ) : null}
             {data?.like ? (
               <Badge
@@ -60,7 +58,7 @@ export function VerticalCard({ data }: VerticalCardProps) {
                 color="gray"
                 leftSection={<IconHeart size={14} />}
               >
-                {data?.like}
+                {data.like}
               </Badge>
             ) : null}
             {data?.view ? (
@@ -69,7 +67,7 @@ export function VerticalCard({ data }: VerticalCardProps) {
                 color="gray"
                 leftSection={<IconEye size={14} />}
               >
-                {data?.view}
+                {data.view}
               </Badge>
             ) : null}
           </Group>

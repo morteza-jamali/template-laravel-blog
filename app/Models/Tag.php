@@ -10,4 +10,9 @@ class Tag extends Model
   use HasFactory;
 
   protected $fillable = ['name', 'slug', 'description', 'count'];
+
+  protected function serializeDate(\DateTimeInterface $date): string
+  {
+    return $date->format('Y-m-d H:i:s');
+  }
 }

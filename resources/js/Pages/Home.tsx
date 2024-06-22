@@ -6,6 +6,7 @@ import {
   AdBanner,
   VerticalCard,
   ParentLayout,
+  type VerticalCardProps,
   type TopStoriesProps,
   type TrendingStoriesProps,
   type MainSectionProps,
@@ -19,6 +20,7 @@ interface HomeProps {
   trending_posts: TrendingStoriesProps['data'];
   top_categories: Required<Required<MainSectionProps>['data']>['categories'];
   top_tags: Required<Required<MainSectionProps>['data']>['tags'];
+  recent_posts: Array<VerticalCardProps['data']>;
 }
 
 export const Home = ({
@@ -26,6 +28,7 @@ export const Home = ({
   trending_posts,
   top_categories,
   top_tags,
+  recent_posts,
 }: HomeProps) => {
   return (
     <ParentLayout title="Home">
@@ -47,14 +50,9 @@ export const Home = ({
               All Recent Stories
             </Button>
           </Group>
-          {Array(8)
-            .fill(0)
-            .map((_, index) => (
-              <VerticalCard
-                data={{ id: index, title: 'example title' }}
-                key={index}
-              />
-            ))}
+          {recent_posts.map((post) => (
+            <VerticalCard data={post} key={post.slug} />
+          ))}
         </Stack>
       </MainSection>
     </ParentLayout>
