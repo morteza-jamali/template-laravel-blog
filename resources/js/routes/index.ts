@@ -26,6 +26,10 @@ export const ROUTES = {
       SINGLE: '/post',
       ALL: '/posts',
     },
+    TAG: {
+      SINGLE: '/tag',
+      ALL: '/tags',
+    },
   },
 };
 

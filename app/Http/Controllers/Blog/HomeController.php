@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Inertia\Inertia;
 use App\Models\Post;
 use App\Models\Category;
+use App\Models\Tag;
 
 class HomeController extends Controller
 {
@@ -21,6 +22,11 @@ class HomeController extends Controller
 
       return $value;
     });
+  }
+
+  private function getTopTags(?int $count = 10)
+  {
+    return Arr::take(Tag::get()->sortByDesc('count')->toArray(), $count);
   }
 
   private function getTopCategories(?int $count = 10)
@@ -44,6 +50,7 @@ class HomeController extends Controller
       'top_posts' => $this->setCategories($this->getTopPosts(3)),
       'trending_posts' => $this->setCategories($this->getTrendingPosts(6)),
       'top_categories' => $this->getTopCategories(12),
+      'top_tags' => $this->getTopTags(12),
     ]);
   }
 }

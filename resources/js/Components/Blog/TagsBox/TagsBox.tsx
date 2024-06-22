@@ -1,33 +1,41 @@
-import { Anchor, Card, Group, Pill, Title } from '@mantine/core';
+import { Anchor, Card, Group, Badge, Title } from '@mantine/core';
+import { Link } from '@inertiajs/react';
+import { type Tag } from '@/types';
+import ROUTES from '@/routes';
 
-const mockdata = [
-  { label: 'first', id: '2' },
-  { label: 'second', id: '2' },
-  { label: 'apple', id: '2' },
-  { label: 'nice', id: '2' },
-  { label: 'ppp', id: '2' },
-  { label: 'gdfg', id: '2' },
-  { label: 'kojd', id: '2' },
-  { label: 'lolo', id: '2' },
-  { label: 'purple', id: '2' },
-];
+export interface TagsBoxProps {
+  data: Array<Tag>;
+}
 
-export function TagsBox() {
+export function TagsBox({ data }: TagsBoxProps) {
   return (
     <Card withBorder radius="md">
       <Group justify="space-between">
         <Title order={4}>Top Tags</Title>
-        <Anchor size="xs" c="dimmed" style={{ lineHeight: 1 }}>
+        <Anchor
+          size="xs"
+          c="dimmed"
+          style={{ lineHeight: 1 }}
+          component={Link}
+          href={ROUTES.BLOG.TAG.ALL}
+        >
           See All Tags
         </Anchor>
       </Group>
-      <Pill.Group mt="lg">
-        {mockdata.map((item) => (
-          <Pill radius={0} key={item.label}>
-            {item.label}
-          </Pill>
+      <Group mt="lg" gap="xs">
+        {data.map(({ id, slug, name }) => (
+          <Badge
+            radius="xs"
+            variant="dot"
+            key={slug}
+            component={Link}
+            style={{ cursor: 'pointer' }}
+            href={`${ROUTES.BLOG.TAG.SINGLE}/${id}`}
+          >
+            {name}
+          </Badge>
         ))}
-      </Pill.Group>
+      </Group>
     </Card>
   );
 }

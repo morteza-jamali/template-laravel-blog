@@ -18,19 +18,21 @@ interface HomeProps {
   top_posts: TopStoriesProps['data'];
   trending_posts: TrendingStoriesProps['data'];
   top_categories: Required<Required<MainSectionProps>['data']>['categories'];
+  top_tags: Required<Required<MainSectionProps>['data']>['tags'];
 }
 
 export const Home = ({
   top_posts,
   trending_posts,
   top_categories,
+  top_tags,
 }: HomeProps) => {
   return (
     <ParentLayout title="Home">
       <EditorsPicks />
       <TopStories data={top_posts} />
       <TrendingStories data={trending_posts} />
-      <MainSection data={{ categories: top_categories }}>
+      <MainSection data={{ categories: top_categories, tags: top_tags }}>
         <Stack>
           <AdBanner type="H1" />
           <Space />

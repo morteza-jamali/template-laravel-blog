@@ -6,10 +6,11 @@ import {
   Subscribe,
   TagsBox,
   type CategoriesBoxProps,
+  type TagsBoxProps,
 } from '@/Components/Blog';
 
 export interface MainSectionDataProps {
-  tags_box?: boolean;
+  tags?: TagsBoxProps['data'];
   categories?: CategoriesBoxProps['data'];
 }
 
@@ -27,7 +28,7 @@ export function MainSection({ children, data, ...rest }: MainSectionProps) {
           <Stack>
             <AdBanner type="V1" />
             {data?.categories ? <CategoriesBox data={data.categories} /> : null}
-            {data?.tags_box ?? true ? <TagsBox /> : null}
+            {data?.tags ? <TagsBox data={data.tags} /> : null}
             <Subscribe />
           </Stack>
         </Grid.Col>
