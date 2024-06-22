@@ -30,7 +30,7 @@ export function TrendingStories({ data }: TrendingStoriesProps) {
           </Button>
         </Group>
         <SimpleGrid cols={2} verticalSpacing="lg">
-          {data.map((post) => (
+          {data.map(({ like, created_at, ...post }) => (
             <VerticalCard data={post} key={post.slug} />
           ))}
         </SimpleGrid>

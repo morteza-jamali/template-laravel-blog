@@ -1,7 +1,6 @@
 import {
   Paper,
   Text,
-  Title,
   Button,
   Group,
   Badge,
@@ -9,6 +8,7 @@ import {
   type PaperProps,
 } from '@mantine/core';
 import { Link } from '@inertiajs/react';
+import { IconHeart } from '@tabler/icons-react';
 import ROUTES from '@/routes';
 import { type CompletePost } from '@/types';
 import classes from './CardImageBG.module.css';
@@ -48,23 +48,33 @@ export function CardImageBG({ size, post, ...rest }: CardImageBGProps) {
             </Badge>
           ))}
         </Group>
-        <Title
-          order={3}
+        <Text
           className={classes.title}
           style={{ fontSize: rem(size === 'sm' ? 20 : 32) }}
+          variant="gradient"
+          gradient={{ from: 'gray', to: 'white', deg: 360 }}
         >
           {post.title}
-        </Title>
+        </Text>
       </div>
-      <Button
-        variant="white"
-        color="dark"
-        component={Link}
-        href={`${ROUTES.BLOG.POST.SINGLE}/${post.id}`}
-        ml="auto"
-      >
-        Read story
-      </Button>
+      <Group justify="space-between" align="center" w="100%">
+        <Badge
+          variant="transparent"
+          color="white"
+          size="lg"
+          leftSection={<IconHeart color="red" size={16} />}
+        >
+          {post.like}
+        </Badge>
+        <Button
+          variant="white"
+          color="dark"
+          component={Link}
+          href={`${ROUTES.BLOG.POST.SINGLE}/${post.id}`}
+        >
+          Read story
+        </Button>
+      </Group>
     </Paper>
   );
 }

@@ -15,22 +15,24 @@ export function VerticalCard({ data }: VerticalCardProps) {
       <Group wrap="nowrap" gap={0}>
         <Image src={data?.cover} height={160} />
         <div className={classes.body}>
-          {data?.categories
-            ? data.categories.map((category) => (
-                <Badge
-                  component={Link}
-                  href={`${ROUTES.BLOG.CATEGORY.SINGLE}/${category.id}`}
-                  className={classes.badge}
-                  key={category.slug}
-                >
-                  {category.name}
-                </Badge>
-              ))
-            : null}
+          <Group gap="xs">
+            {data?.categories
+              ? data.categories.map((category) => (
+                  <Badge
+                    component={Link}
+                    href={`${ROUTES.BLOG.CATEGORY.SINGLE}/${category.id}`}
+                    className={classes.badge}
+                    key={category.slug}
+                  >
+                    {category.name}
+                  </Badge>
+                ))
+              : null}
+          </Group>
           <Text
             className={classes.title}
-            component="a"
-            href="#"
+            component={Link}
+            href={`${ROUTES.BLOG.POST.SINGLE}/${data.id}`}
             mt="xs"
             mb="md"
           >
