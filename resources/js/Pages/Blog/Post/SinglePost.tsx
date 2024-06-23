@@ -11,7 +11,7 @@ import {
 import { type CompletePost } from '@/types';
 import { Group } from '@mantine/core';
 
-export interface SinglePostProps {
+interface SinglePostProps {
   post: CompletePost;
   previous_post: NexPrevPostProps['data']['previous_post'];
   next_post: NexPrevPostProps['data']['next_post'];

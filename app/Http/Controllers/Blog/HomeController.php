@@ -17,20 +17,6 @@ class HomeController extends Controller
     );
   }
 
-  private function getTopTags(?int $count = 10)
-  {
-    return array_values(
-      Tag::get()->sortByDesc('count')->take($count)->toArray(),
-    );
-  }
-
-  private function getTopCategories(?int $count = 10)
-  {
-    return array_values(
-      Category::get()->sortByDesc('count')->take($count)->toArray(),
-    );
-  }
-
   private function getTopPosts(?int $count = 10)
   {
     return array_values(
@@ -50,8 +36,8 @@ class HomeController extends Controller
     return Inertia::render('Home', [
       'top_posts' => setPostCategories($this->getTopPosts(3)),
       'trending_posts' => setPostCategories($this->getTrendingPosts(6)),
-      'top_categories' => $this->getTopCategories(12),
-      'top_tags' => $this->getTopTags(12),
+      'top_categories' => getTopCategories(12),
+      'top_tags' => getTopTags(12),
       'recent_posts' => setPostCategories($this->getRecentPosts()),
     ]);
   }

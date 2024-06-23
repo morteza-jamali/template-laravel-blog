@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   ParentLayout,
   MainSection,
@@ -6,9 +6,11 @@ import {
   CardTable,
   VerticalCard,
   type CardTableProps,
+  type VerticalCardProps,
+  type CategoriesBoxProps,
+  type TagsBoxProps,
 } from '@/Components/Blog';
 import { type Post } from '@/types';
-import { importData } from '@/faker/helpers';
 import { Container, Title } from '@mantine/core';
 
 const PAGE_TITLE = 'All Posts';
@@ -18,13 +20,14 @@ const Card: CardTableProps<Post>['card'] = (post, index) => (
   <VerticalCard data={post as any} key={index} />
 );
 
-export function AllPosts() {
-  const [query, setQuery] = useState('');
-  const [posts, setPosts] = useState<Array<Post>>([]);
+interface AllPostsProps {
+  posts: Array<VerticalCardProps['data']>;
+  top_categories: CategoriesBoxProps['data'];
+  top_tags: TagsBoxProps['data'];
+}
 
-  useEffect(() => {
-    importData<Post>({ path: 'posts' }).then((posts) => setPosts(posts));
-  }, []);
+export function AllPosts({ posts, top_categories, top_tags }: AllPostsProps) {
+  const [query, setQuery] = useState('');
 
   const columns: CardTableProps<Post>['columns'] = [
     {
@@ -77,13 +80,17 @@ export function AllPosts() {
           {PAGE_TITLE}
         </Title>
       </Container>
-      <MainSection>
+      <MainSection
+        categories={{ data: top_categories }}
+        tags={{ data: top_tags }}
+      >
         <CardTable
           textSelectionDisabled
           paginationSize="md"
           recordsPerPageLabel="Posts per page"
+          page_size={10}
           query={query}
-          data={posts} // TODO: Change no records component
+          data={posts as unknown as Array<Post>} // TODO: Change no records component
           sort_status={sort_status}
           columns={columns}
           card={Card}

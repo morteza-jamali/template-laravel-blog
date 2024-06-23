@@ -101,3 +101,21 @@ if (!function_exists('setPostTags')) {
     });
   }
 }
+
+if (!function_exists('getTopTags')) {
+  function getTopTags(?int $count = 10)
+  {
+    return array_values(
+      Tag::get()->sortByDesc('count')->take($count)->toArray(),
+    );
+  }
+}
+
+if (!function_exists('getTopCategories')) {
+  function getTopCategories(?int $count = 10)
+  {
+    return array_values(
+      Category::get()->sortByDesc('count')->take($count)->toArray(),
+    );
+  }
+}
