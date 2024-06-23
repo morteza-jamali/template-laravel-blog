@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
 
 if (!function_exists('getTrueOrFalse')) {
@@ -117,5 +118,25 @@ if (!function_exists('getTopCategories')) {
     return array_values(
       Category::get()->sortByDesc('count')->take($count)->toArray(),
     );
+  }
+}
+
+if (!function_exists('makeRegex')) {
+  function makeRegex(string $id)
+  {
+    return ["\,$id\,", "^$id\,", "\,$id$"];
+  }
+}
+
+if (!function_exists('getPostsByTerm')) {
+  function getPostsByTerm(string $term, int $id)
+  {
+    $operator = 'REGEXP';
+    $regexp = makeRegex($id);
+
+    return Post::where($term, $operator, $regexp[0])
+      ->orWhere($term, $operator, $regexp[1])
+      ->orWhere($term, $operator, $regexp[2])
+      ->get();
   }
 }

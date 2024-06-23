@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   ParentLayout,
   MainSection,
@@ -6,29 +6,37 @@ import {
   CardTable,
   VerticalCard,
   type CardTableProps,
+  type VerticalCardProps,
+  type CategoriesBoxProps,
+  type TagsBoxProps,
 } from '@/Components/Blog';
-import { type Post } from '@/types';
-import { importData } from '@/faker/helpers';
+import { type Post, type Tag } from '@/types';
 import { Container, Title } from '@mantine/core';
-
-const PAGE_TITLE = 'Tag name';
-const breadcrumbs = [
-  { title: 'Home', href: '/' },
-  { title: 'Tags', href: '#' },
-  { title: PAGE_TITLE },
-];
+import ROUTES from '@/routes';
 
 const Card: CardTableProps<Post>['card'] = (post, index) => (
   <VerticalCard data={post as any} key={index} />
 );
 
-export function SingleTag() {
-  const [query, setQuery] = useState('');
-  const [posts, setPosts] = useState<Array<Post>>([]);
+interface SingleTagProps {
+  tag: Tag;
+  posts: Array<VerticalCardProps['data']>;
+  top_categories: CategoriesBoxProps['data'];
+  top_tags: TagsBoxProps['data'];
+}
 
-  useEffect(() => {
-    importData<Post>({ path: 'posts' }).then((posts) => setPosts(posts));
-  }, []);
+export function SingleTag({
+  posts,
+  tag,
+  top_categories,
+  top_tags,
+}: SingleTagProps) {
+  const breadcrumbs = [
+    { title: 'Home', href: '/' },
+    { title: 'Tags', href: ROUTES.BLOG.TAG.ALL },
+    { title: tag.name },
+  ];
+  const [query, setQuery] = useState('');
 
   const columns: CardTableProps<Post>['columns'] = [
     {
@@ -74,20 +82,24 @@ export function SingleTag() {
   };
 
   return (
-    <ParentLayout title={PAGE_TITLE}>
+    <ParentLayout title={tag.name}>
       <Container size="lg">
         <Breadcrumbs items={breadcrumbs} />
         <Title order={2} my="xl">
-          {PAGE_TITLE}
+          {tag.name}
         </Title>
       </Container>
-      <MainSection>
+      <MainSection
+        categories={{ data: top_categories }}
+        tags={{ data: top_tags }}
+      >
         <CardTable
           textSelectionDisabled
           paginationSize="md"
           recordsPerPageLabel="Posts per page"
           query={query}
-          data={posts} // TODO: Change no records component
+          page_size={10}
+          data={posts as unknown as Array<Post>} // TODO: Change no records component
           sort_status={sort_status}
           columns={columns}
           card={Card}
