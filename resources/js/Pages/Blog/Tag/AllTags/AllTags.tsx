@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   ParentLayout,
   MainSection,
   Breadcrumbs,
   CardTable,
   type CardTableProps,
+  type CategoriesBoxProps,
 } from '@/Components/Blog';
+import { Link } from '@inertiajs/react';
 import { type Tag } from '@/types';
 import { IconArticle, IconCalendarTime } from '@tabler/icons-react';
-import { importData } from '@/faker/helpers';
 import {
   Container,
   Title,
@@ -19,12 +20,13 @@ import {
   Badge,
 } from '@mantine/core';
 import classes from './AllTags.module.css';
+import ROUTES from '@/routes';
 
 const PAGE_TITLE = 'All Tags';
 const breadcrumbs = [{ title: 'Home', href: '/' }, { title: PAGE_TITLE }];
 
 const Card: CardTableProps<Tag>['card'] = (
-  { name, count, created_at },
+  { name, count, created_at, id },
   index,
 ) => (
   <MCard
@@ -32,8 +34,8 @@ const Card: CardTableProps<Tag>['card'] = (
     radius="md"
     withBorder
     key={index}
-    component="a"
-    href="#"
+    component={Link}
+    href={`${ROUTES.BLOG.TAG.SINGLE}/${id}`}
     className={classes.card}
   >
     <Stack justify="space-between" className={classes.stack}>
@@ -58,13 +60,13 @@ const Card: CardTableProps<Tag>['card'] = (
   </MCard>
 );
 
-export function AllTags() {
-  const [query, setQuery] = useState('');
-  const [tags, setTags] = useState<Array<Tag>>([]);
+interface AllTagsProps {
+  tags: Array<Tag>;
+  top_categories: CategoriesBoxProps['data'];
+}
 
-  useEffect(() => {
-    importData<Tag>({ path: 'tags' }).then((tags) => setTags(tags));
-  }, []);
+export function AllTags({ tags, top_categories }: AllTagsProps) {
+  const [query, setQuery] = useState('');
 
   const columns: CardTableProps<Tag>['columns'] = [
     {
@@ -112,7 +114,7 @@ export function AllTags() {
           {PAGE_TITLE}
         </Title>
       </Container>
-      <MainSection tags_box={false}>
+      <MainSection categories={{ data: top_categories }}>
         <CardTable
           textSelectionDisabled
           paginationSize="md"
@@ -120,7 +122,7 @@ export function AllTags() {
           query={query}
           data={tags} // TODO: Change no records component
           sort_status={sort_status}
-          page_size={50}
+          page_size={20}
           columns={columns}
           card={Card}
           filterFn={filterFn}

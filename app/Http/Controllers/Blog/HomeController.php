@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Blog;
 use App\Http\Controllers\Controller;
 use Inertia\Inertia;
 use App\Models\Post;
-use App\Models\Category;
-use App\Models\Tag;
 
 class HomeController extends Controller
 {
