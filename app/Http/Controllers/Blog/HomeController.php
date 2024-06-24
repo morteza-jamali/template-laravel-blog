@@ -31,7 +31,7 @@ class HomeController extends Controller
 
   public function render()
   {
-    return Inertia::render('Home', [
+    return Inertia::render('Blog/Home', [
       'top_posts' => setPostCategories($this->getTopPosts(3)),
       'trending_posts' => setPostCategories($this->getTrendingPosts(6)),
       'top_categories' => getTopCategories(12),

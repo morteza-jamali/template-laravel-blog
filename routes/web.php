@@ -1,8 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TagController;
+use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\DeleteTagController;
+use App\Http\Controllers\Dashboard\NewTagController;
+use App\Http\Controllers\Dashboard\AddTagController;
+use App\Http\Controllers\Dashboard\EditTagController;
+use App\Http\Controllers\Dashboard\EditTagActionController;
+use App\Http\Controllers\Dashboard\AllTagsController as DAllTagsController;
 use App\Http\Controllers\Blog\HomeController;
 use App\Http\Controllers\Blog\SinglePostController;
 use App\Http\Controllers\Blog\SingleCategoryController;
@@ -12,7 +18,7 @@ use App\Http\Controllers\Blog\AllTagsController;
 use App\Http\Controllers\Blog\AllPostsController;
 
 // Dashboard routes
-Route::get('/dashboard', [CategoryController::class, 'render'])->name(
+Route::get('/dashboard', [DashboardController::class, 'render'])->name(
   'dashboard.home',
 );
 
@@ -55,25 +61,26 @@ Route::get('/dashboard/category/all', [
 ])->name('dashboard.category.all');
 
 // Dashboard/Tags routes
-Route::get('/dashboard/tag/new', [TagController::class, 'renderNewTag'])->name(
+Route::get('/dashboard/tag/new', [NewTagController::class, 'render'])->name(
   'dashboard.tag.new',
 );
-Route::post('/dashboard/tag/new', [TagController::class, 'addTag'])->name(
-  'dashboard.tag.new.add',
+Route::post('/dashboard/tag/add', [AddTagController::class, 'render'])->name(
+  'dashboard.tag.add',
 );
-Route::delete('/dashboard/tag/all', [TagController::class, 'deleteTag'])->name(
-  'dashboard.tag.all.delete',
-);
-Route::get('/dashboard/tag/all', [TagController::class, 'renderAllTag'])->name(
+Route::delete('/dashboard/tag/delete', [
+  DeleteTagController::class,
+  'render',
+])->name('dashboard.tag.delete');
+Route::get('/dashboard/tag/all', [DAllTagsController::class, 'render'])->name(
   'dashboard.tag.all',
 );
 Route::get('/dashboard/tag/edit/{id}', [
-  TagController::class,
-  'renderEditTag',
+  EditTagController::class,
+  'render',
 ])->name('dashboard.tag.edit');
 Route::patch('/dashboard/tag/edit/{id}', [
-  TagController::class,
-  'editTag',
+  EditTagActionController::class,
+  'render',
 ])->name('dashboard.tag.edit.patch');
 
 // Blog routes

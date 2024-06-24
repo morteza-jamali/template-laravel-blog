@@ -19,7 +19,6 @@ import {
   AppShell,
 } from '@/Components/Dashboard';
 import { Head, Link } from '@inertiajs/react';
-// import Link from 'next/link';
 import { useFetchData } from '@/hooks';
 
 const pageTitle: string = 'Dashboard Home';
