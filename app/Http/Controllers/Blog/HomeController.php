@@ -3,40 +3,27 @@
 namespace App\Http\Controllers\Blog;
 
 use App\Http\Controllers\Controller;
-use Inertia\Inertia;
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
+use Inertia\Inertia;
 
 class HomeController extends Controller
 {
-  private function getRecentPosts(?int $count = 10)
+  public function render(Post $post, Tag $tag, Category $category)
   {
-    return array_values(
-      Post::get()->sortByDesc('created_at')->take($count)->toArray(),
-    );
-  }
+    $recent_posts = $post->recent()->castCategoriesToArray()->getAsArray();
+    $top_posts = $post->top(3)->castCategoriesToArray()->getAsArray();
+    $trending_posts = $post->trend(6)->castCategoriesToArray()->getAsArray();
+    $tags = $tag->top()->getAsArray();
+    $categories = $category->top()->getAsArray();
 
-  private function getTopPosts(?int $count = 10)
-  {
-    return array_values(
-      Post::get()->sortByDesc('like')->take($count)->toArray(),
-    );
-  }
-
-  private function getTrendingPosts(?int $count = 10)
-  {
-    return array_values(
-      Post::get()->sortByDesc('view')->take($count)->toArray(),
-    );
-  }
-
-  public function render()
-  {
     return Inertia::render('Blog/Home', [
-      'top_posts' => setPostCategories($this->getTopPosts(3)),
-      'trending_posts' => setPostCategories($this->getTrendingPosts(6)),
-      'top_categories' => getTopCategories(12),
-      'top_tags' => getTopTags(12),
-      'recent_posts' => setPostCategories($this->getRecentPosts()),
+      'top_posts' => $top_posts,
+      'trending_posts' => $trending_posts,
+      'top_categories' => $categories,
+      'top_tags' => $tags,
+      'recent_posts' => $recent_posts,
     ]);
   }
 }

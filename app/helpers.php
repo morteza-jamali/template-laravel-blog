@@ -5,9 +5,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\Tag;
 
 if (!function_exists('getTrueOrFalse')) {
   function getTrueOrFalse(?int $length = 2)
@@ -73,71 +70,10 @@ if (!function_exists('fakeTerms')) {
   }
 }
 
-if (!function_exists('setPostCategories')) {
-  function setPostCategories($data)
+if (!function_exists('explodeTerm')) {
+  function explodeTerm(string $str)
   {
-    return Arr::map($data, function (array $value) {
-      $categories = Category::whereIn('id', explode(',', $value['categories']))
-        ->get()
-        ->toArray();
-
-      $value['categories'] = $categories;
-
-      return $value;
-    });
-  }
-}
-
-if (!function_exists('setPostTags')) {
-  function setPostTags($data)
-  {
-    return Arr::map($data, function (array $value) {
-      $tags = Tag::whereIn('id', explode(',', $value['tags']))
-        ->get()
-        ->toArray();
-
-      $value['tags'] = $tags;
-
-      return $value;
-    });
-  }
-}
-
-if (!function_exists('getTopTags')) {
-  function getTopTags(?int $count = 10)
-  {
-    return array_values(
-      Tag::get()->sortByDesc('count')->take($count)->toArray(),
-    );
-  }
-}
-
-if (!function_exists('getTopCategories')) {
-  function getTopCategories(?int $count = 10)
-  {
-    return array_values(
-      Category::get()->sortByDesc('count')->take($count)->toArray(),
-    );
-  }
-}
-
-if (!function_exists('makeRegex')) {
-  function makeRegex(string $id)
-  {
-    return ["\,$id\,", "^$id\,", "\,$id$"];
-  }
-}
-
-if (!function_exists('getPostsByTerm')) {
-  function getPostsByTerm(string $term, int $id)
-  {
-    $operator = 'REGEXP';
-    $regexp = makeRegex($id);
-
-    return Post::where($term, $operator, $regexp[0])
-      ->orWhere($term, $operator, $regexp[1])
-      ->orWhere($term, $operator, $regexp[2])
-      ->get();
+    return explode(',', $str);
   }
 }
 

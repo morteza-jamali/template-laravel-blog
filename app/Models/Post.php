@@ -9,6 +9,7 @@ class Post extends Model
 {
   use HasFactory;
 
+  protected $posts;
   protected $fillable = [
     'author',
     'view',
@@ -25,5 +26,146 @@ class Post extends Model
   protected function serializeDate(\DateTimeInterface $date): string
   {
     return $date->format('Y-m-d H:i:s');
+  }
+
+  public function allRecords(): Post
+  {
+    $post = new self();
+    $post->posts = $this->all();
+
+    return $post;
+  }
+
+  public function byId(int $id): Post
+  {
+    $post = new self();
+    $post->posts = $this->where('id', $id)->get();
+
+    return $post;
+  }
+
+  public function castCategoriesToArray(): Post
+  {
+    $post = new self();
+    $post->posts = $this->posts->map(function ($p) {
+      // FIXME: Improve dependency injection
+      $p->categories = app('App\Models\Category')
+        ->byStr($p->categories)
+        ->getAsArray();
+
+      return $p;
+    });
+
+    return $post;
+  }
+
+  public function castTagsToArray(): Post
+  {
+    $post = new self();
+    $post->posts = $this->posts->map(function ($p) {
+      // FIXME: Improve dependency injection
+      $p->tags = app('App\Models\Tag')
+        ->byStr($p->tags)
+        ->getAsArray();
+
+      return $p;
+    });
+
+    return $post;
+  }
+
+  public function castTermsToArray(): Post
+  {
+    return $this->castCategoriesToArray()->castTagsToArray();
+  }
+
+  protected function makeRegex(int $id): array
+  {
+    return ["\,$id\,", "^$id\,", "\,$id$"];
+  }
+
+  public function byTerm(string $term, int $id): Post
+  {
+    $post = new self();
+    $operator = 'REGEXP';
+    $regexp = $this->makeRegex($id);
+
+    $post->posts = $this->where($term, $operator, $regexp[0])
+      ->orWhere($term, $operator, $regexp[1])
+      ->orWhere($term, $operator, $regexp[2])
+      ->get();
+
+    return $post;
+  }
+
+  public function byCategory(int $id): Post
+  {
+    return $this->byTerm('categories', $id);
+  }
+
+  public function byTag(int $id): Post
+  {
+    return $this->byTerm('tags', $id);
+  }
+
+  public function prev(): Post
+  {
+    $post = new self();
+    $post->posts = collect([
+      $this->where('id', '<', $this->posts->first()->id)
+        ->orderBy('id', 'desc')
+        ->first(),
+    ]);
+
+    return $post;
+  }
+
+  public function next(): Post
+  {
+    $post = new self();
+    $post->posts = collect([
+      $this->where('id', '>', $this->posts->first()->id)
+        ->orderBy('id', 'asc')
+        ->first(),
+    ]);
+
+    return $post;
+  }
+
+  public function recent(?int $count = 10): Post
+  {
+    $post = new self();
+    $post->posts = $this->get()
+      ->sortByDesc('created_at')
+      ->take($count)
+      ->values();
+
+    return $post;
+  }
+
+  public function top(?int $count = 10): Post
+  {
+    $post = new self();
+    $post->posts = $this->get()->sortByDesc('like')->take($count)->values();
+
+    return $post;
+  }
+
+  public function trend(?int $count = 10): Post
+  {
+    $post = new self();
+    $post->posts = $this->get()->sortByDesc('view')->take($count)->values();
+
+    return $post;
+  }
+
+  public function getAsArray(): array
+  {
+    return $this->posts->toArray();
+  }
+
+  public function data()
+  {
+    return $this->posts;
   }
 }

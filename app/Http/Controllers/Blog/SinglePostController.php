@@ -8,24 +8,15 @@ use App\Models\Post;
 
 class SinglePostController extends Controller
 {
-  public function render(string $id)
+  public function render(Post $post, string $id)
   {
-    $post = Post::where('id', $id)->get()->toArray();
-    $post = setPostCategories($post);
-    $post = setPostTags($post);
-    $post = $post[0];
-
-    $previous_post = Post::where('id', '<', $post['id'])
-      ->orderBy('id', 'desc')
-      ->first()
-      ->toArray();
-    $next_post = Post::where('id', '>', $post['id'])
-      ->orderBy('id', 'asc')
-      ->first()
-      ->toArray();
+    $p = $post->byId($id);
+    $complete_post = $p->castTermsToArray()->data()->first()->toArray();
+    $previous_post = $p->prev()->data()->first()->toArray();
+    $next_post = $p->next()->data()->first()->toArray();
 
     return Inertia::render('Blog/Post/SinglePost', [
-      'post' => $post,
+      'post' => $complete_post,
       'next_post' => $next_post,
       'previous_post' => $previous_post,
     ]);

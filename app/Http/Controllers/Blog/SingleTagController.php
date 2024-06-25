@@ -3,26 +3,31 @@
 namespace App\Http\Controllers\Blog;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
 use Inertia\Inertia;
 
 class SingleTagController extends Controller
 {
-  public function render(string $id)
+  public function render(Tag $tag, Post $post, Category $category, string $id)
   {
-    $tag = Tag::where('id', $id)->get()->toArray();
+    $t = $tag->byId($id);
 
-    if (empty($tag)) {
+    if ($t->data()->isEmpty()) {
       return redirect('/404');
     }
 
-    $posts = getPostsByTerm('tags', (int) $id)->toArray();
+    $t = $t->data()->first()->toArray();
+    $posts = $post->byTag((int) $id)->castCategoriesToArray()->getAsArray();
+    $categories = $category->top()->getAsArray();
+    $tags = $tag->top()->getAsArray();
 
     return Inertia::render('Blog/Tag/SingleTag', [
-      'tag' => $tag[0],
-      'posts' => setPostCategories($posts),
-      'top_categories' => getTopCategories(12),
-      'top_tags' => getTopTags(12),
+      'tag' => $t,
+      'posts' => $posts,
+      'top_categories' => $categories,
+      'top_tags' => $tags,
     ]);
   }
 }
