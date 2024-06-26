@@ -132,7 +132,7 @@ export const NewTag = ({ pathname }: NewTagProps) => {
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    router.post(ROUTES.DASHBOARD.TAG.ADD, values as unknown as FormData, {
+    router.post(ROUTES.DASHBOARD.TAG.NEW, values as unknown as FormData, {
       onStart: () => setLoading(true),
       onError: (errs) => {
         console.log(`[DEBUG]: `, errs);

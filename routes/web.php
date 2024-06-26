@@ -1,13 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Dashboard\CategoryController;
+use App\Http\Controllers\Dashboard\AllCategoriesController as DAllCategoriesController;
+use App\Http\Controllers\Dashboard\EditCategoryController;
+use App\Http\Controllers\Dashboard\NewCategoryController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Dashboard\DeleteTagController;
 use App\Http\Controllers\Dashboard\NewTagController;
-use App\Http\Controllers\Dashboard\AddTagController;
 use App\Http\Controllers\Dashboard\EditTagController;
-use App\Http\Controllers\Dashboard\EditTagActionController;
 use App\Http\Controllers\Dashboard\AllTagsController as DAllTagsController;
 use App\Http\Controllers\Blog\HomeController;
 use App\Http\Controllers\Blog\SinglePostController;
@@ -23,64 +22,67 @@ Route::get('/dashboard', [DashboardController::class, 'render'])->name(
 );
 
 // Dashboard/Post routes
-Route::get('/dashboard/post/new', [CategoryController::class, 'render'])->name(
-  'dashboard.post.new',
-);
-Route::get('/dashboard/post/edit/{id}', [
-  CategoryController::class,
-  'render',
-])->name('dashboard.post.edit');
-Route::get('/dashboard/post/all', [CategoryController::class, 'render'])->name(
-  'dashboard.post.all',
-);
+// Route::get('/dashboard/post/new', [CategoryController::class, 'render'])->name(
+//   'dashboard.post.new',
+// );
+// Route::get('/dashboard/post/edit/{id}', [
+//   CategoryController::class,
+//   'render',
+// ])->name('dashboard.post.edit');
+// Route::get('/dashboard/post/all', [CategoryController::class, 'render'])->name(
+//   'dashboard.post.all',
+// );
 
 // Dashboard/Category routes
 Route::get('/dashboard/category/new', [
-  CategoryController::class,
-  'renderNewCategory',
+  NewCategoryController::class,
+  'get',
 ])->name('dashboard.category.new');
 Route::post('/dashboard/category/new', [
-  CategoryController::class,
-  'addCategory',
-])->name('dashboard.category.new.add');
+  NewCategoryController::class,
+  'post',
+])->name('dashboard.category.new.post');
+
 Route::get('/dashboard/category/edit/{id}', [
-  CategoryController::class,
-  'renderEditCategory',
+  EditCategoryController::class,
+  'get',
 ])->name('dashboard.category.edit');
 Route::patch('/dashboard/category/edit/{id}', [
-  CategoryController::class,
-  'editCategory',
+  EditCategoryController::class,
+  'patch',
 ])->name('dashboard.category.edit.patch');
+
 Route::delete('/dashboard/category/all', [
-  CategoryController::class,
-  'deleteCategory',
+  DAllCategoriesController::class,
+  'delete',
 ])->name('dashboard.category.all.delete');
 Route::get('/dashboard/category/all', [
-  CategoryController::class,
-  'renderAllCategory',
+  DAllCategoriesController::class,
+  'get',
 ])->name('dashboard.category.all');
 
 // Dashboard/Tags routes
-Route::get('/dashboard/tag/new', [NewTagController::class, 'render'])->name(
+Route::get('/dashboard/tag/new', [NewTagController::class, 'get'])->name(
   'dashboard.tag.new',
 );
-Route::post('/dashboard/tag/add', [AddTagController::class, 'render'])->name(
-  'dashboard.tag.add',
+Route::post('/dashboard/tag/new', [NewTagController::class, 'post'])->name(
+  'dashboard.tag.new.post',
 );
-Route::delete('/dashboard/tag/delete', [
-  DeleteTagController::class,
-  'render',
-])->name('dashboard.tag.delete');
-Route::get('/dashboard/tag/all', [DAllTagsController::class, 'render'])->name(
+
+Route::get('/dashboard/tag/all', [DAllTagsController::class, 'get'])->name(
   'dashboard.tag.all',
 );
-Route::get('/dashboard/tag/edit/{id}', [
-  EditTagController::class,
-  'render',
-])->name('dashboard.tag.edit');
+Route::delete('/dashboard/tag/all', [
+  DAllTagsController::class,
+  'delete',
+])->name('dashboard.tag.all.delete');
+
+Route::get('/dashboard/tag/edit/{id}', [EditTagController::class, 'get'])->name(
+  'dashboard.tag.edit',
+);
 Route::patch('/dashboard/tag/edit/{id}', [
-  EditTagActionController::class,
-  'render',
+  EditTagController::class,
+  'patch',
 ])->name('dashboard.tag.edit.patch');
 
 // Blog routes

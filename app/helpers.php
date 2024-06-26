@@ -76,15 +76,3 @@ if (!function_exists('explodeTerm')) {
     return explode(',', $str);
   }
 }
-
-const TAG_VALIDATION_RULES = [
-  'name' => 'required|string|min:5',
-  'slug' => [
-    'required',
-    'min:5',
-    'max:200',
-    'unique:tags',
-    'regex:/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/i',
-  ],
-  'description' => 'string',
-];

@@ -70,7 +70,7 @@ interface DeleteTagProps {
 const deleteTag =
   ({ id, ...options }: DeleteTagProps) =>
   () =>
-    router.delete(ROUTES.DASHBOARD.TAG.DELETE, {
+    router.delete(ROUTES.DASHBOARD.TAG.ALL, {
       data: {
         id: Array.isArray(id) ? id : [id],
       },

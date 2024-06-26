@@ -15,8 +15,6 @@ export const ROUTES = {
       NEW: '/dashboard/tag/new',
       ALL: '/dashboard/tag/all',
       EDIT: '/dashboard/tag/edit',
-      DELETE: '/dashboard/tag/delete',
-      ADD: '/dashboard/tag/add',
     },
   },
   BLOG: {
