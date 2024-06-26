@@ -34,6 +34,10 @@ Route::get('/dashboard', [DashboardController::class, 'render'])->name(
 Route::get('/dashboard/post/all', [DAllPostsController::class, 'get'])->name(
   'dashboard.post.all',
 );
+Route::delete('/dashboard/post/all', [
+  DAllPostsController::class,
+  'delete',
+])->name('dashboard.post.all.delete');
 
 // Dashboard/Category routes
 Route::get('/dashboard/category/new', [

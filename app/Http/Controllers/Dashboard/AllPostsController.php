@@ -17,4 +17,11 @@ class AllPostsController extends Controller
       'posts' => $posts,
     ]);
   }
+
+  public function delete(Request $request, Post $post)
+  {
+    $post->deleteById($request->input('id'));
+
+    return to_route('dashboard.post.all');
+  }
 }

@@ -44,6 +44,13 @@ class Post extends Model
     return $post;
   }
 
+  public function deleteById(array $ids): Post
+  {
+    $this->whereIn('id', $ids)->delete();
+
+    return $this;
+  }
+
   public function castCategoriesToArray(): Post
   {
     $post = new self();

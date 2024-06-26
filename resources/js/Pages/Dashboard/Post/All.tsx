@@ -2,6 +2,7 @@ import { MouseEventHandler, useEffect, useState } from 'react';
 import {
   ActionIcon,
   Anchor,
+  Avatar,
   Button,
   Container,
   Group,
@@ -14,7 +15,10 @@ import {
   Center,
   Modal,
   Mark,
+  Badge,
+  Image,
   type ModalBaseProps,
+  type ImageProps,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
@@ -27,6 +31,7 @@ import {
   IconPlus,
   IconSearch,
   IconTrashX,
+  IconEye,
   IconEdit,
   IconClick,
   IconCheck,
@@ -75,6 +80,20 @@ const deletePost =
       },
       ...options,
     });
+
+interface ImageZoomModalProps {
+  img: ImageProps;
+  opened: ModalBaseProps['opened'];
+  onClose: ModalBaseProps['onClose'];
+}
+
+const ImageZoomModal = ({ img, ...rest }: ImageZoomModalProps) => {
+  return (
+    <Modal centered closeOnClickOutside={false} {...rest}>
+      <Image {...img} />
+    </Modal>
+  );
+};
 
 interface DeleteModalProps {
   id: number | Array<number>;
@@ -129,6 +148,7 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
   const [delete_id, setDeleteID] = useState<
     CompletePost['id'] | Array<CompletePost['id']>
   >([]);
+  const [zoom_img, setZoomImg] = useState<ImageProps>({});
   const { showContextMenu, hideContextMenu } = useContextMenu();
   const [currentSelectedRecords, setCurrentSelectedRecords] = useState<
     DataTableProps<CompletePost>['data']
@@ -137,7 +157,8 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
     DataTableProps<CompletePost>['data']
   >([]);
   const [selected_all, setSelectedAll] = useState<boolean>(false);
-  const [modal_opened, { open, close }] = useDisclosure(false);
+  const [delete_modal_opened, delete_modal_cb] = useDisclosure(false);
+  const [izoom_modal_opened, izoom_modal_cb] = useDisclosure(false);
   const [query, setQuery] = useState('');
   const TABLE_KEY = 'all-posts-table';
   const columnsSharedProps = {
@@ -149,7 +170,7 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
     const new_id = Array.isArray(id) && id.length === 1 ? id[0] : id;
 
     setDeleteID(new_id);
-    open();
+    delete_modal_cb.open();
   };
 
   const toggleAllRecords = () => setSelectedAll(!selected_all);
@@ -200,12 +221,98 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
       ...columnsSharedProps,
     },
     {
+      accessor: 'tags',
+      ...columnsSharedProps,
+      render: ({ tags }: CompletePost) => {
+        const MAX_TAGS_COUNT = 4;
+
+        return (
+          <Group gap={2}>
+            {tags.slice(0, MAX_TAGS_COUNT).map((tag) => (
+              <Badge
+                size="xs"
+                variant="dot"
+                key={tag.slug}
+                component="a"
+                href={`${ROUTES.BLOG.TAG.SINGLE}/${tag.id}`}
+                style={{ cursor: 'pointer' }}
+                target="_blank"
+              >
+                {tag.name}
+              </Badge>
+            ))}
+            {tags.length > MAX_TAGS_COUNT ? '...' : null}
+          </Group>
+        );
+      },
+    },
+    {
+      accessor: 'categories',
+      ...columnsSharedProps,
+      render: ({ categories }: CompletePost) => {
+        const MAX_CATEGORIES_COUNT = 4;
+
+        return (
+          <Group gap={2}>
+            {categories.slice(0, MAX_CATEGORIES_COUNT).map((category) => (
+              <Badge
+                size="xs"
+                key={category.slug}
+                component="a"
+                href={`${ROUTES.BLOG.CATEGORY.SINGLE}/${category.id}`}
+                style={{ cursor: 'pointer' }}
+                target="_blank"
+              >
+                {category.name}
+              </Badge>
+            ))}
+            {categories.length > MAX_CATEGORIES_COUNT ? '...' : null}
+          </Group>
+        );
+      },
+    },
+    {
+      accessor: 'status',
+      sortable: true,
+      ...columnsSharedProps,
+      render: ({ status }: CompletePost) => {
+        return (
+          <Text
+            size="sm"
+            tt="capitalize"
+            c={status === 'draft' ? 'orange' : 'green'}
+          >
+            {status}
+          </Text>
+        );
+      },
+    },
+    {
       accessor: 'view',
       sortable: true,
     },
     {
       accessor: 'like',
       sortable: true,
+    },
+    {
+      accessor: 'cover',
+      ...columnsSharedProps,
+      render: ({ cover }: CompletePost) => {
+        return (
+          <Avatar
+            radius="sm"
+            style={{ cursor: 'pointer' }}
+            size="lg"
+            onClick={() => {
+              setZoomImg({ src: cover });
+              izoom_modal_cb.open();
+            }}
+            src={cover}
+            alt="cover"
+          />
+        );
+      },
     },
     {
       accessor: 'created_at',
@@ -228,6 +335,16 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
       render: ({ id }: CompletePost) => {
         return (
           <Group gap="sm" justify="center" wrap="nowrap">
+            <Tooltip label="View">
+              <ActionIcon
+                component="a"
+                color="green"
+                href={`${ROUTES.BLOG.POST.SINGLE}/${id}`}
+                target="_blank"
+              >
+                <IconEye size={ICON_SIZE} />
+              </ActionIcon>
+            </Tooltip>
             <Tooltip label="Delete">
               <ActionIcon color="red" onClick={() => openModal(id)}>
                 <IconTrashX size={ICON_SIZE} />
@@ -235,9 +352,9 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
             </Tooltip>
             <Tooltip label="Edit">
               <ActionIcon
-                onClick={() =>
-                  router.visit(`${ROUTES.DASHBOARD.POST.EDIT}/${id}`)
-                }
+                component="a"
+                href={`${ROUTES.DASHBOARD.POST.EDIT}/${id}`}
+                target="_blank"
               >
                 <IconEdit size={ICON_SIZE} />
               </ActionIcon>
@@ -254,10 +371,15 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
 
   return (
     <PageLayout title={PAGE_TITLE}>
+      <ImageZoomModal
+        onClose={izoom_modal_cb.close}
+        opened={izoom_modal_opened}
+        img={zoom_img}
+      />
       <DeleteModal
         id={delete_id}
-        onClose={close}
-        opened={modal_opened}
+        onClose={delete_modal_cb.close}
+        opened={delete_modal_opened}
         onYesCallback={deletePost({
           id: delete_id,
           onError: (error) => {
@@ -273,7 +395,7 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
           },
           onSuccess: () => {
             setCurrentSelectedRecords([]);
-            close();
+            delete_modal_cb.close();
             notifications.show({
               withCloseButton: true,
               autoClose: 5000,
