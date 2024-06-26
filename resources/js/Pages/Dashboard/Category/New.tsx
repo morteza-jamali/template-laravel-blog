@@ -242,7 +242,7 @@ export const NewCategory = ({ categories }: NewCategoryProps) => {
                               label="Name"
                             />
                           }
-                          placeholder="Enter title here"
+                          placeholder="Enter name here"
                           withAsterisk
                           disabled={loading}
                           key={form.key('name')}

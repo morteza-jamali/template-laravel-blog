@@ -1,14 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Dashboard\AllCategoriesController as DAllCategoriesController;
-use App\Http\Controllers\Dashboard\EditCategoryController;
-use App\Http\Controllers\Dashboard\NewCategoryController;
-use App\Http\Controllers\Dashboard\AllPostsController as DAllPostsController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Dashboard\NewTagController;
-use App\Http\Controllers\Dashboard\EditTagController;
+use App\Http\Controllers\Dashboard\AllCategoriesController as DAllCategoriesController;
+use App\Http\Controllers\Dashboard\AllPostsController as DAllPostsController;
 use App\Http\Controllers\Dashboard\AllTagsController as DAllTagsController;
+use App\Http\Controllers\Dashboard\NewPostController;
+use App\Http\Controllers\Dashboard\NewTagController;
+use App\Http\Controllers\Dashboard\NewCategoryController;
+use App\Http\Controllers\Dashboard\EditTagController;
+use App\Http\Controllers\Dashboard\EditCategoryController;
 use App\Http\Controllers\Blog\HomeController;
 use App\Http\Controllers\Blog\SinglePostController;
 use App\Http\Controllers\Blog\SingleCategoryController;
@@ -23,9 +24,13 @@ Route::get('/dashboard', [DashboardController::class, 'render'])->name(
 );
 
 // Dashboard/Post routes
-// Route::get('/dashboard/post/new', [CategoryController::class, 'render'])->name(
-//   'dashboard.post.new',
-// );
+Route::get('/dashboard/post/new', [NewPostController::class, 'get'])->name(
+  'dashboard.post.new',
+);
+Route::post('/dashboard/post/new', [NewPostController::class, 'post'])->name(
+  'dashboard.post.new.post',
+);
+
 // Route::get('/dashboard/post/edit/{id}', [
 //   CategoryController::class,
 //   'render',
