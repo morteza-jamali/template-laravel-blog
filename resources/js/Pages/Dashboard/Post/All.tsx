@@ -36,14 +36,14 @@ import {
 } from '@tabler/icons-react';
 import { useContextMenu } from 'mantine-contextmenu';
 import { useDataTableColumns } from 'mantine-datatable';
-import { type Tag } from '@/types';
+import { type CompletePost } from '@/types';
 import ROUTES from '@/routes';
 
-const PAGE_TITLE = 'All Tags';
+const PAGE_TITLE = 'All Posts';
 const items = [
   { title: 'Dashboard', href: ROUTES.DASHBOARD.HOME },
-  { title: 'Tags', href: '#' },
-  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.TAG.ALL },
+  { title: 'Posts', href: '#' },
+  { title: PAGE_TITLE, href: ROUTES.DASHBOARD.POST.ALL },
 ].map((item, index) => (
   <Anchor href={item.href} key={index} component={Link}>
     {item.title}
@@ -56,21 +56,20 @@ const PAPER_PROPS: PaperProps = {
   radius: 'md',
 };
 
-interface AllTagsProps {
-  pathname: string;
-  tags: Tag[];
+interface AllPostsProps {
+  posts: Array<CompletePost>;
 }
 
-interface DeleteTagProps {
+interface DeletePostProps {
   id: number | Array<number>;
   onSuccess: VisitOptions['onSuccess'];
   onError: VisitOptions['onError'];
 }
 
-const deleteTag =
-  ({ id, ...options }: DeleteTagProps) =>
+const deletePost =
+  ({ id, ...options }: DeletePostProps) =>
   () =>
-    router.delete(ROUTES.DASHBOARD.TAG.ALL, {
+    router.delete(ROUTES.DASHBOARD.POST.ALL, {
       data: {
         id: Array.isArray(id) ? id : [id],
       },
@@ -93,7 +92,7 @@ const DeleteModal = ({ id, onYesCallback, ...rest }: DeleteModalProps) => {
           <Modal.Title>
             <Group gap={6}>
               <IconTrashX color="red" />
-              <Text fw={700}>Delete tag</Text>
+              <Text fw={700}>Delete post</Text>
             </Group>
           </Modal.Title>
           <Modal.CloseButton />
@@ -103,10 +102,10 @@ const DeleteModal = ({ id, onYesCallback, ...rest }: DeleteModalProps) => {
             <Text>
               Are you sure you want to delete{' '}
               {Array.isArray(id) ? (
-                'all selected tags ?'
+                'all selected posts ?'
               ) : (
                 <>
-                  tag with ID <Mark>{id}</Mark>?
+                  post with ID <Mark>{id}</Mark>?
                 </>
               )}
             </Text>
@@ -125,26 +124,28 @@ const DeleteModal = ({ id, onYesCallback, ...rest }: DeleteModalProps) => {
   );
 };
 
-export const AllTags = ({ tags, pathname }: AllTagsProps) => {
+export const AllPosts = ({ posts }: AllPostsProps) => {
   const ICON_SIZE = 18;
-  const [delete_id, setDeleteID] = useState<Tag['id'] | Array<Tag['id']>>([]);
+  const [delete_id, setDeleteID] = useState<
+    CompletePost['id'] | Array<CompletePost['id']>
+  >([]);
   const { showContextMenu, hideContextMenu } = useContextMenu();
   const [currentSelectedRecords, setCurrentSelectedRecords] = useState<
-    DataTableProps<Tag>['data']
+    DataTableProps<CompletePost>['data']
   >([]);
   const [allSelectedRecords, setAllSelectedRecords] = useState<
-    DataTableProps<Tag>['data']
+    DataTableProps<CompletePost>['data']
   >([]);
   const [selected_all, setSelectedAll] = useState<boolean>(false);
   const [modal_opened, { open, close }] = useDisclosure(false);
   const [query, setQuery] = useState('');
-  const TABLE_KEY = 'all-tags-table';
+  const TABLE_KEY = 'all-posts-table';
   const columnsSharedProps = {
     resizable: true,
     draggable: true,
   };
 
-  const openModal = (id: Tag['id'] | Array<Tag['id']>) => {
+  const openModal = (id: CompletePost['id'] | Array<CompletePost['id']>) => {
     const new_id = Array.isArray(id) && id.length === 1 ? id[0] : id;
 
     setDeleteID(new_id);
@@ -160,20 +161,20 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
       return;
     }
 
-    if (allSelectedRecords.length === tags.length) {
+    if (allSelectedRecords.length === posts.length) {
       setSelectedAll(true);
 
       return;
     }
   }, [allSelectedRecords]);
 
-  const columns: DataTableProps<Tag>['columns'] = [
+  const columns: DataTableProps<CompletePost>['columns'] = [
     {
       accessor: 'id',
       sortable: true,
     },
     {
-      accessor: 'name',
+      accessor: 'title',
       sortable: true,
       filter: (
         <TextInput
@@ -193,13 +194,17 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
       ...columnsSharedProps,
     },
     {
-      accessor: 'description',
+      accessor: 'content',
       ellipsis: true,
       width: 200,
       ...columnsSharedProps,
     },
     {
-      accessor: 'count',
+      accessor: 'view',
+      sortable: true,
+    },
+    {
+      accessor: 'like',
       sortable: true,
     },
     {
@@ -220,7 +225,7 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
         </Center>
       ),
       width: '0%',
-      render: ({ id }: Tag) => {
+      render: ({ id }: CompletePost) => {
         return (
           <Group gap="sm" justify="center" wrap="nowrap">
             <Tooltip label="Delete">
@@ -231,7 +236,7 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
             <Tooltip label="Edit">
               <ActionIcon
                 onClick={() =>
-                  router.visit(`${ROUTES.DASHBOARD.TAG.EDIT}/${id}`)
+                  router.visit(`${ROUTES.DASHBOARD.POST.EDIT}/${id}`)
                 }
               >
                 <IconEdit size={ICON_SIZE} />
@@ -242,7 +247,7 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
       },
     },
   ];
-  const { effectiveColumns } = useDataTableColumns<Tag>({
+  const { effectiveColumns } = useDataTableColumns<CompletePost>({
     key: TABLE_KEY,
     columns,
   });
@@ -253,7 +258,7 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
         id={delete_id}
         onClose={close}
         opened={modal_opened}
-        onYesCallback={deleteTag({
+        onYesCallback={deletePost({
           id: delete_id,
           onError: (error) => {
             notifications.show({
@@ -274,8 +279,8 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
               autoClose: 5000,
               title: 'Success',
               message: Array.isArray(delete_id)
-                ? 'All selected tags deleted'
-                : `Tag with ID ${delete_id} deleted`,
+                ? 'All selected posts deleted'
+                : `Post with ID ${delete_id} deleted`,
               color: 'green',
               icon: <IconCheck />,
               withBorder: true,
@@ -291,7 +296,7 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
             rightSection={
               <Button
                 component={Link}
-                href={ROUTES.DASHBOARD.TAG.NEW}
+                href={ROUTES.DASHBOARD.POST.NEW}
                 leftSection={<IconPlus size={18} />}
               >
                 Add New
@@ -303,10 +308,10 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
               <Text>
                 {allSelectedRecords.length === 0
                   ? 'No'
-                  : allSelectedRecords.length === tags.length
+                  : allSelectedRecords.length === posts.length
                     ? `All`
                     : allSelectedRecords.length}{' '}
-                tags selected
+                posts selected
               </Text>
               <Button.Group>
                 <Button
@@ -333,7 +338,7 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
                     )
                   }
                   onClick={toggleAllRecords}
-                  disabled={tags.length === 0}
+                  disabled={posts.length === 0}
                   ml={5}
                   tt="capitalize"
                 >
@@ -346,7 +351,7 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
               highlightOnHover
               minHeight={200}
               verticalSpacing="xs"
-              data={tags}
+              data={posts}
               columns={effectiveColumns}
               withTableBorder={true}
               withColumnBorders={true}
@@ -358,15 +363,15 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
               selectionTrigger="cell"
               query={query}
               sort_status={{
-                columnAccessor: 'name',
+                columnAccessor: 'title',
                 direction: 'asc',
               }}
               pinLastColumn
               filterFn={(debouncedQuery) =>
-                ({ name }) => {
+                ({ title }) => {
                   if (
                     debouncedQuery !== '' &&
-                    !(name as string)
+                    !(title as string)
                       .toLowerCase()
                       .includes(debouncedQuery.trim().toLowerCase())
                   ) {
@@ -379,16 +384,18 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
               onRowContextMenu={({ record, event }) =>
                 showContextMenu([
                   {
-                    key: 'edit-tag',
+                    key: 'edit-post',
                     title: 'Edit',
                     icon: <IconEdit size={16} />,
                     color: 'indigo',
                     onClick: () =>
-                      router.visit(`${ROUTES.DASHBOARD.TAG.EDIT}/${record.id}`),
+                      router.visit(
+                        `${ROUTES.DASHBOARD.POST.EDIT}/${record.id}`,
+                      ),
                   },
                   { key: 'divider' },
                   {
-                    key: 'delete-tag',
+                    key: 'delete-post',
                     title: 'Delete',
                     icon: <IconTrashX size={16} />,
                     color: 'red',
@@ -404,6 +411,6 @@ export const AllTags = ({ tags, pathname }: AllTagsProps) => {
   );
 };
 
-AllTags.layout = (page: any) => <AppShell children={page} />;
+AllPosts.layout = (page: any) => <AppShell children={page} />;
 
-export default AllTags;
+export default AllPosts;

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\AllCategoriesController as DAllCategoriesController;
 use App\Http\Controllers\Dashboard\EditCategoryController;
 use App\Http\Controllers\Dashboard\NewCategoryController;
+use App\Http\Controllers\Dashboard\AllPostsController as DAllPostsController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\NewTagController;
 use App\Http\Controllers\Dashboard\EditTagController;
@@ -29,9 +30,10 @@ Route::get('/dashboard', [DashboardController::class, 'render'])->name(
 //   CategoryController::class,
 //   'render',
 // ])->name('dashboard.post.edit');
-// Route::get('/dashboard/post/all', [CategoryController::class, 'render'])->name(
-//   'dashboard.post.all',
-// );
+
+Route::get('/dashboard/post/all', [DAllPostsController::class, 'get'])->name(
+  'dashboard.post.all',
+);
 
 // Dashboard/Category routes
 Route::get('/dashboard/category/new', [
