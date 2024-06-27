@@ -7,7 +7,6 @@ import {
   PaperProps,
   Stack,
   TextInput,
-  Text,
   Accordion,
   Group,
   Button,
@@ -33,7 +32,12 @@ import {
   IconStackPush,
   IconPhoto,
 } from '@tabler/icons-react';
-import { type Category, PartialBy, CompletePost } from '@/types';
+import {
+  type Category,
+  type PartialBy,
+  type CompletePost,
+  type Tag,
+} from '@/types';
 import ROUTES from '@/routes';
 import { InputLabelWithHelp, PageLayout, Asterisk } from '@/Components/Global';
 import {
@@ -68,6 +72,9 @@ const FIELDS_CONDITIONS = {
     MIN: 1,
     MAX: 3,
   },
+  TAGS: {
+    MAX: 20,
+  },
 };
 const PAPER_PROPS: PaperProps = {
   shadow: 'md',
@@ -76,6 +83,7 @@ const PAPER_PROPS: PaperProps = {
 
 interface NewPostProps {
   categories: Array<Category>;
+  tags: Array<Tag>;
 }
 
 interface PublishProps {
@@ -180,13 +188,12 @@ function Categories({ data, form, disabled }: CategoriesProps) {
           withScrollArea={false}
           styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
           comboboxProps={{ shadow: 'md' }}
-          placeholder={`Select up to ${FIELDS_CONDITIONS.CATEGORIES.MAX} categories`}
+          description={`Select up to ${FIELDS_CONDITIONS.CATEGORIES.MAX} categories`}
           hidePickedOptions
           searchable
           nothingFoundMessage="Nothing found..."
           disabled={disabled}
           maxValues={FIELDS_CONDITIONS.CATEGORIES.MAX}
-          mt="md"
           key={form.key('categories')}
           {...form.getInputProps('categories')}
         />
@@ -195,7 +202,13 @@ function Categories({ data, form, disabled }: CategoriesProps) {
   );
 }
 
-function Tags() {
+interface TagsProps {
+  form: UseFormReturnType<FormValuesTypes>;
+  data?: ComboboxItem[];
+  disabled?: boolean;
+}
+
+function Tags({ form, data, disabled }: TagsProps) {
   return (
     <Accordion.Item value="tags">
       <Accordion.Control
@@ -212,10 +225,16 @@ function Tags() {
       </Accordion.Control>
       <Accordion.Panel>
         <TagsInput
-          description="Add up to 20 tags"
-          placeholder="Enter tag"
-          maxTags={20}
+          description={`Add up to ${FIELDS_CONDITIONS.TAGS.MAX} tags`}
+          maxTags={FIELDS_CONDITIONS.TAGS.MAX}
+          data={data}
           clearable
+          withScrollArea={false}
+          styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
+          comboboxProps={{ shadow: 'md' }}
+          disabled={disabled}
+          key={form.key('tags')}
+          {...form.getInputProps('tags')}
         />
       </Accordion.Panel>
     </Accordion.Item>
@@ -256,15 +275,22 @@ function Cover() {
   );
 }
 
-export const NewPost = ({ categories }: NewPostProps) => {
+export const NewPost = ({ categories, tags }: NewPostProps) => {
   const categories_data = categories.map(({ id, name }) => ({
     value: `${id}`,
     label: name,
   }));
-  const default_content: string = 'i love apple';
+  const tags_data = tags.map(({ id, name }) => ({
+    value: `${id}`,
+    label: name,
+  }));
+  const default_content: string = '';
   const isNotEmpty = _isNotEmpty();
   const [loading, setLoading] = useState<boolean>(false);
   const [editor_value, setEditorValue] = useState<string>(default_content);
+  const [editor_is_empty, setEditorIsEmpty] = useState<boolean>(
+    default_content.length === 0,
+  );
   const { errors } = usePage().props;
   const form = useForm<FormValuesTypes>({
     mode: 'uncontrolled',
@@ -306,14 +332,18 @@ export const NewPost = ({ categories }: NewPostProps) => {
 
         return null;
       },
-      categories: hasLength({
-        min: FIELDS_CONDITIONS.CATEGORIES.MIN,
-        max: FIELDS_CONDITIONS.CATEGORIES.MAX,
-      }),
+      categories: hasLength(
+        {
+          min: FIELDS_CONDITIONS.CATEGORIES.MIN,
+        },
+        STRINGS.REQUIRED_FIELD('categories'),
+      ),
       content: () => {
         form.setFieldValue('content', editor_value);
 
-        console.log(editor_value);
+        if (form.getValues().status === 'publish' && editor_is_empty) {
+          return STRINGS.REQUIRED_FIELD('content');
+        }
 
         return null;
       },
@@ -380,6 +410,7 @@ export const NewPost = ({ categories }: NewPostProps) => {
                           placeholder="Enter content here"
                           disabled={loading}
                           setValue={setEditorValue}
+                          setIsEmpty={setEditorIsEmpty}
                           name="content"
                           form={form}
                         />
@@ -398,7 +429,7 @@ export const NewPost = ({ categories }: NewPostProps) => {
                         data={categories_data}
                         disabled={loading}
                       />
-                      <Tags />
+                      <Tags form={form} data={tags_data} disabled={loading} />
                       <Cover />
                     </Surface>
                   </Accordion>

@@ -1,5 +1,7 @@
-import { Link, RichTextEditor } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
+import { Link, RichTextEditor, getTaskListExtension } from '@mantine/tiptap';
+import { useEditor, BubbleMenu, type Editor } from '@tiptap/react';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { createLowlight } from 'lowlight';
 import Highlight from '@tiptap/extension-highlight';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -7,6 +9,10 @@ import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import Placeholder from '@tiptap/extension-placeholder';
+import { Color } from '@tiptap/extension-color';
+import TextStyle from '@tiptap/extension-text-style';
+import TaskItem from '@tiptap/extension-task-item';
+import TipTapTaskList from '@tiptap/extension-task-list';
 import { Input } from '@mantine/core';
 import { type UseFormReturnType } from '@mantine/form';
 import {
@@ -15,6 +21,11 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
+import ts from 'highlight.js/lib/languages/typescript';
+
+const lowlight = createLowlight();
+// TODO: Add more languages
+lowlight.register({ ts });
 
 export interface TextEditorProps<T>
   extends Omit<ComponentProps<typeof Input.Wrapper>, 'form'>,
@@ -24,6 +35,7 @@ export interface TextEditorProps<T>
     > {
   form: UseFormReturnType<T>;
   setValue: Dispatch<SetStateAction<string>>;
+  setIsEmpty: Dispatch<SetStateAction<boolean>>;
 }
 
 export function TextEditor<T>({
@@ -32,21 +44,33 @@ export function TextEditor<T>({
   disabled,
   name,
   setValue,
+  setIsEmpty,
   ...rest
 }: TextEditorProps<T>) {
   const { defaultValue, ...input_props } = form.getInputProps(name as string);
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      Color,
+      StarterKit.configure({ codeBlock: false }),
+      getTaskListExtension(TipTapTaskList),
+      TaskItem.configure({
+        nested: true,
+        HTMLAttributes: {
+          class: 'test-item',
+        },
+      }),
       Underline,
       Link,
       Superscript,
       SubScript,
       Highlight,
+      TextStyle,
+      CodeBlockLowlight.configure({ lowlight }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Placeholder.configure({ placeholder }),
     ],
     onUpdate(props) {
+      setIsEmpty(props.editor.getText().trim().length === 0);
       setValue(props.editor.getHTML());
     },
     content: defaultValue,
@@ -55,8 +79,53 @@ export function TextEditor<T>({
 
   return (
     <Input.Wrapper key={form.key(name as string)} {...input_props} {...rest}>
-      <RichTextEditor editor={editor}>
+      <RichTextEditor
+        editor={editor}
+        styles={
+          input_props.error
+            ? {
+                root: {
+                  borderColor: 'var(--mantine-color-error)',
+                  marginBottom: 'calc(var(--mantine-spacing-xs) / 2)',
+                },
+              }
+            : undefined
+        }
+      >
         <RichTextEditor.Toolbar sticky stickyOffset={60}>
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.ColorPicker
+              colors={[
+                '#25262b',
+                '#868e96',
+                '#fa5252',
+                '#e64980',
+                '#be4bdb',
+                '#7950f2',
+                '#4c6ef5',
+                '#228be6',
+                '#15aabf',
+                '#12b886',
+                '#40c057',
+                '#82c91e',
+                '#fab005',
+                '#fd7e14',
+              ]}
+            />
+            <RichTextEditor.UnsetColor />
+            <RichTextEditor.Color color="#F03E3E" />
+            <RichTextEditor.Color color="#7048E8" />
+            <RichTextEditor.Color color="#1098AD" />
+            <RichTextEditor.Color color="#37B24D" />
+            <RichTextEditor.Color color="#F59F00" />
+          </RichTextEditor.ControlsGroup>
+
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.TaskList />
+            <RichTextEditor.TaskListLift />
+            <RichTextEditor.TaskListSink />
+          </RichTextEditor.ControlsGroup>
+
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />
             <RichTextEditor.Italic />
@@ -65,6 +134,7 @@ export function TextEditor<T>({
             <RichTextEditor.ClearFormatting />
             <RichTextEditor.Highlight />
             <RichTextEditor.Code />
+            <RichTextEditor.CodeBlock />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
@@ -72,6 +142,8 @@ export function TextEditor<T>({
             <RichTextEditor.H2 />
             <RichTextEditor.H3 />
             <RichTextEditor.H4 />
+            <RichTextEditor.H5 />
+            <RichTextEditor.H6 />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>
@@ -94,8 +166,19 @@ export function TextEditor<T>({
             <RichTextEditor.AlignJustify />
             <RichTextEditor.AlignRight />
           </RichTextEditor.ControlsGroup>
-        </RichTextEditor.Toolbar>
 
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.Undo />
+            <RichTextEditor.Redo />
+          </RichTextEditor.ControlsGroup>
+        </RichTextEditor.Toolbar>
+        <BubbleMenu editor={editor as Editor}>
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.Bold />
+            <RichTextEditor.Italic />
+            <RichTextEditor.Link />
+          </RichTextEditor.ControlsGroup>
+        </BubbleMenu>
         <RichTextEditor.Content />
       </RichTextEditor>
     </Input.Wrapper>
