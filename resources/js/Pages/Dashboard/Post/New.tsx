@@ -7,18 +7,18 @@ import {
   PaperProps,
   Stack,
   TextInput,
+  Text,
   Accordion,
   Group,
   Button,
   Radio,
   Tabs,
-  Checkbox,
   FileInput,
   ScrollArea,
   TagsInput,
   rem,
+  MultiSelect,
   type ComboboxItem,
-  Select,
 } from '@mantine/core';
 import {
   PageHeader,
@@ -26,23 +26,22 @@ import {
   TextEditor,
   AppShell,
 } from '@/Components/Dashboard';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
   IconCategory,
   IconTags,
   IconStackPush,
   IconPhoto,
 } from '@tabler/icons-react';
-import { type Post, type Category, PartialBy } from '@/types';
+import { type Category, PartialBy, CompletePost } from '@/types';
 import ROUTES from '@/routes';
-import { InputLabelWithHelp, PageLayout } from '@/Components/Global';
+import { InputLabelWithHelp, PageLayout, Asterisk } from '@/Components/Global';
 import {
   useForm,
-  type UseFormReturnType,
   isNotEmpty as _isNotEmpty,
   hasLength,
-  isInRange,
   matches,
+  type UseFormReturnType,
 } from '@mantine/form';
 import { STRINGS } from '@/i18n';
 
@@ -66,7 +65,8 @@ const FIELDS_CONDITIONS = {
     MAX: 200,
   },
   CATEGORIES: {
-    MIN: 0,
+    MIN: 1,
+    MAX: 3,
   },
 };
 const PAPER_PROPS: PaperProps = {
@@ -74,19 +74,8 @@ const PAPER_PROPS: PaperProps = {
   radius: 'md',
 };
 
-const allcategoriesmock = [
-  'cat 1',
-  'programming',
-  'development',
-  'computer',
-  'physics',
-  'chemistry',
-  'website',
-  'smart phone',
-];
-
 interface NewPostProps {
-  categories: Array<Pick<Category, 'id' | 'name'>>;
+  categories: Array<Category>;
 }
 
 interface PublishProps {
@@ -124,7 +113,7 @@ function Publish({ form, loading }: PublishProps) {
             />
           }
         >
-          Publish
+          <Asterisk>Publish</Asterisk>
         </Accordion.Control>
         <Accordion.Panel>
           <Stack>
@@ -158,7 +147,7 @@ function Publish({ form, loading }: PublishProps) {
 
 type FormValuesTypes = PartialBy<
   Pick<
-    Post,
+    CompletePost,
     'title' | 'slug' | 'content' | 'categories' | 'tags' | 'cover' | 'status'
   >,
   'content' | 'tags' | 'cover'
@@ -171,10 +160,6 @@ interface CategoriesProps {
 }
 
 function Categories({ data, form, disabled }: CategoriesProps) {
-  data = data ?? [];
-
-  data.unshift({ value: '0', label: 'None' });
-
   return (
     <Accordion.Item value="categories">
       <Accordion.Control
@@ -187,21 +172,23 @@ function Categories({ data, form, disabled }: CategoriesProps) {
           />
         }
       >
-        Categories
+        <Asterisk>Categories</Asterisk>
       </Accordion.Control>
       <Accordion.Panel>
-        <Select
+        <MultiSelect
           data={data}
           withScrollArea={false}
           styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }}
           comboboxProps={{ shadow: 'md' }}
+          placeholder={`Select up to ${FIELDS_CONDITIONS.CATEGORIES.MAX} categories`}
+          hidePickedOptions
           searchable
           nothingFoundMessage="Nothing found..."
-          allowDeselect={false}
           disabled={disabled}
+          maxValues={FIELDS_CONDITIONS.CATEGORIES.MAX}
           mt="md"
-          key={form.key('parent')}
-          {...form.getInputProps('parent')}
+          key={form.key('categories')}
+          {...form.getInputProps('categories')}
         />
       </Accordion.Panel>
     </Accordion.Item>
@@ -274,16 +261,19 @@ export const NewPost = ({ categories }: NewPostProps) => {
     value: `${id}`,
     label: name,
   }));
+  const default_content: string = 'i love apple';
   const isNotEmpty = _isNotEmpty();
   const [loading, setLoading] = useState<boolean>(false);
+  const [editor_value, setEditorValue] = useState<string>(default_content);
   const { errors } = usePage().props;
   const form = useForm<FormValuesTypes>({
     mode: 'uncontrolled',
     initialValues: {
       title: '',
-      categories: '',
+      categories: [],
       slug: '',
       status: 'draft',
+      content: default_content,
     },
     validate: {
       title: (value) => {
@@ -316,13 +306,17 @@ export const NewPost = ({ categories }: NewPostProps) => {
 
         return null;
       },
-      categories: (value) =>
-        isInRange(
-          { min: FIELDS_CONDITIONS.CATEGORIES.MIN },
-          STRINGS.MIN_NUM('categories', FIELDS_CONDITIONS.CATEGORIES.MIN),
-        )(
-          /* FIXME: convert categories string to array */ parseInt(value ?? ''),
-        ),
+      categories: hasLength({
+        min: FIELDS_CONDITIONS.CATEGORIES.MIN,
+        max: FIELDS_CONDITIONS.CATEGORIES.MAX,
+      }),
+      content: () => {
+        form.setFieldValue('content', editor_value);
+
+        console.log(editor_value);
+
+        return null;
+      },
     },
   });
 
@@ -380,7 +374,15 @@ export const NewPost = ({ categories }: NewPostProps) => {
                           key={form.key('title')}
                           {...form.getInputProps('title')}
                         />
-                        <TextEditor label="Content" />
+                        <TextEditor
+                          label="Content"
+                          withAsterisk
+                          placeholder="Enter content here"
+                          disabled={loading}
+                          setValue={setEditorValue}
+                          name="content"
+                          form={form}
+                        />
                       </Stack>
                     </Grid.Col>
                   </Grid>
@@ -388,7 +390,7 @@ export const NewPost = ({ categories }: NewPostProps) => {
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }}>
                 <ScrollArea type="always" scrollbars="y" offsetScrollbars>
-                  <Accordion multiple defaultValue={['publish']}>
+                  <Accordion multiple defaultValue={['publish', 'categories']}>
                     <Surface component={Paper} {...PAPER_PROPS}>
                       <Publish form={form} loading={loading} />
                       <Categories

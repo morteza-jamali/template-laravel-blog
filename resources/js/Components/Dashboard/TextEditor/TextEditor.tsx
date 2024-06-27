@@ -1,4 +1,4 @@
-import { Link, RichTextEditor, RichTextEditorProps } from '@mantine/tiptap';
+import { Link, RichTextEditor } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import Highlight from '@tiptap/extension-highlight';
 import StarterKit from '@tiptap/starter-kit';
@@ -6,17 +6,35 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
-import { Stack, StackProps, Text } from '@mantine/core';
-import { CSSProperties } from 'react';
+import Placeholder from '@tiptap/extension-placeholder';
+import { Input } from '@mantine/core';
+import { type UseFormReturnType } from '@mantine/form';
+import {
+  type InputHTMLAttributes,
+  type ComponentProps,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 
-type TextEditorProps = {
-  label: string;
-  content?: string;
-  width?: CSSProperties['width'];
-} & Omit<RichTextEditorProps, 'children' | 'editor'> &
-  StackProps;
+export interface TextEditorProps<T>
+  extends Omit<ComponentProps<typeof Input.Wrapper>, 'form'>,
+    Pick<
+      InputHTMLAttributes<HTMLInputElement>,
+      'placeholder' | 'disabled' | 'name'
+    > {
+  form: UseFormReturnType<T>;
+  setValue: Dispatch<SetStateAction<string>>;
+}
 
-const TextEditor = ({ content, label, width, ...others }: TextEditorProps) => {
+export function TextEditor<T>({
+  placeholder,
+  form,
+  disabled,
+  name,
+  setValue,
+  ...rest
+}: TextEditorProps<T>) {
+  const { defaultValue, ...input_props } = form.getInputProps(name as string);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -26,14 +44,18 @@ const TextEditor = ({ content, label, width, ...others }: TextEditorProps) => {
       SubScript,
       Highlight,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      Placeholder.configure({ placeholder }),
     ],
-    content,
+    onUpdate(props) {
+      setValue(props.editor.getHTML());
+    },
+    content: defaultValue,
+    editable: !disabled,
   });
 
   return (
-    <Stack {...others}>
-      <Text>{label}</Text>
-      <RichTextEditor editor={editor} style={{ width }}>
+    <Input.Wrapper key={form.key(name as string)} {...input_props} {...rest}>
+      <RichTextEditor editor={editor}>
         <RichTextEditor.Toolbar sticky stickyOffset={60}>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />
@@ -76,8 +98,8 @@ const TextEditor = ({ content, label, width, ...others }: TextEditorProps) => {
 
         <RichTextEditor.Content />
       </RichTextEditor>
-    </Stack>
+    </Input.Wrapper>
   );
-};
+}
 
 export default TextEditor;
