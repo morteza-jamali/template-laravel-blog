@@ -7,6 +7,7 @@ export const STRINGS = {
   FORMAT: (name: string) => `The ${name} field format is invalid`,
   MIN_NUM: (name: string, number: number) =>
     `The ${name} field must be ${number} or more`,
+  BAD_IMAGE_URL: 'Image URL is invalid',
 };
 
 export default STRINGS;

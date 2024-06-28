@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState, DOMAttributes } from 'react';
 import {
   Anchor,
   Container,
@@ -11,13 +11,13 @@ import {
   Group,
   Button,
   Radio,
-  Tabs,
-  FileInput,
+  Image,
   ScrollArea,
   TagsInput,
   rem,
   MultiSelect,
   type ComboboxItem,
+  type ImageProps,
 } from '@mantine/core';
 import {
   PageHeader,
@@ -39,7 +39,12 @@ import {
   type Tag,
 } from '@/types';
 import ROUTES from '@/routes';
-import { InputLabelWithHelp, PageLayout, Asterisk } from '@/Components/Global';
+import {
+  InputLabelWithHelp,
+  PageLayout,
+  Asterisk,
+  ImageZoom,
+} from '@/Components/Global';
 import {
   useForm,
   isNotEmpty as _isNotEmpty,
@@ -48,6 +53,7 @@ import {
   type UseFormReturnType,
 } from '@mantine/form';
 import { STRINGS } from '@/i18n';
+import { useDisclosure } from '@mantine/hooks';
 
 const PAGE_TITLE: string = 'Add New Post';
 const items = [
@@ -241,7 +247,32 @@ function Tags({ form, data, disabled }: TagsProps) {
   );
 }
 
-function Cover() {
+interface CoverPreviewProps
+  extends Pick<ImageProps, 'src' | 'onError'>,
+    Pick<DOMAttributes<HTMLImageElement>, 'onClick'> {}
+
+const CoverPreview = (props: CoverPreviewProps) => {
+  return (
+    <Image
+      mt="xs"
+      w="auto"
+      fit="contain"
+      height={200}
+      mx="auto"
+      fallbackSrc="/images/postcoverplaceholder.svg"
+      style={{ cursor: 'pointer' }}
+      {...props}
+    />
+  );
+};
+
+interface CoverProps {
+  form: UseFormReturnType<FormValuesTypes>;
+  disabled?: boolean;
+  preview?: ReactNode;
+}
+
+function Cover({ form, disabled, preview }: CoverProps) {
   return (
     <Accordion.Item value="cover">
       <Accordion.Control
@@ -257,19 +288,13 @@ function Cover() {
         Cover
       </Accordion.Control>
       <Accordion.Panel>
-        <Tabs defaultValue="url">
-          <Tabs.List>
-            <Tabs.Tab value="url">URL</Tabs.Tab>
-            <Tabs.Tab value="file">File</Tabs.Tab>
-          </Tabs.List>
-
-          <Tabs.Panel value="url">
-            <TextInput placeholder="Place link here" type="url" />
-          </Tabs.Panel>
-          <Tabs.Panel value="file">
-            <FileInput placeholder="Select file" />
-          </Tabs.Panel>
-        </Tabs>
+        <TextInput
+          placeholder="Place link here"
+          disabled={disabled}
+          key={form.key('cover')}
+          {...form.getInputProps('cover')}
+        />
+        {preview}
       </Accordion.Panel>
     </Accordion.Item>
   );
@@ -284,13 +309,13 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
     value: `${id}`,
     label: name,
   }));
-  const default_content: string = '';
   const isNotEmpty = _isNotEmpty();
   const [loading, setLoading] = useState<boolean>(false);
-  const [editor_value, setEditorValue] = useState<string>(default_content);
-  const [editor_is_empty, setEditorIsEmpty] = useState<boolean>(
-    default_content.length === 0,
-  );
+  const [editor_value, setEditorValue] = useState<string>('');
+  const [cover_preview_src, setCoverPreviewSrc] = useState<string>();
+  const image_zoom_disclosure = useDisclosure(false);
+  const [_, image_zoom_cb] = image_zoom_disclosure;
+  const [editor_is_empty, setEditorIsEmpty] = useState<boolean>(true);
   const { errors } = usePage().props;
   const form = useForm<FormValuesTypes>({
     mode: 'uncontrolled',
@@ -299,8 +324,8 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
       categories: [],
       slug: '',
       status: 'draft',
-      content: default_content,
     },
+    onValuesChange: ({ cover }) => setCoverPreviewSrc(cover),
     validate: {
       title: (value) => {
         if (isNotEmpty(value) !== null) {
@@ -338,15 +363,17 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
         },
         STRINGS.REQUIRED_FIELD('categories'),
       ),
-      content: () => {
+      content: (_, { status }) => {
         form.setFieldValue('content', editor_value);
 
-        if (form.getValues().status === 'publish' && editor_is_empty) {
+        if (status === 'publish' && editor_is_empty) {
           return STRINGS.REQUIRED_FIELD('content');
         }
 
         return null;
       },
+      cover: (): string | null =>
+        form.errors.cover === undefined ? null : STRINGS.BAD_IMAGE_URL,
     },
   });
 
@@ -381,6 +408,7 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
 
   return (
     <PageLayout title={PAGE_TITLE}>
+      <ImageZoom src={cover_preview_src} disclosure={image_zoom_disclosure} />
       <Container fluid>
         <Stack gap="lg">
           <PageHeader title={PAGE_TITLE} breadcrumbItems={items} />
@@ -430,7 +458,24 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
                         disabled={loading}
                       />
                       <Tags form={form} data={tags_data} disabled={loading} />
-                      <Cover />
+                      <Cover
+                        form={form}
+                        disabled={loading}
+                        preview={
+                          <CoverPreview
+                            src={cover_preview_src}
+                            onClick={() =>
+                              form.isTouched('cover') &&
+                              cover_preview_src?.trim().length !== 0 &&
+                              form.errors.cover === undefined &&
+                              image_zoom_cb.open()
+                            }
+                            onError={() =>
+                              form.setFieldError('cover', STRINGS.BAD_IMAGE_URL)
+                            }
+                          />
+                        }
+                      />
                     </Surface>
                   </Accordion>
                 </ScrollArea>
