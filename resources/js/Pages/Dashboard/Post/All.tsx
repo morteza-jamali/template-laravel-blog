@@ -16,16 +16,14 @@ import {
   Modal,
   Mark,
   Badge,
-  Image,
   type ModalBaseProps,
-  type ImageProps,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { Link, router } from '@inertiajs/react';
 import { type VisitOptions } from '@inertiajs/core';
 import { PageHeader, AppShell } from '@/Components/Dashboard';
-import { PageLayout } from '@/Components/Global';
+import { PageLayout, ImageZoom } from '@/Components/Global';
 import { DataTable, DataTableProps } from '@/Components/Global/DataTable';
 import {
   IconPlus,
@@ -81,20 +79,6 @@ const deletePost =
       ...options,
     });
 
-interface ImageZoomModalProps {
-  img: ImageProps;
-  opened: ModalBaseProps['opened'];
-  onClose: ModalBaseProps['onClose'];
-}
-
-const ImageZoomModal = ({ img, ...rest }: ImageZoomModalProps) => {
-  return (
-    <Modal centered closeOnClickOutside={false} {...rest}>
-      <Image {...img} />
-    </Modal>
-  );
-};
-
 interface DeleteModalProps {
   id: number | Array<number>;
   opened: ModalBaseProps['opened'];
@@ -148,7 +132,7 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
   const [delete_id, setDeleteID] = useState<
     CompletePost['id'] | Array<CompletePost['id']>
   >([]);
-  const [zoom_img, setZoomImg] = useState<ImageProps>({});
+  const [zoom_img, setZoomImg] = useState<string>();
   const { showContextMenu, hideContextMenu } = useContextMenu();
   const [currentSelectedRecords, setCurrentSelectedRecords] = useState<
     DataTableProps<CompletePost>['data']
@@ -158,7 +142,8 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
   >([]);
   const [selected_all, setSelectedAll] = useState<boolean>(false);
   const [delete_modal_opened, delete_modal_cb] = useDisclosure(false);
-  const [izoom_modal_opened, izoom_modal_cb] = useDisclosure(false);
+  const image_zoom_disclosure = useDisclosure(false);
+  const [_, image_zoom_cb] = image_zoom_disclosure;
   const [query, setQuery] = useState('');
   const TABLE_KEY = 'all-posts-table';
   const columnsSharedProps = {
@@ -305,8 +290,8 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
             style={{ cursor: 'pointer' }}
             size="lg"
             onClick={() => {
-              setZoomImg({ src: cover });
-              izoom_modal_cb.open();
+              setZoomImg(cover);
+              image_zoom_cb.open();
             }}
             src={cover}
             alt="cover"
@@ -371,11 +356,7 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
 
   return (
     <PageLayout title={PAGE_TITLE}>
-      <ImageZoomModal
-        onClose={izoom_modal_cb.close}
-        opened={izoom_modal_opened}
-        img={zoom_img}
-      />
+      <ImageZoom disclosure={image_zoom_disclosure} src={zoom_img} />
       <DeleteModal
         id={delete_id}
         onClose={delete_modal_cb.close}

@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\AllCategoriesController as DAllCategoriesController;
 use App\Http\Controllers\Dashboard\AllPostsController as DAllPostsController;
 use App\Http\Controllers\Dashboard\AllTagsController as DAllTagsController;
+use App\Http\Controllers\Dashboard\PreviewPostController;
 use App\Http\Controllers\Dashboard\NewPostController;
 use App\Http\Controllers\Dashboard\NewTagController;
 use App\Http\Controllers\Dashboard\NewCategoryController;
@@ -30,6 +31,15 @@ Route::get('/dashboard/post/new', [NewPostController::class, 'get'])->name(
 Route::post('/dashboard/post/new', [NewPostController::class, 'post'])->name(
   'dashboard.post.new.post',
 );
+
+Route::get('/dashboard/post/preview', [
+  PreviewPostController::class,
+  'get',
+])->name('dashboard.post.preview');
+Route::post('/dashboard/post/preview', [
+  PreviewPostController::class,
+  'post',
+])->name('dashboard.post.preview.post');
 
 // Route::get('/dashboard/post/edit/{id}', [
 //   CategoryController::class,

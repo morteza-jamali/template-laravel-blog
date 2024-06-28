@@ -5,6 +5,7 @@ export const ROUTES = {
       NEW: '/dashboard/post/new',
       ALL: '/dashboard/post/all',
       EDIT: '/dashboard/post/edit',
+      PREVIEW: '/dashboard/post/preview',
     },
     CATEGORY: {
       NEW: '/dashboard/category/new',

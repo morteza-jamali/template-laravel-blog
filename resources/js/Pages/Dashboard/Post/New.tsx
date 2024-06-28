@@ -1,4 +1,6 @@
 import { type ReactNode, useEffect, useState, DOMAttributes } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import dayjs from 'dayjs';
 import {
   Anchor,
   Container,
@@ -110,7 +112,30 @@ function Publish({ form, loading }: PublishProps) {
           Clear
         </Button>
         <Group justify="space-between" gap="xs">
-          <Button variant="default">Preview</Button>
+          <Button
+            variant="default"
+            onClick={() => {
+              if (!form.validate().hasErrors) {
+                const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+                const storage_key = `preview-post-${uuidv4()}`;
+                const values = {
+                  created_at: dayjs().format(DATE_FORMAT),
+                  updated_at: dayjs().format(DATE_FORMAT),
+                };
+                localStorage.setItem(
+                  storage_key,
+                  JSON.stringify({ ...form.getValues(), ...values }),
+                );
+                window.open(
+                  `${ROUTES.DASHBOARD.POST.PREVIEW}?id=${storage_key}`,
+                  '_blank',
+                  'noreferrer',
+                );
+              }
+            }}
+          >
+            Preview
+          </Button>
           <Button variant="filled" type="submit" loading={loading}>
             Publish
           </Button>
@@ -431,6 +456,19 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
                           disabled={loading}
                           key={form.key('title')}
                           {...form.getInputProps('title')}
+                        />
+                        <TextInput
+                          label={
+                            <InputLabelWithHelp
+                              help="The “slug” is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens"
+                              label="Slug"
+                            />
+                          }
+                          placeholder="Enter slug here"
+                          withAsterisk
+                          disabled={loading}
+                          key={form.key('slug')}
+                          {...form.getInputProps('slug')}
                         />
                         <TextEditor
                           label="Content"
