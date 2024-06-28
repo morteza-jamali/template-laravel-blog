@@ -68,6 +68,18 @@ class Tag extends Model
     return $this;
   }
 
+  public function addMultiple(array $rows): Tag
+  {
+    $this->upsert($rows);
+
+    return $this;
+  }
+
+  public function idRange(): int
+  {
+    return (int) $this->get('id')->sortByDesc('id')->first()->toArray()['id'];
+  }
+
   public function edit(Request $request, int $id): Tag
   {
     $rules = self::VALIDATION_RULES;

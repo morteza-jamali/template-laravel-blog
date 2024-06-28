@@ -80,6 +80,7 @@ export function TextEditor<T>({
   return (
     <Input.Wrapper key={form.key(name as string)} {...input_props} {...rest}>
       <RichTextEditor
+        withTypographyStyles={false}
         editor={editor}
         styles={
           input_props.error

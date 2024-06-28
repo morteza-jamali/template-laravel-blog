@@ -60,9 +60,11 @@ export function PostHeader({ data, ...rest }: PostHeaderProps) {
               </Badge>
             </Group>
           </div>
-          <div>
-            <Image radius="md" src={data.cover} />
-          </div>
+          {data.cover ? (
+            <div>
+              <Image radius="md" src={data.cover} mah={400} />
+            </div>
+          ) : null}
         </Group>
       </Card>
     </Container>

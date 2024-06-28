@@ -13,8 +13,8 @@ import { Group } from '@mantine/core';
 
 interface SinglePostProps {
   post: CompletePost;
-  previous_post: NexPrevPostProps['data']['previous_post'];
-  next_post: NexPrevPostProps['data']['next_post'];
+  previous_post?: NexPrevPostProps['data']['previous_post'];
+  next_post?: NexPrevPostProps['data']['next_post'];
 }
 
 // FIXME: only show published post
@@ -29,7 +29,9 @@ export function SinglePost({
   return (
     <ParentLayout title={header.title}>
       <PostHeader mb={60} data={header} />
-      <MainSection tags={{ data: tags, title: 'Tags', link: false }}>
+      <MainSection
+        tags={tags ? { data: tags, title: 'Tags', link: false } : undefined}
+      >
         <Group
           justify="space-between"
           wrap="nowrap"
@@ -45,10 +47,12 @@ export function SinglePost({
         <SharePost mb="xl" mt="calc(var(--mantine-spacing-xl) * 2)" />
         <PostAuthor />
         {/* FIXME: Control last and first posts */}
-        <NexPrevPost
-          data={{ next_post, previous_post }}
-          my="calc(var(--mantine-spacing-xl) * 3)"
-        />
+        {next_post && previous_post ? (
+          <NexPrevPost
+            data={{ next_post, previous_post }}
+            my="calc(var(--mantine-spacing-xl) * 3)"
+          />
+        ) : null}
       </MainSection>
     </ParentLayout>
   );

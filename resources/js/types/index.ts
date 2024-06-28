@@ -1,3 +1,5 @@
+import { type PartialBy } from './helpers';
+
 export * from './helpers';
 
 export type Id = string | number;
@@ -90,7 +92,10 @@ export type Post = {
   updated_at: string;
 };
 
-export type CompletePost = Omit<Post, 'categories' | 'tags'> & {
-  categories: Array<Category>;
-  tags: Array<Tag>;
-};
+export type CompletePost = PartialBy<
+  Omit<Post, 'categories' | 'tags'> & {
+    categories: Array<Category>;
+    tags: Array<Tag>;
+  },
+  'cover' | 'tags' | 'status'
+>;

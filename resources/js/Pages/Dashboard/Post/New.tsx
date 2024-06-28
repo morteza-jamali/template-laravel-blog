@@ -96,10 +96,11 @@ interface NewPostProps {
 
 interface PublishProps {
   form: UseFormReturnType<FormValuesTypes>;
+  tags: Array<ComboboxItem>;
   loading?: boolean;
 }
 
-function Publish({ form, loading }: PublishProps) {
+function Publish({ form, loading, tags }: PublishProps) {
   return (
     <Stack gap={0}>
       <Group justify="space-between" py="xs" px="md">
@@ -122,10 +123,20 @@ function Publish({ form, loading }: PublishProps) {
                   created_at: dayjs().format(DATE_FORMAT),
                   updated_at: dayjs().format(DATE_FORMAT),
                 };
-                localStorage.setItem(
-                  storage_key,
-                  JSON.stringify({ ...form.getValues(), ...values }),
-                );
+                const form_values = { ...form.getValues() };
+
+                form_values.tags = tags as any;
+
+                if (tags.length === 0) {
+                  delete form_values.tags;
+                }
+
+                const storage_value = JSON.stringify({
+                  ...form_values,
+                  ...values,
+                });
+                localStorage.setItem(storage_key, storage_value);
+
                 window.open(
                   `${ROUTES.DASHBOARD.POST.PREVIEW}?id=${storage_key}`,
                   '_blank',
@@ -338,6 +349,7 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [editor_value, setEditorValue] = useState<string>('');
   const [cover_preview_src, setCoverPreviewSrc] = useState<string>();
+  const [added_tags, setAddedTags] = useState<Array<ComboboxItem>>([]);
   const image_zoom_disclosure = useDisclosure(false);
   const [_, image_zoom_cb] = image_zoom_disclosure;
   const [editor_is_empty, setEditorIsEmpty] = useState<boolean>(true);
@@ -350,7 +362,6 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
       slug: '',
       status: 'draft',
     },
-    onValuesChange: ({ cover }) => setCoverPreviewSrc(cover),
     validate: {
       title: (value) => {
         if (isNotEmpty(value) !== null) {
@@ -401,6 +412,20 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
         form.errors.cover === undefined ? null : STRINGS.BAD_IMAGE_URL,
     },
   });
+
+  form.watch('tags', ({ value }) => {
+    const new_value = value?.map(
+      (tag) =>
+        tags_data.find((t) => t.label === (tag as unknown as string)) ?? {
+          value: '',
+          label: tag,
+        },
+    );
+
+    setAddedTags(new_value as Array<ComboboxItem>);
+  });
+
+  form.watch('cover', ({ value }) => setCoverPreviewSrc(value));
 
   const handleSubmit = (values: typeof form.values) => {
     // router.post(ROUTES.DASHBOARD.CATEGORY.NEW, values as unknown as FormData, {
@@ -489,7 +514,11 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
                 <ScrollArea type="always" scrollbars="y" offsetScrollbars>
                   <Accordion multiple defaultValue={['publish', 'categories']}>
                     <Surface component={Paper} {...PAPER_PROPS}>
-                      <Publish form={form} loading={loading} />
+                      <Publish
+                        tags={added_tags}
+                        form={form}
+                        loading={loading}
+                      />
                       <Categories
                         form={form}
                         data={categories_data}
