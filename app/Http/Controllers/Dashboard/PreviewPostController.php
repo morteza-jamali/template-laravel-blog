@@ -25,7 +25,7 @@ class PreviewPostController extends Controller
       ->byStr(implode(',', array_values($post['categories'])))
       ->getAsArray();
 
-    if ($request->has('tags') && !empty($post['tags'])) {
+    if ($request->has('tags')) {
       $id_range = $tag->idRange();
 
       $new_tags = Arr::where($post['tags'], function (array $value) {

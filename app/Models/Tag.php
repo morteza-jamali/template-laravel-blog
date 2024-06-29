@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class Tag extends Model
 {
@@ -53,10 +54,10 @@ class Tag extends Model
     return $tag;
   }
 
-  public function byId(int $id): Tag
+  public function byId(int|array $id): Tag
   {
     $tag = new self();
-    $tag->tags = $this->where('id', $id)->get();
+    $tag->tags = $this->whereIn('id', is_array($id) ? $id : [$id])->get();
 
     return $tag;
   }
@@ -70,9 +71,19 @@ class Tag extends Model
 
   public function addMultiple(array $rows): Tag
   {
-    $this->upsert($rows);
+    $ids = [];
 
-    return $this;
+    foreach ($rows as $row) {
+      foreach (['created_at', 'updated_at'] as $date) {
+        if (!Arr::exists($row, $date)) {
+          $row[$date] = now();
+        }
+      }
+
+      $ids[] = $this->insertGetId($row);
+    }
+
+    return $this->byId($ids);
   }
 
   public function idRange(): int
@@ -95,6 +106,13 @@ class Tag extends Model
     $validated = $request->validate($rules);
 
     $this->where('id', $id)->update($validated);
+
+    return $this;
+  }
+
+  public function incrementCount(): Tag
+  {
+    $this->tags->increment();
 
     return $this;
   }
