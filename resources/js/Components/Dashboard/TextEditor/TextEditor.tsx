@@ -15,7 +15,7 @@ import TaskItem from '@tiptap/extension-task-item';
 import TipTapTaskList from '@tiptap/extension-task-list';
 import ts from 'highlight.js/lib/languages/typescript';
 import { useUncontrolled } from '@mantine/hooks';
-import { Input } from '@mantine/core';
+import { Input, Overlay } from '@mantine/core';
 import {
   type InputHTMLAttributes,
   type ComponentProps,
@@ -84,7 +84,14 @@ export function TextEditor({
   }, [disabled]);
 
   return (
-    <Input.Wrapper {...rest}>
+    <Input.Wrapper {...rest} style={{ position: 'relative' }}>
+      {disabled && (
+        <Overlay
+          opacity={0.6}
+          color="var(--mantine-color-gray-1)"
+          style={{ cursor: 'not-allowed' }}
+        />
+      )}
       <RichTextEditor
         withTypographyStyles={false}
         editor={editor}

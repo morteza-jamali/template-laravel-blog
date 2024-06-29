@@ -211,7 +211,7 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
       render: ({ tags }: CompletePost) => {
         const MAX_TAGS_COUNT = 4;
 
-        return (
+        return tags ? (
           <Group gap={2}>
             {tags.slice(0, MAX_TAGS_COUNT).map((tag) => (
               <Badge
@@ -228,7 +228,7 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
             ))}
             {tags.length > MAX_TAGS_COUNT ? '...' : null}
           </Group>
-        );
+        ) : null;
       },
     },
     {

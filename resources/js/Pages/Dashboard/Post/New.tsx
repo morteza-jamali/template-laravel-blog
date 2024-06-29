@@ -1,4 +1,10 @@
-import { type ReactNode, useEffect, useState, type DOMAttributes } from 'react';
+import {
+  type ReactNode,
+  useEffect,
+  useState,
+  type DOMAttributes,
+  type MouseEventHandler,
+} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import {
@@ -9,6 +15,7 @@ import {
   PaperProps,
   Stack,
   TextInput,
+  Text,
   Accordion,
   Group,
   Button,
@@ -20,6 +27,8 @@ import {
   MultiSelect,
   type ComboboxItem,
   type ImageProps,
+  type ModalBaseProps,
+  Modal,
 } from '@mantine/core';
 import {
   PageHeader,
@@ -27,12 +36,14 @@ import {
   TextEditor,
   AppShell,
 } from '@/Components/Dashboard';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import {
   IconCategory,
   IconTags,
   IconStackPush,
   IconPhoto,
+  IconTableImport,
+  IconCheck,
 } from '@tabler/icons-react';
 import {
   type Category,
@@ -56,6 +67,7 @@ import {
 } from '@mantine/form';
 import { STRINGS } from '@/i18n';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 
 const PAGE_TITLE: string = 'Add New Post';
 const items = [
@@ -148,7 +160,7 @@ function Publish({ form, loading, tags }: PublishProps) {
             Preview
           </Button>
           <Button variant="filled" type="submit" loading={loading}>
-            Publish
+            Save
           </Button>
         </Group>
       </Group>
@@ -336,6 +348,51 @@ function Cover({ form, disabled, preview }: CoverProps) {
   );
 }
 
+interface SaveModalProps {
+  opened: ModalBaseProps['opened'];
+  onClose: ModalBaseProps['onClose'];
+  onYesCallback: () => void;
+}
+
+const SaveModal = ({ onYesCallback, ...rest }: SaveModalProps) => {
+  return (
+    <Modal.Root centered closeOnClickOutside={false} {...rest}>
+      <Modal.Overlay blur={3} backgroundOpacity={0.55} />
+      <Modal.Content>
+        <Modal.Header>
+          <Modal.Title>
+            <Group gap={6}>
+              <IconTableImport color="green" />
+              <Text fw={700}>Save post</Text>
+            </Group>
+          </Modal.Title>
+          <Modal.CloseButton />
+        </Modal.Header>
+        <Modal.Body>
+          <Stack gap={20}>
+            <Text>Are you sure you want to save the post ?</Text>
+            <Group gap={4} justify="flex-end">
+              <Button variant="subtle" onClick={rest.onClose}>
+                No, I'm not sure
+              </Button>
+              <Button
+                variant="filled"
+                color="red"
+                onClick={() => {
+                  onYesCallback();
+                  rest.onClose();
+                }}
+              >
+                Yes
+              </Button>
+            </Group>
+          </Stack>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal.Root>
+  );
+};
+
 export const NewPost = ({ categories, tags }: NewPostProps) => {
   const categories_data = categories.map(({ id, name }) => ({
     value: `${id}`,
@@ -349,6 +406,7 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [cover_preview_src, setCoverPreviewSrc] = useState<string>();
   const [added_tags, setAddedTags] = useState<Array<ComboboxItem>>([]);
+  const [save_modal_opened, save_modal_cb] = useDisclosure(false);
   const image_zoom_disclosure = useDisclosure(false);
   const [_, image_zoom_cb] = image_zoom_disclosure;
   const { errors } = usePage().props;
@@ -423,27 +481,37 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
 
   form.watch('cover', ({ value }) => setCoverPreviewSrc(value));
 
-  const handleSubmit = (values: typeof form.values) => {
-    // router.post(ROUTES.DASHBOARD.CATEGORY.NEW, values as unknown as FormData, {
-    //   onStart: () => setLoading(true),
-    //   onError: (errs) => {
-    //     console.log(`[DEBUG]: `, errs);
-    //     setLoading(false);
-    //   },
-    //   onSuccess: () => {
-    //     form.reset();
-    //     setLoading(false);
-    //     notifications.show({
-    //       withCloseButton: true,
-    //       autoClose: 5000,
-    //       title: 'Success',
-    //       message: 'Category added',
-    //       color: 'green',
-    //       icon: <IconCheck />,
-    //       withBorder: true,
-    //     });
-    //   },
-    // });
+  const handleSubmit = () => {
+    const values = { ...form.getValues() };
+
+    if (values.tags?.length === 0) {
+      delete values.tags;
+    }
+
+    if (values.tags) {
+      values.tags = added_tags as any;
+    }
+
+    router.post(ROUTES.DASHBOARD.POST.NEW, values as unknown as FormData, {
+      onStart: () => setLoading(true),
+      onError: (errs) => {
+        console.log(`[DEBUG]: `, errs);
+        setLoading(false);
+      },
+      onSuccess: () => {
+        form.reset();
+        setLoading(false);
+        notifications.show({
+          withCloseButton: true,
+          autoClose: 5000,
+          title: 'Success',
+          message: 'Post saved',
+          color: 'green',
+          icon: <IconCheck />,
+          withBorder: true,
+        });
+      },
+    });
   };
 
   useEffect(() => {
@@ -455,10 +523,15 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
   return (
     <PageLayout title={PAGE_TITLE}>
       <ImageZoom src={cover_preview_src} disclosure={image_zoom_disclosure} />
+      <SaveModal
+        onClose={save_modal_cb.close}
+        opened={save_modal_opened}
+        onYesCallback={handleSubmit}
+      />
       <Container fluid>
         <Stack gap="lg">
           <PageHeader title={PAGE_TITLE} breadcrumbItems={items} />
-          <form onSubmit={form.onSubmit(handleSubmit)}>
+          <form onSubmit={form.onSubmit(() => save_modal_cb.open())}>
             <Grid>
               <Grid.Col span={{ base: 12, md: 8 }}>
                 <Surface component={Paper} {...PAPER_PROPS} p="md">
