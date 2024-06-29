@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState, DOMAttributes } from 'react';
+import { type ReactNode, useEffect, useState, type DOMAttributes } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import {
@@ -347,12 +347,10 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
   }));
   const isNotEmpty = _isNotEmpty();
   const [loading, setLoading] = useState<boolean>(false);
-  const [editor_value, setEditorValue] = useState<string>('');
   const [cover_preview_src, setCoverPreviewSrc] = useState<string>();
   const [added_tags, setAddedTags] = useState<Array<ComboboxItem>>([]);
   const image_zoom_disclosure = useDisclosure(false);
   const [_, image_zoom_cb] = image_zoom_disclosure;
-  const [editor_is_empty, setEditorIsEmpty] = useState<boolean>(true);
   const { errors } = usePage().props;
   const form = useForm<FormValuesTypes>({
     mode: 'uncontrolled',
@@ -399,10 +397,8 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
         },
         STRINGS.REQUIRED_FIELD('categories'),
       ),
-      content: (_, { status }) => {
-        form.setFieldValue('content', editor_value);
-
-        if (status === 'publish' && editor_is_empty) {
+      content: (value, { status }) => {
+        if (status === 'publish' && !value) {
           return STRINGS.REQUIRED_FIELD('content');
         }
 
@@ -500,10 +496,8 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
                           withAsterisk
                           placeholder="Enter content here"
                           disabled={loading}
-                          setValue={setEditorValue}
-                          setIsEmpty={setEditorIsEmpty}
-                          name="content"
-                          form={form}
+                          {...form.getInputProps('content')}
+                          key={form.key('content')}
                         />
                       </Stack>
                     </Grid.Col>

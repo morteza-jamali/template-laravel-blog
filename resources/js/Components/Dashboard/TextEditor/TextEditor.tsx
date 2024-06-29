@@ -13,41 +13,42 @@ import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import TaskItem from '@tiptap/extension-task-item';
 import TipTapTaskList from '@tiptap/extension-task-list';
+import ts from 'highlight.js/lib/languages/typescript';
+import { useUncontrolled } from '@mantine/hooks';
 import { Input } from '@mantine/core';
-import { type UseFormReturnType } from '@mantine/form';
 import {
   type InputHTMLAttributes,
   type ComponentProps,
-  type Dispatch,
-  type SetStateAction,
+  useEffect,
 } from 'react';
-import ts from 'highlight.js/lib/languages/typescript';
 
 const lowlight = createLowlight();
 // TODO: Add more languages
 lowlight.register({ ts });
 
-export interface TextEditorProps<T>
-  extends Omit<ComponentProps<typeof Input.Wrapper>, 'form'>,
-    Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'placeholder' | 'disabled' | 'name'
-    > {
-  form: UseFormReturnType<T>;
-  setValue: Dispatch<SetStateAction<string>>;
-  setIsEmpty: Dispatch<SetStateAction<boolean>>;
+export interface TextEditorProps
+  extends Omit<ComponentProps<typeof Input.Wrapper>, 'onChange'>,
+    Pick<InputHTMLAttributes<HTMLInputElement>, 'placeholder' | 'disabled'> {
+  error?: string;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
 }
 
-export function TextEditor<T>({
+export function TextEditor({
+  defaultValue,
+  onChange,
+  value,
   placeholder,
-  form,
   disabled,
-  name,
-  setValue,
-  setIsEmpty,
   ...rest
-}: TextEditorProps<T>) {
-  const { defaultValue, ...input_props } = form.getInputProps(name as string);
+}: TextEditorProps) {
+  const [_value, handleChange] = useUncontrolled({
+    value,
+    defaultValue,
+    onChange,
+  });
+
   const editor = useEditor({
     extensions: [
       Color,
@@ -70,20 +71,25 @@ export function TextEditor<T>({
       Placeholder.configure({ placeholder }),
     ],
     onUpdate(props) {
-      setIsEmpty(props.editor.getText().trim().length === 0);
-      setValue(props.editor.getHTML());
+      const text = props.editor.getText().trim();
+
+      handleChange(text.length === 0 ? '' : props.editor.getHTML());
     },
-    content: defaultValue,
+    content: _value,
     editable: !disabled,
   });
 
+  useEffect(() => {
+    editor?.setEditable(!disabled);
+  }, [disabled]);
+
   return (
-    <Input.Wrapper key={form.key(name as string)} {...input_props} {...rest}>
+    <Input.Wrapper {...rest}>
       <RichTextEditor
         withTypographyStyles={false}
         editor={editor}
         styles={
-          input_props.error
+          rest.error
             ? {
                 root: {
                   borderColor: 'var(--mantine-color-error)',
