@@ -461,6 +461,7 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
     },
   });
 
+  // FIXME: implement on reset handler
   form.watch('tags', ({ value }) => {
     const new_value = value?.map(
       (tag) =>
@@ -473,6 +474,7 @@ export const NewPost = ({ categories, tags }: NewPostProps) => {
     setAddedTags(new_value as Array<ComboboxItem>);
   });
 
+  // FIXME: implement on reset handler
   form.watch('cover', ({ value }) => setCoverPreviewSrc(value));
 
   const handleSubmit = () => {

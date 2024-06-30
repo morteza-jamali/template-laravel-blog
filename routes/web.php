@@ -11,6 +11,7 @@ use App\Http\Controllers\Dashboard\NewTagController;
 use App\Http\Controllers\Dashboard\NewCategoryController;
 use App\Http\Controllers\Dashboard\EditTagController;
 use App\Http\Controllers\Dashboard\EditCategoryController;
+use App\Http\Controllers\Dashboard\EditPostController;
 use App\Http\Controllers\Blog\HomeController;
 use App\Http\Controllers\Blog\SinglePostController;
 use App\Http\Controllers\Blog\SingleCategoryController;
@@ -41,10 +42,14 @@ Route::post('/dashboard/post/preview', [
   'post',
 ])->name('dashboard.post.preview.post');
 
-// Route::get('/dashboard/post/edit/{id}', [
-//   CategoryController::class,
-//   'render',
-// ])->name('dashboard.post.edit');
+Route::get('/dashboard/post/edit/{id}', [
+  EditPostController::class,
+  'get',
+])->name('dashboard.post.edit');
+Route::patch('/dashboard/post/edit/{id}', [
+  EditPostController::class,
+  'patch',
+])->name('dashboard.post.edit.patch');
 
 Route::get('/dashboard/post/all', [DAllPostsController::class, 'get'])->name(
   'dashboard.post.all',

@@ -97,5 +97,5 @@ export type CompletePost = PartialBy<
     categories: Array<Category>;
     tags: Array<Tag>;
   },
-  'cover' | 'tags' | 'status'
+  'cover' | 'tags'
 >;

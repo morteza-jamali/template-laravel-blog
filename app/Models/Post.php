@@ -87,6 +87,10 @@ class Post extends Model
     $post = new self();
     $post->posts = $this->posts->map(function ($p) {
       // FIXME: Improve dependency injection
+      if (is_null($p->tags)) {
+        return $p;
+      }
+
       $p->tags = app('App\Models\Tag')
         ->byStr($p->tags)
         ->getAsArray();
