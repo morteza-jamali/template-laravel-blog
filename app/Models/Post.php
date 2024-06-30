@@ -106,6 +106,25 @@ class Post extends Model
     return $this->castCategoriesToArray()->castTagsToArray();
   }
 
+  public function edit(Request $request, int $id): Post
+  {
+    $rules = self::VALIDATION_RULES;
+
+    if ($this->byId($id)->data()->first()->slug == $request->input('slug')) {
+      array_splice(
+        $rules['slug'],
+        array_search('unique:posts', $rules['slug']),
+        1,
+      );
+    }
+
+    $validated = $request->validate($rules);
+
+    $this->where('id', $id)->update($validated);
+
+    return $this;
+  }
+
   public function add(Request $request): Post
   {
     $this->create($request->validate(self::VALIDATION_RULES));

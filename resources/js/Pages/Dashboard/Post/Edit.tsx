@@ -117,19 +117,14 @@ function Publish({ form, loading, tags }: PublishProps) {
           onClick={() => form.reset()}
           disabled={loading}
         >
-          Clear
+          Reset
         </Button>
         <Group justify="space-between" gap="xs">
           <Button
             variant="default"
             onClick={() => {
               if (!form.validate().hasErrors) {
-                const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
                 const storage_key = `preview-post-${uuidv4()}`;
-                const values = {
-                  created_at: dayjs().format(DATE_FORMAT),
-                  updated_at: dayjs().format(DATE_FORMAT),
-                };
                 const form_values = { ...form.getValues() };
 
                 form_values.tags = tags as any;
@@ -138,10 +133,7 @@ function Publish({ form, loading, tags }: PublishProps) {
                   delete form_values.tags;
                 }
 
-                const storage_value = JSON.stringify({
-                  ...form_values,
-                  ...values,
-                });
+                const storage_value = JSON.stringify(form_values);
                 localStorage.setItem(storage_key, storage_value);
 
                 window.open(
@@ -155,7 +147,7 @@ function Publish({ form, loading, tags }: PublishProps) {
             Preview
           </Button>
           <Button variant="filled" type="submit" loading={loading}>
-            Save
+            Update
           </Button>
         </Group>
       </Group>
@@ -502,26 +494,30 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
       values.tags = added_tags as any;
     }
 
-    router.post(ROUTES.DASHBOARD.POST.NEW, values as unknown as FormData, {
-      onStart: () => setLoading(true),
-      onError: (errs) => {
-        console.log(`[DEBUG]: `, errs);
-        setLoading(false);
+    router.patch(
+      `${ROUTES.DASHBOARD.POST.EDIT}/${new_post_object.id}`,
+      values as unknown as FormData,
+      {
+        onStart: () => setLoading(true),
+        onError: (errs) => {
+          console.log(`[DEBUG]: `, errs);
+          setLoading(false);
+        },
+        onSuccess: () => {
+          form.reset();
+          setLoading(false);
+          notifications.show({
+            withCloseButton: true,
+            autoClose: 5000,
+            title: 'Success',
+            message: 'Post saved',
+            color: 'green',
+            icon: <IconCheck />,
+            withBorder: true,
+          });
+        },
       },
-      onSuccess: () => {
-        form.reset();
-        setLoading(false);
-        notifications.show({
-          withCloseButton: true,
-          autoClose: 5000,
-          title: 'Success',
-          message: 'Post saved',
-          color: 'green',
-          icon: <IconCheck />,
-          withBorder: true,
-        });
-      },
-    });
+    );
   };
 
   useEffect(() => {
