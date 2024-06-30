@@ -62,6 +62,7 @@ import {
 import { STRINGS } from '@/i18n';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
+import * as lodash from 'lodash';
 
 const PAGE_TITLE: string = 'Add New Post';
 const items = [
@@ -103,11 +104,11 @@ interface EditPostProps {
 
 interface PublishProps {
   form: UseFormReturnType<FormValuesTypes>;
-  tags: Array<ComboboxItem>;
+  onPreview: () => void;
   loading?: boolean;
 }
 
-function Publish({ form, loading, tags }: PublishProps) {
+function Publish({ form, loading, onPreview }: PublishProps) {
   return (
     <Stack gap={0}>
       <Group justify="space-between" py="xs" px="md">
@@ -120,30 +121,7 @@ function Publish({ form, loading, tags }: PublishProps) {
           Reset
         </Button>
         <Group justify="space-between" gap="xs">
-          <Button
-            variant="default"
-            onClick={() => {
-              if (!form.validate().hasErrors) {
-                const storage_key = `preview-post-${uuidv4()}`;
-                const form_values = { ...form.getValues() };
-
-                form_values.tags = tags as any;
-
-                if (tags.length === 0) {
-                  delete form_values.tags;
-                }
-
-                const storage_value = JSON.stringify(form_values);
-                localStorage.setItem(storage_key, storage_value);
-
-                window.open(
-                  `${ROUTES.DASHBOARD.POST.PREVIEW}?id=${storage_key}`,
-                  '_blank',
-                  'noreferrer',
-                );
-              }
-            }}
-          >
+          <Button variant="default" onClick={onPreview}>
             Preview
           </Button>
           <Button variant="filled" type="submit" loading={loading}>
@@ -385,6 +363,11 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
 
   new_post_object.categories = post.categories.map(({ name }) => name) as any;
 
+  const added_tags_initial = post.tags?.map(({ id, name }) => ({
+    value: `${id}`,
+    label: name,
+  }));
+
   if (post.tags) {
     new_post_object.tags = post.tags.map(({ name }) => name) as any;
   }
@@ -402,7 +385,9 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
   const [cover_preview_src, setCoverPreviewSrc] = useState<string | undefined>(
     new_post_object.cover,
   );
-  const [added_tags, setAddedTags] = useState<Array<ComboboxItem>>([]);
+  const [added_tags, setAddedTags] = useState<Array<ComboboxItem>>(
+    added_tags_initial ?? [],
+  );
   const [save_modal_opened, save_modal_cb] = useDisclosure(false);
   const image_zoom_disclosure = useDisclosure(false);
   const [_, image_zoom_cb] = image_zoom_disclosure;
@@ -416,7 +401,7 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
       status: new_post_object.status,
       content: new_post_object.content,
       cover: new_post_object.cover,
-      tags: new_post_object.tags,
+      tags: new_post_object.tags ?? [],
     },
     validate: {
       title: (value) => {
@@ -483,6 +468,52 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
   // FIXME: implement on reset handler
   form.watch('cover', ({ value }) => setCoverPreviewSrc(value));
 
+  // FIXME: This method dosn't work for categories that their names are number
+  const fixCategories = (categories: Array<Category>) => {
+    const _categories = [...categories];
+
+    new_post_object.categories.forEach((category) => {
+      if (categories.includes(category)) {
+        _categories[categories.indexOf(category)] = String(
+          post.categories.filter(({ name }) => name === (category as any))[0]
+            .id,
+        ) as any;
+      }
+    });
+
+    return _categories;
+  };
+
+  const previewHandler = () => {
+    if (!form.validate().hasErrors) {
+      const storage_key = `preview-post-${uuidv4()}`;
+      const form_values = { ...form.getValues() };
+
+      if (form_values.tags) {
+        form_values.tags = added_tags as any;
+      }
+
+      if ((form_values.tags as Array<Tag>)?.length === 0) {
+        delete form_values.tags;
+      }
+
+      form_values.categories = fixCategories(form_values.categories);
+
+      const storage_value = JSON.stringify({
+        ...lodash.pick(post, ['like', 'view', 'created_at']),
+        ...form_values,
+        updated_at: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+      });
+      localStorage.setItem(storage_key, storage_value);
+
+      window.open(
+        `${ROUTES.DASHBOARD.POST.PREVIEW}?id=${storage_key}`,
+        '_blank',
+        'noreferrer',
+      );
+    }
+  };
+
   const handleSubmit = () => {
     const values = { ...form.getValues() };
 
@@ -494,6 +525,8 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
       values.tags = added_tags as any;
     }
 
+    values.categories = fixCategories(values.categories);
+
     router.patch(
       `${ROUTES.DASHBOARD.POST.EDIT}/${new_post_object.id}`,
       values as unknown as FormData,
@@ -504,7 +537,6 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
           setLoading(false);
         },
         onSuccess: () => {
-          form.reset();
           setLoading(false);
           notifications.show({
             withCloseButton: true,
@@ -588,7 +620,7 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
                   <Accordion multiple defaultValue={['publish', 'categories']}>
                     <Surface component={Paper} {...PAPER_PROPS}>
                       <Publish
-                        tags={added_tags}
+                        onPreview={previewHandler}
                         form={form}
                         loading={loading}
                       />

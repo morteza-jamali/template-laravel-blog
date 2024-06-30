@@ -20,10 +20,10 @@ class Post extends Model
       'unique:posts',
       'regex:/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/i',
     ],
-    'content' => 'string',
-    'categories' => ['required', 'regex:/^(\d+\,)*\d+$/i'],
-    'tags' => 'regex:/^(\d+\,)*\d+$/i',
-    'cover' => 'url',
+    'content' => 'string|nullable',
+    'categories' => ['required', 'string', 'regex:/^(\d+\,)*\d+$/i'],
+    'tags' => ['string', 'nullable', 'regex:/^(\d+\,)*\d+$/i'],
+    'cover' => 'url|nullable',
     'status' => ['required', 'regex:(publish|draft)'],
   ];
   protected $fillable = [

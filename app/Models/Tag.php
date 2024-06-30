@@ -125,6 +125,13 @@ class Tag extends Model
     return $this;
   }
 
+  public function decrementCount(): Tag
+  {
+    $this->tags->decrement('count');
+
+    return $this;
+  }
+
   public function deleteById(array $ids): Tag
   {
     $this->whereIn('id', $ids)->delete();

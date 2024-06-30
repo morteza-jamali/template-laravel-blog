@@ -113,6 +113,13 @@ class Category extends Model
     return $this;
   }
 
+  public function decrementCount(): Category
+  {
+    $this->categories->decrement('count');
+
+    return $this;
+  }
+
   public function parent(): Category
   {
     $category = new self();
