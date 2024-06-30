@@ -57,7 +57,15 @@ class Tag extends Model
   public function byId(int|array $id): Tag
   {
     $tag = new self();
-    $tag->tags = $this->whereIn('id', is_array($id) ? $id : [$id])->get();
+    $tag->tags = $this->objectById($id)->data()->get();
+
+    return $tag;
+  }
+
+  public function objectById(int|array $id): Tag
+  {
+    $tag = new self();
+    $tag->tags = $this->whereIn('id', is_array($id) ? $id : [$id]);
 
     return $tag;
   }
@@ -112,7 +120,7 @@ class Tag extends Model
 
   public function incrementCount(): Tag
   {
-    $this->tags->increment();
+    $this->tags->increment('count');
 
     return $this;
   }

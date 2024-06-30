@@ -57,10 +57,18 @@ class Category extends Model
     return $category;
   }
 
-  public function byId(int $id): Category
+  public function byId(int|array $id): Category
   {
     $category = new self();
-    $category->categories = $this->where('id', $id)->get();
+    $category->categories = $this->objectById($id)->get();
+
+    return $category;
+  }
+
+  public function objectById(int|array $id): Category
+  {
+    $category = new self();
+    $category->categories = $this->whereIn('id', is_array($id) ? $id : [$id]);
 
     return $category;
   }
@@ -94,6 +102,13 @@ class Category extends Model
   public function deleteById(array $ids): Category
   {
     $this->whereIn('id', $ids)->delete();
+
+    return $this;
+  }
+
+  public function incrementCount(): Category
+  {
+    $this->categories->increment('count');
 
     return $this;
   }

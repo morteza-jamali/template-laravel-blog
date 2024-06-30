@@ -17,10 +17,10 @@ return new class extends Migration {
       $table->bigInteger('like')->unsigned()->default(0);
       $table->text('title');
       $table->string('slug', 200)->unique();
-      $table->longText('content');
+      $table->longText('content')->nullable();
       $table->longText('categories');
-      $table->longText('tags');
-      $table->text('cover');
+      $table->longText('tags')->nullable();
+      $table->text('cover')->nullable();
       $table->string('status', 20)->default('publish');
       $table->timestampsTz();
     });

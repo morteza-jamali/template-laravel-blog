@@ -4,12 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Post extends Model
 {
   use HasFactory;
 
   protected $posts;
+  protected const VALIDATION_RULES = [
+    'title' => 'required|string|min:5',
+    'slug' => [
+      'required',
+      'min:5',
+      'max:200',
+      'unique:posts',
+      'regex:/^[a-z0-9]+[a-z0-9\-]*[a-z0-9]$/i',
+    ],
+    'content' => 'string',
+    'categories' => ['required', 'regex:/^(\d+\,)*\d+$/i'],
+    'tags' => 'regex:/^(\d+\,)*\d+$/i',
+    'cover' => 'url',
+    'status' => ['required', 'regex:(publish|draft)'],
+  ];
   protected $fillable = [
     'author',
     'view',
@@ -84,6 +100,13 @@ class Post extends Model
   public function castTermsToArray(): Post
   {
     return $this->castCategoriesToArray()->castTagsToArray();
+  }
+
+  public function add(Request $request): Post
+  {
+    $this->create($request->validate(self::VALIDATION_RULES));
+
+    return $this;
   }
 
   protected function makeRegex(int $id): array

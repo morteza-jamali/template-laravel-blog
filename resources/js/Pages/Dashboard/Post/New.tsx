@@ -1,10 +1,4 @@
-import {
-  type ReactNode,
-  useEffect,
-  useState,
-  type DOMAttributes,
-  type MouseEventHandler,
-} from 'react';
+import { type ReactNode, useEffect, useState, type DOMAttributes } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import {

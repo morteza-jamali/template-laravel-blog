@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -23,14 +24,21 @@ class NewPostController extends Controller
     ]);
   }
 
-  public function post(Request $request, Tag $tag)
-  {
-    $post = $request->input();
+  public function post(
+    Request $request,
+    Tag $tag,
+    Category $category,
+    Post $post,
+  ) {
+    $p = $request->input();
 
-    $post['categories'] = implode(',', array_values($post['categories']));
+    $categories_ids = array_values($p['categories']);
+    $p['categories'] = implode(',', $categories_ids);
+
+    $category->objectById($categories_ids)->incrementCount();
 
     if ($request->has('tags')) {
-      $new_tags = Arr::where($post['tags'], function (array $value) {
+      $new_tags = Arr::where($p['tags'], function (array $value) {
         return is_null($value['value']);
       });
       $new_tags = Arr::map($new_tags, function (array $value) {
@@ -45,7 +53,7 @@ class NewPostController extends Controller
         $new_tags = $tag->addMultiple($new_tags)->getAsArray();
       }
 
-      $available_tags = Arr::where($post['tags'], function (array $value) {
+      $available_tags = Arr::where($p['tags'], function (array $value) {
         return !is_null($value['value']);
       });
       $available_tags = Arr::map(
@@ -55,12 +63,15 @@ class NewPostController extends Controller
 
       $tags = array_merge(Arr::pluck($new_tags, 'id'), $available_tags);
 
-      $tag->byId($available_tags)->incrementCount();
+      $tag->objectById($available_tags)->incrementCount();
 
-      $post['tags'] = implode(',', $tags);
+      $p['tags'] = implode(',', $tags);
     }
 
-    dd($post);
+    $new_request = new Request();
+    $new_request->replace($p);
+
+    $post->add($new_request);
 
     return to_route('dashboard.post.new');
   }
