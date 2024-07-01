@@ -14,7 +14,7 @@ class AllPostsController extends Controller
   {
     $tags = $tag->top()->getAsArray();
     $categories = $category->top()->getAsArray();
-    $posts = $post->allRecords()->castCategoriesToArray()->getAsArray();
+    $posts = $post->published()->castCategoriesToArray()->getAsArray();
 
     return Inertia::render('Blog/Post/AllPosts', [
       'posts' => $posts,

@@ -52,10 +52,37 @@ class Post extends Model
     return $post;
   }
 
+  public function published(): Post
+  {
+    $post = new self();
+    $post->posts = $this->where('status', 'publish')->get();
+
+    return $post;
+  }
+
   public function byId(int $id): Post
   {
     $post = new self();
-    $post->posts = $this->where('id', $id)->get();
+    $post->posts = $this->objectById($id)->data()->get();
+
+    return $post;
+  }
+
+  public function objectById(int $id): Post
+  {
+    $post = new self();
+    $post->posts = $this->where('id', $id);
+
+    return $post;
+  }
+
+  public function publishedById(int $id): Post
+  {
+    $post = new self();
+    $post->posts = $this->objectById($id)
+      ->data()
+      ->where('status', 'publish')
+      ->get();
 
     return $post;
   }
@@ -132,6 +159,27 @@ class Post extends Model
     return $this;
   }
 
+  public function addView(): Post
+  {
+    $this->posts->increment('view');
+
+    return $this;
+  }
+
+  public function incrementLike(): Post
+  {
+    $this->posts->increment('like');
+
+    return $this;
+  }
+
+  public function decrementLike(): Post
+  {
+    $this->posts->decrement('like');
+
+    return $this;
+  }
+
   protected function makeRegex(int $id): array
   {
     return ["\,$id\,", "^$id\,", "\,$id$"];
@@ -166,6 +214,7 @@ class Post extends Model
     $post = new self();
     $post->posts = collect([
       $this->where('id', '<', $this->posts->first()->id)
+        ->where('status', 'publish')
         ->orderBy('id', 'desc')
         ->first(),
     ]);
@@ -178,6 +227,7 @@ class Post extends Model
     $post = new self();
     $post->posts = collect([
       $this->where('id', '>', $this->posts->first()->id)
+        ->where('status', 'publish')
         ->orderBy('id', 'asc')
         ->first(),
     ]);

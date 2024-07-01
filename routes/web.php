@@ -119,6 +119,9 @@ Route::get('/', [HomeController::class, 'render'])->name('blog.home');
 Route::get('/post/{id}', [SinglePostController::class, 'render'])->name(
   'blog.post.singlepost',
 );
+Route::post('/post/{id}', [SinglePostController::class, 'like'])->name(
+  'blog.post.singlepost.like',
+);
 
 // All Posts Page
 Route::get('/posts', [AllPostsController::class, 'render'])->name(

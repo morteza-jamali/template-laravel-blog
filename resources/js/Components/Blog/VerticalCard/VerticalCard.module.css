@@ -9,8 +9,13 @@
   display: block;
 }
 
+.cover {
+  max-width: rem(200px);
+}
+
 .body {
   padding: var(--mantine-spacing-md);
+  max-width: none;
 }
 
 .badge {

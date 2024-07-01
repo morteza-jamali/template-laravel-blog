@@ -15,7 +15,7 @@ class SingleCategoryController extends Controller
     $cat = $category->byId($id);
 
     if ($cat->data()->isEmpty()) {
-      return redirect('/404');
+      return abort(404);
     }
 
     $cat = $cat->data()->first()->toArray();

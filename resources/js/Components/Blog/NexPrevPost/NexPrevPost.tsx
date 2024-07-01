@@ -28,7 +28,7 @@ function Btn({ type, data }: BtnProps) {
       <Stack gap="xs">
         <Group justify="space-between" wrap="nowrap">
           {isPrev ? <IconChevronLeft size={16} /> : null}
-          <Text fw={700}>Next Post</Text>
+          <Text fw={700}>{isNext ? 'Next' : 'Previous'} Post</Text>
           {isNext ? <IconChevronRight size={16} /> : null}
         </Group>
         <Text>{data.title}</Text>
@@ -39,8 +39,8 @@ function Btn({ type, data }: BtnProps) {
 
 export interface NexPrevPostProps extends MantineStyleProps {
   data: {
-    next_post: BtnProps['data'];
-    previous_post: BtnProps['data'];
+    next_post?: BtnProps['data'];
+    previous_post?: BtnProps['data'];
   };
 }
 
@@ -56,9 +56,9 @@ export function NexPrevPost({ data, ...rest }: NexPrevPostProps) {
       wrap="nowrap"
       {...rest}
     >
-      <Btn type="prev" data={previous_post} />
+      {previous_post ? <Btn type="prev" data={previous_post} /> : null}
       <Divider orientation="vertical" />
-      <Btn type="next" data={next_post} />
+      {next_post ? <Btn type="next" data={next_post} /> : null}
     </Group>
   );
 }

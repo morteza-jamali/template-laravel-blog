@@ -9,17 +9,32 @@ import {
   Badge,
   type ContainerProps,
 } from '@mantine/core';
-import { Link } from '@inertiajs/react';
-import { IconCalendar } from '@tabler/icons-react';
+import { Link, router } from '@inertiajs/react';
+import { IconCalendar, IconEye } from '@tabler/icons-react';
+import { Like } from '@/Components/Global';
 import { type CompletePost } from '@/types';
 import classes from './PostHeader.module.css';
 import ROUTES from '@/routes';
 
 export interface PostHeaderProps extends ContainerProps {
-  data: Pick<CompletePost, 'categories' | 'title' | 'cover' | 'created_at'>;
+  data: Omit<CompletePost, 'tags' | 'content'>;
 }
 
 export function PostHeader({ data, ...rest }: PostHeaderProps) {
+  const onLikeHandler = (value: number) => {
+    router.post(
+      `${ROUTES.BLOG.POST.SINGLE}/${data.id}`,
+      {
+        func: value > data.like ? 'increment' : 'decrement',
+      } as unknown as FormData,
+      {
+        onError: (errs) => {
+          console.log(`[DEBUG]: `, errs);
+        },
+      },
+    );
+  };
+
   return (
     <Container size="lg" {...rest}>
       <Card p={0} radius={0}>
@@ -58,6 +73,15 @@ export function PostHeader({ data, ...rest }: PostHeaderProps) {
               >
                 {data.created_at}
               </Badge>
+              <Badge
+                variant="transparent"
+                color="gray"
+                leftSection={<IconEye size={18} />}
+                size="lg"
+              >
+                {data.view}
+              </Badge>
+              <Like value={data.like} onClick={onLikeHandler} />
             </Group>
           </div>
           {data.cover ? (

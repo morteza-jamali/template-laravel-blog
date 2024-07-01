@@ -17,8 +17,6 @@ interface SinglePostProps {
   next_post?: NexPrevPostProps['data']['next_post'];
 }
 
-// FIXME: only show published post
-
 export function SinglePost({
   post,
   next_post,
@@ -46,8 +44,7 @@ export function SinglePost({
         </Group>
         <SharePost mb="xl" mt="calc(var(--mantine-spacing-xl) * 2)" />
         <PostAuthor />
-        {/* FIXME: Control last and first posts */}
-        {next_post && previous_post ? (
+        {next_post || previous_post ? (
           <NexPrevPost
             data={{ next_post, previous_post }}
             my="calc(var(--mantine-spacing-xl) * 3)"

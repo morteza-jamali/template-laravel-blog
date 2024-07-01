@@ -15,7 +15,7 @@ class SingleTagController extends Controller
     $t = $tag->byId($id);
 
     if ($t->data()->isEmpty()) {
-      return redirect('/404');
+      return abort(404);
     }
 
     $t = $t->data()->first()->toArray();
