@@ -5,10 +5,11 @@ import { useState } from 'react';
 export interface LikeProps {
   value: number;
   onClick: (value: number) => void;
+  liked?: boolean;
 }
 
-export const Like = ({ value, onClick }: LikeProps) => {
-  const [checked, setChecked] = useState<boolean>(false);
+export const Like = ({ value, onClick, liked }: LikeProps) => {
+  const [checked, setChecked] = useState<boolean>(liked ?? false);
   const [_value, setValue] = useState<number>(value);
 
   return (

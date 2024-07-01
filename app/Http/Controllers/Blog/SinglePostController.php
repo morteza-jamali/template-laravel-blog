@@ -11,8 +11,6 @@ class SinglePostController extends Controller
 {
   public function render(Post $post, string $id)
   {
-    // dd(session('apple'));
-
     $p = $post->publishedById($id);
 
     if ($p->data()->isEmpty()) {
@@ -26,26 +24,45 @@ class SinglePostController extends Controller
     $previous_post = is_null($previous_post) ? null : $previous_post->toArray();
     $next_post = is_null($next_post) ? null : $next_post->toArray();
 
-    $post->objectById($id)->addView();
+    $seen_posts = collect(session('seen_posts', []));
+    $liked_posts = collect(session('liked_posts', []));
+
+    if (!$seen_posts->contains($id)) {
+      $post->objectById($id)->addView();
+      $seen_posts->push($id);
+      session(['seen_posts' => $seen_posts->toArray()]);
+    }
 
     return Inertia::render('Blog/Post/SinglePost', [
       'post' => $complete_post,
       'next_post' => $next_post,
       'previous_post' => $previous_post,
+      'liked' => $liked_posts->contains($id),
     ]);
   }
 
   public function like(Post $post, Request $request, string $id)
   {
-    // session('liked_posts')
-    // session(['liked' => 'bnana']);
+    $liked_posts = collect(session('liked_posts', []));
 
-    if ($request->input('func') === 'increment') {
+    if (
+      !$liked_posts->contains($id) &&
+      $request->input('func') === 'increment'
+    ) {
       $post->objectById($id)->incrementLike();
+      $liked_posts->push($id);
+      session(['liked_posts' => $liked_posts->toArray()]);
     }
 
-    if ($request->input('func') === 'decrement') {
+    if (
+      $liked_posts->contains($id) &&
+      $request->input('func') === 'decrement'
+    ) {
       $post->objectById($id)->decrementLike();
+      $liked_posts->pull($liked_posts->search($id));
+      session(['liked_posts' => $liked_posts->toArray()]);
     }
+
+    return to_route('blog.post.singlepost', ['id' => $id]);
   }
 }

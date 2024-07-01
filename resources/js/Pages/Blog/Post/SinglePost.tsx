@@ -13,11 +13,13 @@ import { Group } from '@mantine/core';
 
 interface SinglePostProps {
   post: CompletePost;
+  liked: boolean;
   previous_post?: NexPrevPostProps['data']['previous_post'];
   next_post?: NexPrevPostProps['data']['next_post'];
 }
 
 export function SinglePost({
+  liked,
   post,
   next_post,
   previous_post,
@@ -26,7 +28,7 @@ export function SinglePost({
 
   return (
     <ParentLayout title={header.title}>
-      <PostHeader mb={60} data={header} />
+      <PostHeader mb={60} data={{ liked, post: header }} />
       <MainSection
         tags={tags ? { data: tags, title: 'Tags', link: false } : undefined}
       >

@@ -17,15 +17,17 @@ import classes from './PostHeader.module.css';
 import ROUTES from '@/routes';
 
 export interface PostHeaderProps extends ContainerProps {
-  data: Omit<CompletePost, 'tags' | 'content'>;
+  data: { post: Omit<CompletePost, 'tags' | 'content'>; liked: boolean };
 }
 
 export function PostHeader({ data, ...rest }: PostHeaderProps) {
+  const { post, liked } = data;
+
   const onLikeHandler = (value: number) => {
     router.post(
-      `${ROUTES.BLOG.POST.SINGLE}/${data.id}`,
+      `${ROUTES.BLOG.POST.SINGLE}/${post.id}`,
       {
-        func: value > data.like ? 'increment' : 'decrement',
+        func: value > post.like ? 'increment' : 'decrement',
       } as unknown as FormData,
       {
         onError: (errs) => {
@@ -41,7 +43,7 @@ export function PostHeader({ data, ...rest }: PostHeaderProps) {
         <Group wrap="nowrap" gap={0} justify="space-between" grow>
           <div className={classes.body}>
             <Group gap="sm">
-              {data.categories.map((category) => (
+              {post.categories.map((category) => (
                 <Badge
                   style={{ cursor: 'pointer' }}
                   tt="uppercase"
@@ -55,7 +57,7 @@ export function PostHeader({ data, ...rest }: PostHeaderProps) {
               ))}
             </Group>
             <Title mt="lg" mb="lg">
-              {data.title}
+              {post.title}
             </Title>
             <Group wrap="nowrap" gap="xs" align="center">
               <Group gap={2} wrap="nowrap">
@@ -71,7 +73,7 @@ export function PostHeader({ data, ...rest }: PostHeaderProps) {
                 leftSection={<IconCalendar size={18} />}
                 size="lg"
               >
-                {data.created_at}
+                {post.created_at}
               </Badge>
               <Badge
                 variant="transparent"
@@ -79,14 +81,14 @@ export function PostHeader({ data, ...rest }: PostHeaderProps) {
                 leftSection={<IconEye size={18} />}
                 size="lg"
               >
-                {data.view}
+                {post.view}
               </Badge>
-              <Like value={data.like} onClick={onLikeHandler} />
+              <Like liked={liked} value={post.like} onClick={onLikeHandler} />
             </Group>
           </div>
-          {data.cover ? (
+          {post.cover ? (
             <div>
-              <Image radius="md" src={data.cover} mah={400} />
+              <Image radius="md" src={post.cover} mah={400} />
             </div>
           ) : null}
         </Group>
