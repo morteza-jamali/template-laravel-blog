@@ -17,25 +17,28 @@ import classes from './PostHeader.module.css';
 import ROUTES from '@/routes';
 
 export interface PostHeaderProps extends ContainerProps {
-  data: { post: Omit<CompletePost, 'tags' | 'content'>; liked: boolean };
+  data: { post: Omit<CompletePost, 'tags' | 'content'>; liked?: boolean };
 }
 
 export function PostHeader({ data, ...rest }: PostHeaderProps) {
   const { post, liked } = data;
 
-  const onLikeHandler = (value: number) => {
-    router.post(
-      `${ROUTES.BLOG.POST.SINGLE}/${post.id}`,
-      {
-        func: value > post.like ? 'increment' : 'decrement',
-      } as unknown as FormData,
-      {
-        onError: (errs) => {
-          console.log(`[DEBUG]: `, errs);
-        },
-      },
-    );
-  };
+  const onLikeHandler =
+    typeof liked !== 'undefined'
+      ? (value: number) => {
+          router.post(
+            `${ROUTES.BLOG.POST.SINGLE}/${post.id}`,
+            {
+              func: value > post.like ? 'increment' : 'decrement',
+            } as unknown as FormData,
+            {
+              onError: (errs) => {
+                console.log(`[DEBUG]: `, errs);
+              },
+            },
+          );
+        }
+      : () => {};
 
   return (
     <Container size="lg" {...rest}>

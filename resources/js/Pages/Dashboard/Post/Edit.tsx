@@ -637,7 +637,6 @@ export const EditPost = ({ categories, tags, post }: EditPostProps) => {
                           <CoverPreview
                             src={cover_preview_src}
                             onClick={() =>
-                              form.isTouched('cover') &&
                               cover_preview_src?.trim().length !== 0 &&
                               form.errors.cover === undefined &&
                               image_zoom_cb.open()

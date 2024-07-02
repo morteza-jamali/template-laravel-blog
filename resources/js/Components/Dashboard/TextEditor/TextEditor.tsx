@@ -1,10 +1,17 @@
-import { Link, RichTextEditor, getTaskListExtension } from '@mantine/tiptap';
+import {
+  Link,
+  RichTextEditor,
+  getTaskListExtension,
+  useRichTextEditorContext,
+} from '@mantine/tiptap';
 import { useEditor, BubbleMenu, type Editor } from '@tiptap/react';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { createLowlight } from 'lowlight';
 import Highlight from '@tiptap/extension-highlight';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
+import Image from '@tiptap/extension-image';
+import Youtube from '@tiptap/extension-youtube';
 import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
@@ -21,6 +28,7 @@ import {
   type ComponentProps,
   useEffect,
 } from 'react';
+import { IconPhoto, IconVideo } from '@tabler/icons-react';
 
 const lowlight = createLowlight();
 // TODO: Add more languages
@@ -33,6 +41,50 @@ export interface TextEditorProps
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
+}
+
+function InsertVideo() {
+  const { editor } = useRichTextEditorContext();
+
+  return (
+    <RichTextEditor.Control
+      onClick={() => {
+        const url = window.prompt('Enter YouTube URL');
+
+        if (url) {
+          editor?.commands.setYoutubeVideo({
+            src: url,
+            width: 640,
+            height: 480,
+          });
+        }
+      }}
+      aria-label="Insert video"
+      title="Insert video"
+    >
+      <IconVideo stroke={1.5} size="1rem" />
+    </RichTextEditor.Control>
+  );
+}
+
+function InsertImage() {
+  const { editor } = useRichTextEditorContext();
+
+  return (
+    <RichTextEditor.Control
+      onClick={() => {
+        const url = window.prompt('Enter Image URL');
+
+        if (url) {
+          editor?.chain().focus().setImage({ src: url }).run();
+        }
+      }}
+      aria-label="Insert image"
+      title="Insert image"
+    >
+      <IconPhoto stroke={1.5} size="1rem" />
+    </RichTextEditor.Control>
+  );
 }
 
 export function TextEditor({
@@ -60,8 +112,12 @@ export function TextEditor({
           class: 'test-item',
         },
       }),
+      Youtube.configure({
+        nocookie: true,
+      }),
       Underline,
       Link,
+      Image,
       Superscript,
       SubScript,
       Highlight,
@@ -132,6 +188,11 @@ export function TextEditor({
             <RichTextEditor.Color color="#1098AD" />
             <RichTextEditor.Color color="#37B24D" />
             <RichTextEditor.Color color="#F59F00" />
+          </RichTextEditor.ControlsGroup>
+
+          <RichTextEditor.ControlsGroup>
+            <InsertImage />
+            <InsertVideo />
           </RichTextEditor.ControlsGroup>
 
           <RichTextEditor.ControlsGroup>

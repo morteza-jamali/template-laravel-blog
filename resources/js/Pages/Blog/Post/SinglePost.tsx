@@ -13,7 +13,7 @@ import { Group } from '@mantine/core';
 
 interface SinglePostProps {
   post: CompletePost;
-  liked: boolean;
+  liked?: boolean;
   previous_post?: NexPrevPostProps['data']['previous_post'];
   next_post?: NexPrevPostProps['data']['next_post'];
 }

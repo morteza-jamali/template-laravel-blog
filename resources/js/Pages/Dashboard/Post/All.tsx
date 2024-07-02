@@ -337,9 +337,8 @@ export const AllPosts = ({ posts }: AllPostsProps) => {
             </Tooltip>
             <Tooltip label="Edit">
               <ActionIcon
-                component="a"
+                component={Link}
                 href={`${ROUTES.DASHBOARD.POST.EDIT}/${id}`}
-                target="_blank"
               >
                 <IconEdit size={ICON_SIZE} />
               </ActionIcon>
