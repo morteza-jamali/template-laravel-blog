@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -55,7 +56,15 @@ class Post extends Model
   public function published(): Post
   {
     $post = new self();
-    $post->posts = $this->where('status', 'publish')->get();
+    $post->posts = $this->objectByPublished()->data()->get();
+
+    return $post;
+  }
+
+  public function objectByPublished(): Post
+  {
+    $post = new self();
+    $post->posts = $this->where('status', 'publish');
 
     return $post;
   }
@@ -191,9 +200,14 @@ class Post extends Model
     $operator = 'REGEXP';
     $regexp = $this->makeRegex($id);
 
-    $post->posts = $this->where($term, $operator, $regexp[0])
-      ->orWhere($term, $operator, $regexp[1])
-      ->orWhere($term, $operator, $regexp[2])
+    $post->posts = $this->objectByPublished()
+      ->data()
+      ->where(function (Builder $query) use ($term, $operator, $regexp) {
+        $query
+          ->where($term, $operator, $regexp[0])
+          ->orWhere($term, $operator, $regexp[1])
+          ->orWhere($term, $operator, $regexp[2]);
+      })
       ->get();
 
     return $post;
@@ -238,7 +252,9 @@ class Post extends Model
   public function recent(?int $count = 10): Post
   {
     $post = new self();
-    $post->posts = $this->get()
+    $post->posts = $this->objectByPublished()
+      ->data()
+      ->get()
       ->sortByDesc('created_at')
       ->take($count)
       ->values();
@@ -249,7 +265,12 @@ class Post extends Model
   public function top(?int $count = 10): Post
   {
     $post = new self();
-    $post->posts = $this->get()->sortByDesc('like')->take($count)->values();
+    $post->posts = $this->objectByPublished()
+      ->data()
+      ->get()
+      ->sortByDesc('like')
+      ->take($count)
+      ->values();
 
     return $post;
   }
@@ -257,7 +278,12 @@ class Post extends Model
   public function trend(?int $count = 10): Post
   {
     $post = new self();
-    $post->posts = $this->get()->sortByDesc('view')->take($count)->values();
+    $post->posts = $this->objectByPublished()
+      ->data()
+      ->get()
+      ->sortByDesc('view')
+      ->take($count)
+      ->values();
 
     return $post;
   }

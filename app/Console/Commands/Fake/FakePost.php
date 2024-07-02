@@ -18,7 +18,7 @@ class FakePost extends Command implements Isolatable
    */
   protected $signature = 'fake:post
                             {--A|append : Append new data}
-                            {--T|tagscount=50 : Maximum tags count}
+                            {--T|tagscount=10 : Maximum tags count}
                             {--K|categoriescount=3 : Maximum categories count}
                             {--S|savepics : Whether to save pictures or not}
                             {--C|count=50 : Fake posts count}';
@@ -85,9 +85,14 @@ class FakePost extends Command implements Isolatable
       $status = getTrueOrFalse() ? 'publish' : 'draft';
       $view = fake()->numberBetween(1, 999);
       $like = fake()->numberBetween(1, 999);
-      // FIXME: Use `categories.json` & `tags.json` content
-      $tags = fakeTerms((int) $this->option('tagscount'));
-      $categories = fakeTerms((int) $this->option('categoriescount'));
+      $tags = fakeTerms(
+        (int) $this->option('tagscount'),
+        count(Storage::json('public/fake/tags.json')),
+      );
+      $categories = fakeTerms(
+        (int) $this->option('categoriescount'),
+        count(Storage::json('public/fake/categories.json')),
+      );
       $created_at = fakeTimeStamp();
       $updated_at = getTrueOrFalse()
         ? $created_at

@@ -64,9 +64,9 @@ if (!function_exists('fakeHtml')) {
 }
 
 if (!function_exists('fakeTerms')) {
-  function fakeTerms(int $max_count)
+  function fakeTerms(int $max_count, int $range)
   {
-    return implode(',', fake()->randomElements(range(1, $max_count), null));
+    return implode(',', Arr::random(range(1, $range), $max_count));
   }
 }
 

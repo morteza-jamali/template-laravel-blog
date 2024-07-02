@@ -12,12 +12,19 @@ export interface VerticalCardProps {
 export function VerticalCard({ data }: VerticalCardProps) {
   return (
     <Card withBorder radius="md" p={0} className={classes.card} shadow="sm">
-      <Group wrap="nowrap" gap={0} justify="space-between" grow>
+      <Group
+        className={classes.group}
+        wrap="nowrap"
+        gap={0}
+        justify="space-between"
+        align="stretch"
+        grow
+      >
         <div className={classes.cover}>
           <Image
             src={data?.cover}
             fallbackSrc="/images/postcoverplaceholder.svg"
-            height={150}
+            height="100%"
           />
         </div>
         <div className={classes.body}>

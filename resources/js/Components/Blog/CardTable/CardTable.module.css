@@ -30,13 +30,20 @@
 
 .header {
   margin-bottom: var(--mantine-spacing-md);
+  display: flex;
 
-  & th {
-    border-bottom: none;
-    padding: 0;
-  }
+  & tr {
+    display: flex;
+    flex-grow: 1;
 
-  & th[role='button'] {
-    display: none;
+    & th {
+      flex-grow: 1;
+      border-bottom: none;
+      padding: 0;
+    }
+
+    & th[role='button'] {
+      display: none;
+    }
   }
 }

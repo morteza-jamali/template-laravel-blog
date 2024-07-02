@@ -55,7 +55,7 @@ const NewHeader = ({ refs, sort_status }: NewHeaderProps) => {
   };
 
   return (
-    <Group wrap="nowrap" gap="xs" align="flex-end">
+    <Group wrap="nowrap" gap="xs" align="flex-end" justify="space-between" grow>
       <Select
         label="Sort"
         value={type as string}

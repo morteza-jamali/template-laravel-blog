@@ -9,8 +9,13 @@
   display: block;
 }
 
+.group {
+  flex-grow: 1;
+}
+
 .cover {
   max-width: rem(200px);
+  width: 100%;
 }
 
 .body {

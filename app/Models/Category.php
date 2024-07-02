@@ -60,7 +60,7 @@ class Category extends Model
   public function byId(int|array $id): Category
   {
     $category = new self();
-    $category->categories = $this->objectById($id)->get();
+    $category->categories = $this->objectById($id)->data()->get();
 
     return $category;
   }
